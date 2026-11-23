@@ -1397,12 +1397,16 @@ function setActiveRange(group, range) {
 }
 
 function formatChartTime(timestamp, range) {
-  const date = new Date(timestamp);
-  if (isNaN(date.getTime())) return timestamp;
+  let val = Number(timestamp);
+  if (!isNaN(val) && val < 10000000000) {
+    val = val * 1000;
+  }
+  const date = new Date(val || timestamp);
+  if (isNaN(date.getTime())) return String(timestamp || "");
   if (range === "1h" || range === "1d") {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
-  return date.toLocaleDateString([], { month: 'numeric', day: 'numeric' });
+  return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
 
 function drawMultiLineChart(canvasId, labels, datasets, yTitle) {
@@ -1554,12 +1558,12 @@ async function loadPowerHistory(range = "1h") {
     if (!result.success) throw new Error(result.error || "Failed to load power data");
 
     const points = result.data || [];
-    const labels = points.map(p => formatChartTime(p.recorded_at, range));
-    const conveyorData = points.map(p => p.conveyor_watts);
-    const lightingData = points.map(p => p.lighting_watts);
-    const totalData = points.map(p => p.total_watts);
+    const labels = points.map(p => formatChartTime(p.timestamp ?? p.recorded_at, range));
+    const conveyorData = points.map(p => p.conveyorPowerW ?? p.conveyor_watts ?? 0);
+    const lightingData = points.map(p => p.lightingPowerW ?? p.lighting_watts ?? 0);
+    const totalData = points.map(p => p.totalPowerW ?? p.total_watts ?? 0);
 
-    const latest = points.length ? points[points.length - 1].total_watts : null;
+    const latest = points.length ? (points[points.length - 1].totalPowerW ?? points[points.length - 1].total_watts) : null;
     byId("chartTotalCurrent").innerText = number(latest);
 
     drawMultiLineChart("powerChart", labels, [
@@ -1586,16 +1590,14 @@ async function loadProductionHistory(range = "1h") {
     if (!result.success) throw new Error(result.error || "Failed to load production data");
 
     const points = result.data || [];
-    const labels = points.map(p => formatChartTime(p.recorded_at, range));
-    const countData = points.map(p => p.product_count);
-    const lifetimeData = points.map(p => p.lifetime_count);
+    const labels = points.map(p => formatChartTime(p.timestamp ?? p.recorded_at, range));
+    const countData = points.map(p => p.productionCount ?? p.product_count ?? 0);
 
-    const latest = points.length ? points[points.length - 1].product_count : null;
+    const latest = points.length ? (points[points.length - 1].productionCount ?? points[points.length - 1].product_count) : null;
     byId("chartProductionCurrent").innerText = latest !== null ? latest : "—";
 
     drawMultiLineChart("productionChart", labels, [
-      { label: "Cycle Count", color: "#34d399", data: countData },
-      { label: "Lifetime Total", color: "#818cf8", data: lifetimeData }
+      { label: "Production Output", color: "#34d399", data: countData }
     ], "Units");
   } catch (err) {
     console.error("Error loading production history:", err);

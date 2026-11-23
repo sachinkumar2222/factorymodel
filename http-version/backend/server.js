@@ -69,6 +69,14 @@ db.exec(`
 
 console.log(`[SQLITE] Database ready: ${DB_PATH}`);
 
+// Preload last recorded values from DB so dashboard shows real history even before first telemetry
+try {
+  const lastRow = db.prepare("SELECT * FROM telemetry_history ORDER BY id DESC LIMIT 1").get();
+  if (lastRow) {
+    console.log(`[SQLITE] Preloaded last telemetry: Lifetime=${lastRow.product_count_total}, Power=${lastRow.total_power_w}W`);
+  }
+} catch (e) {}
+
 // Prepared statement for telemetry history
 const insertTelemetryHistory = db.prepare(`
   INSERT INTO telemetry_history (
@@ -308,6 +316,24 @@ app.use(express.urlencoded({ extended: true }));
    DEVICE STATE
    ============================================================ */
 
+function getLastDbState() {
+  try {
+    const row = db.prepare("SELECT * FROM telemetry_history ORDER BY id DESC LIMIT 1").get();
+    if (row) {
+      return {
+        powerW: row.total_power_w,
+        conveyorPowerW: row.conveyor_power_w,
+        lightingPowerW: row.lighting_power_w,
+        productCount: row.product_count,
+        productCountTotal: row.product_count_total
+      };
+    }
+  } catch (e) {}
+  return {};
+}
+
+const initialDb = getLastDbState();
+
 let deviceState = {
   device: DEVICE_ID,
   online: false,
@@ -333,10 +359,10 @@ let deviceState = {
     coolingTower1Humidity: null,
     coolingTower2TempC: null,
     coolingTower2Humidity: null,
-    lightingPowerW: null,
-    conveyorPowerW: null,
-    powerW: null,
-    productCount: null,
+    lightingPowerW: initialDb.lightingPowerW ?? null,
+    conveyorPowerW: initialDb.conveyorPowerW ?? null,
+    powerW: initialDb.powerW ?? null,
+    productCount: initialDb.productCount ?? null,
     productCountTotal: null
   },
 
@@ -958,6 +984,20 @@ app.get("/api/history/power", (req, res) => {
         WHERE timestamp >= ?
         ORDER BY timestamp ASC
       `).all(start);
+
+      // If device is offline and last hour is empty, return the most recent 60 recorded points
+      if (!rows.length) {
+        rows = db.prepare(`
+          SELECT
+            timestamp,
+            lighting_power_w AS lightingPowerW,
+            conveyor_power_w AS conveyorPowerW,
+            total_power_w AS totalPowerW
+          FROM telemetry_history
+          ORDER BY timestamp DESC
+          LIMIT 60
+        `).all().reverse();
+      }
     } else if (range === "1d" || range === "1w") {
       rows = db.prepare(`
         SELECT
@@ -1014,6 +1054,18 @@ app.get("/api/history/production", (req, res) => {
         WHERE timestamp >= ?
         ORDER BY timestamp ASC
       `).all(start);
+
+      // If device is offline and last hour is empty, return the most recent 60 recorded points
+      if (!rows.length) {
+        rows = db.prepare(`
+          SELECT
+            timestamp,
+            product_count_total AS productionCount
+          FROM telemetry_history
+          ORDER BY timestamp DESC
+          LIMIT 60
+        `).all().reverse();
+      }
     } else if (range === "1d" || range === "1w") {
       rows = db.prepare(`
         SELECT
