@@ -19,6 +19,21 @@ services:
       - factory-db-data:/app/data
       - ./http-version/backend/public:/app/public
 
+  camera-recorder:
+    build:
+      context: ./camera-system/backend
+      dockerfile: Dockerfile
+    image: factory-camera-recorder:latest
+    container_name: factory-camera-recorder
+    restart: unless-stopped
+    ports:
+      - "${CAMERA_TRIGGER_PORT:-8081}:8081"
+    environment:
+      - PORT=8081
+      - RECORDINGS_DIR=/opt/factory-camera/recordings
+    volumes:
+      - camera-recordings-data:/opt/factory-camera/recordings
+
   camera-dashboard:
     build:
       context: ./camera-system/backend/camera-system/web

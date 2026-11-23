@@ -1,4 +1,3 @@
-server@factorymodel-minipc:/opt/factory-camera$ cat camera_http_service.py
 #!/usr/bin/env python3
 
 import os
@@ -15,7 +14,7 @@ from flask import Flask, request, jsonify
 # ============================================================
 
 SERVER_HOST = "0.0.0.0"
-SERVER_PORT = 8081
+SERVER_PORT = int(os.environ.get("PORT", "8081"))
 
 RECORD_DURATION = 15
 
@@ -23,7 +22,7 @@ VIDEO_WIDTH = 1280
 VIDEO_HEIGHT = 720
 VIDEO_FPS = 30
 
-RECORDINGS_DIR = "/opt/factory-camera/recordings"
+RECORDINGS_DIR = os.environ.get("RECORDINGS_DIR", "/opt/factory-camera/recordings")
 
 
 # ============================================================
