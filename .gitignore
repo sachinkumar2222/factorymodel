@@ -1,0 +1,20 @@
+# Private credentials
+secrets.h
+.env
+.env.*
+
+# Node.js dependencies
+node_modules/
+
+# Runtime databases
+*.db
+*.db-shm
+*.db-wal
+
+# Compiled firmware
+*.bin
+*.elf
+*.map
+
+# Backup files
+*.bak

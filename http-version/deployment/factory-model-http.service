@@ -1,0 +1,16 @@
+[Unit]
+Description=Factory Model HTTP Backend
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=server
+WorkingDirectory=/home/server/FactoryModel_HTTP_Backend
+ExecStart=/usr/bin/node /home/server/FactoryModel_HTTP_Backend/server.js
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

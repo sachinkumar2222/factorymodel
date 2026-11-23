@@ -1,0 +1,43 @@
+services:
+  factory-dashboard:
+    build:
+      context: ./http-version/backend
+      dockerfile: Dockerfile
+    image: factory-model-dashboard:latest
+    container_name: factory-model-dashboard
+    restart: unless-stopped
+    ports:
+      - "${FACTORY_PORT:-4000}:4000"
+    environment:
+      - PORT=4000
+      - DB_PATH=/app/data/factory_model.db
+      - DEVICE_ID=${DEVICE_ID:-factory-esp32}
+      - DEVICE_IP=${DEVICE_IP:-10.10.12.75}
+      - ESP32_URL=${ESP32_URL:-http://10.10.12.75}
+      - DEVICE_KEY=${DEVICE_KEY:-af00deb797d56dd65ebcc7e6d644a867cdcd9460430c15e20c5b551da342a0ff}
+    volumes:
+      - factory-db-data:/app/data
+      - ./http-version/backend/public:/app/public
+
+  camera-dashboard:
+    build:
+      context: ./camera-system/backend/camera-system/web
+      dockerfile: Dockerfile
+    image: factory-camera-dashboard:latest
+    container_name: factory-camera-dashboard
+    restart: unless-stopped
+    ports:
+      - "${CAMERA_PORT:-8082}:8082"
+    environment:
+      - HOST=${CAMERA_HOST:-0.0.0.0}
+      - PORT=8082
+      - WEB_ROOT=/opt/factory-camera/web
+      - RECORDINGS_DIR=/opt/factory-camera/recordings
+    volumes:
+      - camera-recordings-data:/opt/factory-camera/recordings
+
+volumes:
+  factory-db-data:
+    driver: local
+  camera-recordings-data:
+    driver: local

@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Factory Model — Industrial SCADA Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg-main: #0a0e17;
+  --bg-card: #111827;
+  --bg-card-hover: #162032;
+  --border-color: #1f293d;
+  --border-highlight: #2d3f5e;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --primary-blue: #0284c7;
+  --primary-cyan: #06b6d4;
+  --accent-teal: #0d9488;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+  --accent-indigo: #6366f1;
+  --accent-violet: #8b5cf6;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.5);
+  --shadow-glow: 0 0 20px rgba(14, 165, 233, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+header {
+  background: #0d131f;
+  border-bottom: 1px solid var(--border-color);
+  padding: 16px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-icon {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #0284c7, #06b6d4);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.35);
+}
+
+.brand-text h1 {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #ffffff, #cbd5e1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-text p {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulseAnim 2s infinite ease-in-out;
+}
+
+@keyframes pulseAnim {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.header-status {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.status-pill {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: #1e293b;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s;
+}
+
+.status-pill::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-pill.ok {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.35);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
+}
+
+.status-pill.bad {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.35);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.15);
+}
+
+.status-pill.warn {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.35);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.15);
+}
+
+/* ============================================================
+   STICKY TAB NAVIGATION BAR
+   ============================================================ */
+.tab-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13, 19, 31, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 24px;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tab-navbar::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-tab {
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 14px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.nav-tab:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.nav-tab.active {
+  color: #38bdf8;
+  border-bottom-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.06);
+}
+
+.nav-tab .tab-icon {
+  font-size: 16px;
+}
+
+/* ============================================================
+   MAIN CONTAINER & TAB PANES
+   ============================================================ */
+main {
+  flex: 1;
+  padding: 24px 28px;
+  max-width: 1680px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.tab-pane {
+  display: none;
+  animation: fadeIn 0.22s ease-in-out;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tab-header {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 14px;
+}
+
+.tab-header-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tab-header-subtitle {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+
+/* ============================================================
+   GRID & CARDS
+   ============================================================ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  border-color: var(--border-highlight);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.card h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card .value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 34px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.card .unit {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.card .subvalue {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card .subvalue strong {
+  font-family: 'JetBrains Mono', monospace;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Accent top lines */
+.card.accent-amber::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #f59e0b, #d97706); }
+.card.accent-teal::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #14b8a6, #0d9488); }
+.card.accent-cyan::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #06b6d4, #0284c7); }
+.card.accent-emerald::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #10b981, #059669); }
+.card.accent-violet::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #8b5cf6, #6366f1); }
+.card.accent-indigo::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #6366f1, #3b82f6); }
+.card.accent-rose::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #f43f5e, #e11d48); }
+
+/* ============================================================
+   STATE BADGES & ACTUATOR CONTROLS
+   ============================================================ */
+.state {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: rgba(148, 163, 184, 0.12);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  margin-bottom: 16px;
+  transition: all 0.3s;
+}
+
+.state.on {
+  background: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.45);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+}
+
+.state.off {
+  background: rgba(239, 68, 68, 0.18);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.45);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.2);
+}
+
+.control-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+}
+
+button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.btn-on {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+.btn-on:hover { box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+
+.btn-off {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+.btn-off:hover { box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+
+.btn-blue {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: #ffffff;
+  border: 1px solid rgba(2, 132, 199, 0.4);
+}
+.btn-blue:hover { box-shadow: 0 0 15px rgba(2, 132, 199, 0.4); }
+
+.btn-home {
+  background: linear-gradient(135deg, #475569, #334155);
+  color: #f1f5f9;
+  border: 1px solid rgba(100, 116, 139, 0.4);
+}
+
+/* ============================================================
+   LASER SAFETY GRID
+   ============================================================ */
+.laser-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.laser {
+  background: #131c2e;
+  border: 2px solid #334155;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  transition: all 0.3s;
+}
+
+.laser span {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 800;
+  margin-top: 10px;
+}
+
+.laser.ok {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.08);
+  color: #34d399;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+.laser.tripped {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
+  animation: laserPulse 1s infinite alternate;
+}
+
+@keyframes laserPulse {
+  from { box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+  to { box-shadow: 0 0 35px rgba(239, 68, 68, 0.7); }
+}
+
+/* ============================================================
+   CAMERA MONITORING
+   ============================================================ */
+.camera-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.camera-indicator {
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  background: #1e293b;
+  color: #94a3b8;
+  border: 1px solid #334155;
+}
+
+.camera-indicator.recording {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border-color: #ef4444;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+  animation: pulseAnim 1.5s infinite;
+}
+
+/* ============================================================
+   CHARTS & HISTORICAL
+   ============================================================ */
+.chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.chart-info {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.chart-info strong {
+  font-family: 'JetBrains Mono', monospace;
+  color: #38bdf8;
+  font-size: 16px;
+  margin-left: 4px;
+}
+
+.chart-controls {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-range {
+  background: #1a2436;
+  color: #94a3b8;
+  border: 1px solid #2d3748;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-range:hover {
+  background: #25334d;
+  color: #ffffff;
+}
+
+
+
+
+.btn-range.active {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+}
+
+canvas {
+  width: 100% !important;
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+/* ============================================================
+   SYSTEM HEALTH GRID
+   ============================================================ */
+.system-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.system-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.system-item:hover {
+  border-color: var(--border-highlight);
+  background: var(--bg-card-hover);
+}
+
+.system-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.system-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================
+   TOAST MESSAGE
+   ============================================================ */
+.message {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 9999;
+  display: none;
+  animation: slideUp 0.3s ease-out;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.message.ok {
+  background: #065f46;
+  color: #a7f3d0;
+  border: 1px solid #10b981;
+}
+
+.message.bad {
+  background: #881337;
+  color: #fecdd3;
+  border: 1px solid #f43f5e;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  border-top: 1px solid var(--border-color);
+  padding: 18px 24px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-dim);
+  background: #090d16;
+  margin-top: auto;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header>
+  <div class="brand-wrapper">
+    <div class="brand-icon">🏭</div>
+    <div class="brand-text">
+      <h1>FACTORY MODEL <span style="font-weight:400; opacity:0.6; font-size:15px;">| SCADA DASHBOARD</span></h1>
+      <p><span class="pulse-dot"></span> Live Industrial Telemetry &amp; Supervisory Control</p>
+    </div>
+  </div>
+
+  <div class="header-status">
+    <span id="backendStatus" class="status-pill">BACKEND</span>
+    <span id="espStatus" class="status-pill">ESP32</span>
+    <span id="cameraStatus" class="status-pill">CAMERA</span>
+    <span id="wsStatus" class="status-pill">WEBSOCKET</span>
+  </div>
+</header>
+
+<!-- ============================================================
+     TAB NAVIGATION BAR
+     ============================================================ -->
+<nav class="tab-navbar">
+  <button class="nav-tab active" data-tab="tab-overview" onclick="switchTab('tab-overview')">
+    <span class="tab-icon">📊</span> Overview
+  </button>
+  <button class="nav-tab" data-tab="tab-actuators" onclick="switchTab('tab-actuators')">
+    <span class="tab-icon">⚡</span> Actuators &amp; Controls
+  </button>
+  <button class="nav-tab" data-tab="tab-servos" onclick="switchTab('tab-servos')">
+    <span class="tab-icon">🤖</span> Robotics &amp; Servos
+  </button>
+  <button class="nav-tab" data-tab="tab-laser" onclick="switchTab('tab-laser')">
+    <span class="tab-icon">🚨</span> Laser Safety
+  </button>
+  <button class="nav-tab" data-tab="tab-analytics" onclick="switchTab('tab-analytics')">
+    <span class="tab-icon">📈</span> Analytics &amp; History
+  </button>
+  <button class="nav-tab" data-tab="tab-camera" onclick="switchTab('tab-camera')">
+    <span class="tab-icon">📹</span> Camera
+  </button>
+  <button class="nav-tab" data-tab="tab-system" onclick="switchTab('tab-system')">
+    <span class="tab-icon">🩺</span> System Diagnostics
+  </button>
+</nav>
+
+<main>
+
+  <!-- =========================================================
+       TAB 1: OVERVIEW
+       ========================================================= -->
+  <div id="tab-overview" class="tab-pane active">
+    <div class="tab-header">
+      <div>
+        <div class="tab-header-title">📊 Factory Overview &amp; Live Telemetry</div>
+        <div class="tab-header-subtitle">Key environmental, production and power consumption metrics</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Switchyard Temperature -->
+      <div class="card accent-amber">
+        <h3>🌡️ Switchyard Temperature</h3>
+        <div class="value" id="switchyardTemp">—</div>
+        <div class="unit">°C</div>
+      </div>
+
+      <!-- Cooling Tower 1 -->
+      <div class="card accent-teal">
+        <h3>💧 Cooling Tower 1</h3>
+        <div class="value" id="ct1Temp">—</div>
+        <div class="unit">°C</div>
+        <div class="subvalue">
+          <span>Relative Humidity</span>
+          <span><strong id="ct1Humidity">—</strong> %</span>
+        </div>
+      </div>
+
+      <!-- Cooling Tower 2 -->
+      <div class="card accent-cyan">
+        <h3>❄️ Cooling Tower 2</h3>
+        <div class="value" id="ct2Temp">—</div>
+        <div class="unit">°C</div>
+        <div class="subvalue">
+          <span>Relative Humidity</span>
+          <span><strong id="ct2Humidity">—</strong> %</span>
+        </div>
+      </div>
+
+      <!-- Total Power -->
+      <div class="card accent-violet">
+        <h3>⚡ Total Power</h3>
+        <div class="value" id="totalPower">—</div>
+        <div class="unit">Watts (W)</div>
+      </div>
+
+      <!-- Product Count -->
+      <div class="card accent-emerald">
+        <h3>📦 Product Count</h3>
+        <div class="value" id="productCount">—</div>
+        <div class="unit">Current Cycle / Batch</div>
+      </div>
+
+      <!-- Lifetime Product Count -->
+      <div class="card accent-indigo">
+        <h3>🏭 Lifetime Product Count</h3>
+        <div class="value" id="productLifetime">—</div>
+        <div class="unit">Total Lifetime Units</div>
+      </div>
+    </div>
+
+    <!-- Power Breakdown Summary -->
+    <div style="margin-top: 28px;">
+      <div class="tab-header">
+        <div>
+          <div class="tab-header-title">⚡ Power Consumption Summary</div>
+          <div class="tab-header-subtitle">Real-time load split across major factory subsystems</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Conveyor Belt Power</h3>
+          <div class="value" style="font-size:26px; color:#38bdf8;">
+            <span id="summaryConveyorPower">—</span>
+          </div>
+          <div class="unit">Watts (W)</div>
+        </div>
+
+        <div class="card">
+          <h3>Lighting Subsystem Power</h3>
+          <div class="value" style="font-size:26px; color:#facc15;">
+            <span id="summaryLightingPower">—</span>
+          </div>
+          <div class="unit">Watts (W)</div>
+        </div>
+
+        <div class="card">
+          <h3>Total Aggregated Load</h3>
+          <div class="value" style="font-size:26px; color:#a78bfa;">
+            <span id="summaryTotalPower">—</span>
+          </div>
+          <div class="unit">Watts (W)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       TAB 2: ACTUATORS & CONTROLS
+       ========================================================= -->
+  <div id="tab-actuators" class="tab-pane">
+    <div class="tab-header">
+      <div>
+        <div class="tab-header-title">⚡ Actuator Control Center</div>
+        <div class="tab-header-subtitle">Direct industrial relay and motor control commands</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- CONVEYOR -->
+      <div class="card accent-indigo">
+        <h3>📦 Conveyor Belt Motor</h3>
+        <div class="state" id="conveyorState">OFF</div>
+        <div class="control-row">
+          <button class="btn-on" onclick="control('/api/control/conveyor/on')">▶ START MOTOR</button>
+          <button class="btn-off" onclick="control('/api/control/conveyor/off')">⏹ STOP MOTOR</button>
+        </div>
+        <div class="subvalue">
+          <span>Active Power Draw</span>
+          <span><strong id="conveyorPower">—</strong> W</span>
+        </div>
+      </div>
+
+      <!-- LIGHTING -->
+      <div class="card accent-amber">
+        <h3>💡 Factory Lighting</h3>
+        <div class="state" id="lightingState">OFF</div>
+        <div class="control-row">
+          <button class="btn-on" onclick="control('/api/control/lighting/on')">TURN LIGHTS ON</button>
+          <button class="btn-off" onclick="control('/api/control/lighting/off')">TURN LIGHTS OFF</button>
+        </div>
+        <div class="subvalue">
+          <span>Active Power Draw</span>
+          <span><strong id="lightingPower">—</strong> W</span>
+        </div>
+      </div>
+
+      <!-- MIST 1 -->
+      <div class="card accent-teal">
+        <h3>💧 Cooling Mist Maker 1</h3>
+        <div class="state" id="mist1State">OFF</div>
+        <div class="control-row">
+          <button class="btn-on" onclick="control('/api/control/mist1/on')">ENABLE MIST 1</button>
+          <button class="btn-off" onclick="control('/api/control/mist1/off')">DISABLE MIST 1</button>
+        </div>
+      </div>
+
+      <!-- MIST 2 -->
+      <div class="card accent-cyan">
+        <h3>❄️ Cooling Mist Maker 2</h3>
+        <div class="state" id="mist2State">OFF</div>
+        <div class="control-row">
+          <button class="btn-on" onclick="control('/api/control/mist2/on')">ENABLE MIST 2</button>
+          <button class="btn-off" onclick="control('/api/control/mist2/off')">DISABLE MIST 2</button>
+        </div>
+      </div>
+
+      <!-- HEATER -->
+      <div class="card accent-rose">
+        <h3>🔥 Industrial Heating Element</h3>
+        <div class="state" id="heaterState">OFF</div>
+        <div class="control-row">
+          <button class="btn-on" onclick="control('/api/control/heater/on')">ACTIVATE HEATER</button>
+          <button class="btn-off" onclick="control('/api/control/heater/off')">SHUTDOWN HEATER</button>
+        </div>
+        <div class="subvalue">
+          <span>Safety Cutoff Limit</span>
+          <strong style="color:#fb7185;">33°C Auto-Cutoff</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       TAB 3: HUMAN / SERVO CONTROL
+       ========================================================= -->
+  <div id="tab-servos" class="tab-pane">
+    <div class="tab-header">
+      <div>
+        <div class="tab-header-title">🤖 Robotics &amp; Servo Control</div>
+        <div class="tab-header-subtitle">Precision automated manipulator and human model servo positioning</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- PERSON 1 -->
+      <div class="card accent-cyan">
+        <h3>👤 Person 1 Robotic Servo</h3>
+        <div class="subvalue" style="border-top:none; margin-top:0; padding-top:0; margin-bottom:14px;">
+          <span>Motion Range</span>
+          <strong>0° – 180°</strong>
+        </div>
+        <div class="control-row">
+          <button class="btn-home" onclick="control('/api/control/person1/home')">⌂ HOME POSITION</button>
+          <button class="btn-blue" onclick="control('/api/control/person1/move')">↺ EXECUTE MOVE</button>
+        </div>
+      </div>
+
+      <!-- PERSON 2 -->
+      <div class="card accent-teal">
+        <h3>👤 Person 2 Robotic Servo</h3>
+        <div class="subvalue" style="border-top:none; margin-top:0; padding-top:0; margin-bottom:14px;">
+          <span>Motion Range</span>
+          <strong>0° – 150°</strong>
+        </div>
+        <div class="control-row">
+          <button class="btn-home" onclick="control('/api/control/person2/home')">⌂ HOME POSITION</button>
+          <button class="btn-blue" onclick="control('/api/control/person2/move')">↺ EXECUTE MOVE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       TAB 4: LASER SAFETY
+       ========================================================= -->
+  <div id="tab-laser" class="tab-pane">
+    <div class="tab-header">
+      <div>
+        <div class="tab-header-title">🚨 Switchyard Laser Safety Perimeter</div>
+        <div class="tab-header-subtitle">Real-time photoelectric optical barrier monitoring across 4 protective zones</div>
+      </div>
+    </div>
+
+    <div class="laser-grid">
+      <div id="laser1" class="laser">
+        Zone 1 Perimeter
+        <span id="laser1State">—</span>
+      </div>
+
+      <div id="laser2" class="laser">
+        Zone 2 Perimeter
+        <span id="laser2State">—</span>
+      </div>
+
+      <div id="laser3" class="laser">
+        Zone 3 Perimeter
+        <span id="laser3State">—</span>
+      </div>
+
+      <div id="laser4" class="laser">
+        Zone 4 Perimeter
+        <span id="laser4State">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       TAB 5: HISTORICAL ANALYTICS
+       ========================================================= -->
+  <div id="tab-analytics" class="tab-pane">
+    <div class="tab-header">
+      <div>
+        <div class="tab-header-title">📈 Factory Historical Analytics</div>
+        <div class="tab-header-subtitle">SQLite persistent historical trends for energy and throughput</div>
+      </div>
+    </div>
+
+    <!-- Historical Power -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <h3 style="color:#ffffff; font-size:15px; margin-bottom:4px;">Power Consumption History</h3>
+          <div class="chart-info">Conveyor + Lighting + Total Power Time-series</div>
+        </div>
+        <div class="chart-info">
+          Current Total: <strong id="chartTotalCurrent">—</strong> W
+        </div>
+      </div>
+
+      <div class="chart-controls">
+        <button id="powerRange1h" class="btn-range active" onclick="loadPowerHistory('1h')">1H</button>
+        <button id="powerRange1d" class="btn-range" onclick="loadPowerHistory('1d')">1D</button>
+        <button id="powerRange1w" class="btn-range" onclick="loadPowerHistory('1w')">1W</button>
+        <button id="powerRange1m" class="btn-range" onclick="loadPowerHistory('1m')">1M</button>
+        <button id="powerRange1y" class="btn-range" onclick="loadPowerHistory('1y')">1Y</button>
+      </div>
+
+      <canvas id="powerChart"></canvas>
+    </div>
+
+    <!-- Production History -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <h3 style="color:#ffffff; font-size:15px; margin-bottom:4px;">Production Output History</h3>
+          <div class="chart-info">Total Batch &amp; Lifetime Units Processed</div>
+        </div>
+        <div class="chart-info">
+          Current Count: <strong id="chartProductionCurrent">—</strong>
+        </div>
+      </div>
+
+      <div class="chart-controls">
+        <button id="productionRange1h" class="btn-range active" onclick="loadProductionHistory('1h')">1H</button>
+        <button id="productionRange1d" class="btn-range" onclick="loadProductionHistory('1d')">1D</button>
+        <button id="productionRange1w" class="btn-range" onclick="loadProductionHistory('1w')">1W</button>
+        <button id="productionRange1m" class="btn-range" onclick="loadProductionHistory('1m')">1M</button>
+        <button id="productionRange1y" class="btn-range" onclick="loadProductionHistory('1y')">1Y</button>
+      </div>
+
+      <canvas id="productionChart"></canvas>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       TAB 6: CAMERA MONITORING
+       ========================================================= -->
+  <div id="tab-camera" class="tab-pane">
+    <div class="tab-header">
+      <div>
+        <div class="tab-header-title">📹 Optical Surveillance &amp; Switchyard Camera</div>
+        <div class="tab-header-subtitle">Automated event-triggered optical recording feed</div>
+      </div>
+    </div>
+
+    <div class="card camera-box" style="margin-bottom: 20px;">
+      <div>
+        <h3 style="font-size:16px; color:#ffffff; margin-bottom:8px;">Switchyard Safety Camera Feed</h3>
+        <div class="subvalue" style="border-top:none; padding-top:0;">
+          <span>Active Recording Trigger Zone:</span>
+          <strong id="cameraZone" style="font-size:16px; color:#38bdf8; margin-left:8px;">0</strong>
+        </div>
+      </div>
+
+      <div id="cameraRecording" class="camera-indicator">NOT RECORDING</div>
+    </div>
+
+    <div class="card">
+      <h3>Live Camera Integration</h3>
+      <p style="color:var(--text-muted); font-size:13px; line-height:1.6; margin-bottom:16px;">
+        The switchyard vision server runs on port <code>8082</code> with automated recording when laser zones are tripped.
+      </p>
+      <a href="http://localhost:8082" target="_blank" style="display:inline-flex; align-items:center; gap:8px; text-decoration:none; background:#0284c7; color:#fff; padding:10px 18px; border-radius:8px; font-weight:700; font-size:13px;">
+        <span>Open Camera Surveillance Portal</span> ↗
+      </a>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       TAB 7: SYSTEM DIAGNOSTICS
+       ========================================================= -->
+  <div id="tab-system" class="tab-pane">
+    <div class="tab-header">
+      <div>
+        <div class="tab-header-title">🩺 System Telemetry &amp; Hardware Diagnostics</div>
+        <div class="tab-header-subtitle">ESP32 micro-controller status, I2C bus sensors and telemetry timestamps</div>
+      </div>
+    </div>
+
+    <div class="system-grid">
+      <div class="system-item">
+        <div class="system-label">📶 Wi-Fi Signal (RSSI)</div>
+        <div class="system-value" id="wifiRssi">—</div>
+      </div>
+
+      <div class="system-item">
+        <div class="system-label">💾 Firmware Version</div>
+        <div class="system-value" id="firmware">—</div>
+      </div>
+
+      <div class="system-item">
+        <div class="system-label">🧠 Free Heap Memory</div>
+        <div class="system-value" id="freeHeap">—</div>
+      </div>
+
+      <div class="system-item">
+        <div class="system-label">⚡ Lighting INA226 Sensor</div>
+        <div class="system-value" id="lightingIna">—</div>
+      </div>
+
+      <div class="system-item">
+        <div class="system-label">⚡ Conveyor INA226 Sensor</div>
+        <div class="system-value" id="conveyorIna">—</div>
+      </div>
+
+      <div class="system-item">
+        <div class="system-label">💧 CT1 DHT Sensor</div>
+        <div class="system-value" id="ct1Health">—</div>
+      </div>
+
+      <div class="system-item">
+        <div class="system-label">❄️ CT2 DHT Sensor</div>
+        <div class="system-value" id="ct2Health">—</div>
+      </div>
+
+      <div class="system-item">
+        <div class="system-label">🌡️ Switchyard Dallas Temp</div>
+        <div class="system-value" id="switchyardHealth">—</div>
+      </div>
+
+      <div class="system-item">
+        <div class="system-label">🔥 Heater Sensor Trust</div>
+        <div class="system-value" id="heaterTrust">—</div>
+      </div>
+
+      <div class="system-item">
+        <div class="system-label">⏱️ Last Telemetry Received</div>
+        <div class="system-value" id="lastTelemetry">—</div>
+      </div>
+    </div>
+  </div></main>
+
+<footer>
+  Factory Model • ESP32 + Mini PC Backend • Live Industrial SCADA Telemetry &amp; Actuation
+</footer>
+
+<div id="message" class="message"></div>
+
+<script>
+/* ============================================================
+   TAB SWITCHING LOGIC
+   ============================================================ */
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+
+  const targetPane = document.getElementById(tabId);
+  if (targetPane) {
+    targetPane.classList.add('active');
+  }
+
+  const targetBtn = document.querySelector(`[data-tab="${tabId}"]`);
+  if (targetBtn) {
+    targetBtn.classList.add('active');
+  }
+
+  try {
+    localStorage.setItem('activeFactoryTab', tabId);
+  } catch (e) {}
+
+  // If opening analytics, redraw charts so getBoundingClientRect has valid width
+  if (tabId === 'tab-analytics') {
+    setTimeout(() => {
+      loadPowerHistory(currentPowerRange);
+      loadProductionHistory(currentProductionRange);
+    }, 60);
+  }
+}
+
+/* ============================================================
+   GLOBAL
+   ============================================================ */
+const STATE_URL = "/api/state";
+let currentState = null;
+let socket = null;
+let currentPowerRange = "1h";
+let currentProductionRange = "1h";
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function byId(id) {
+  return document.getElementById(id);
+}
+
+function number(val, digits = 1) {
+  if (val === null || val === undefined || isNaN(val)) return "—";
+  return Number(val).toFixed(digits);
+}
+
+function showMessage(text, ok = true) {
+  const m = byId("message");
+  if (!m) return;
+  m.innerText = text;
+  m.className = "message " + (ok ? "ok" : "bad");
+  m.style.display = "block";
+  setTimeout(() => {
+    m.style.display = "none";
+  }, 3500);
+}
+
+function setStatus(id, state) {
+  const el = byId(id);
+  if (!el) return;
+  el.classList.remove("ok", "warn", "bad");
+  if (state === "ok") el.classList.add("ok");
+  else if (state === "warn") el.classList.add("warn");
+  else el.classList.add("bad");
+}
+
+function healthText(val) {
+  if (val === null || val === undefined) return "UNKNOWN";
+  if (typeof val === "boolean") return val ? "OK" : "ERROR";
+  const s = String(val).toUpperCase();
+  if (s === "OK" || s === "CONNECTED" || s === "NORMAL") return "OK";
+  if (s === "DEGRADED" || s === "STALE" || s === "WARN") return "WARN";
+  return s || "ERROR";
+}
+
+function setActuatorState(id, on) {
+  const el = byId(id);
+  if (!el) return;
+  el.innerText = on ? "ON" : "OFF";
+  el.className = "state " + (on ? "on" : "off");
+}
+
+function updateLaser(id, stateId, tripped) {
+  const el = byId(id);
+  const stateEl = byId(stateId);
+  if (!el || !stateEl) return;
+  el.classList.remove("ok", "tripped");
+  if (tripped) {
+    el.classList.add("tripped");
+    stateEl.innerText = "ALARM";
+  } else {
+    el.classList.add("ok");
+    stateEl.innerText = "SAFE";
+  }
+}
+
+/* ============================================================
+   DASHBOARD UPDATE
+   ============================================================ */
+function updateDashboard(state) {
+  if (!state) return;
+  currentState = state;
+
+  setStatus("backendStatus", state.backend?.connected ? "ok" : "bad");
+  setStatus("espStatus", state.esp32?.connected ? "ok" : "bad");
+  setStatus("cameraStatus", state.camera?.recording ? "warn" : (state.camera?.connected ? "ok" : "bad"));
+
+  const env = state.sensors?.environment || {};
+  byId("switchyardTemp").innerText = number(env.switchyard_celsius);
+  byId("ct1Temp").innerText = number(env.cooling_tower_1?.temperature);
+  byId("ct1Humidity").innerText = number(env.cooling_tower_1?.humidity);
+  byId("ct2Temp").innerText = number(env.cooling_tower_2?.temperature);
+  byId("ct2Humidity").innerText = number(env.cooling_tower_2?.humidity);
+
+  const prod = state.sensors?.production || {};
+  byId("productCount").innerText = prod.count ?? "—";
+  byId("productLifetime").innerText = prod.lifetime_count ?? "—";
+
+  const act = state.actuators || {};
+  setActuatorState("conveyorState", act.conveyor?.state);
+  setActuatorState("lightingState", act.lighting?.state);
+  setActuatorState("mist1State", act.mist1?.state);
+  setActuatorState("mist2State", act.mist2?.state);
+  setActuatorState("heaterState", act.heater?.state);
+
+  const pwr = state.sensors?.power || {};
+  const conveyorW = number(pwr.conveyor?.watts);
+  const lightingW = number(pwr.lighting?.watts);
+  const totalW = number(pwr.total_watts);
+
+  byId("conveyorPower").innerText = conveyorW;
+  byId("lightingPower").innerText = lightingW;
+  byId("totalPower").innerText = totalW;
+
+  byId("summaryConveyorPower").innerText = conveyorW;
+  byId("summaryLightingPower").innerText = lightingW;
+  byId("summaryTotalPower").innerText = totalW;
+
+  const lasers = state.sensors?.lasers || {};
+  updateLaser("laser1", "laser1State", lasers.laser1);
+  updateLaser("laser2", "laser2State", lasers.laser2);
+  updateLaser("laser3", "laser3State", lasers.laser3);
+  updateLaser("laser4", "laser4State", lasers.laser4);
+
+  const cam = state.camera || {};
+  byId("cameraZone").innerText = cam.zone ?? 0;
+  const camRec = byId("cameraRecording");
+  if (camRec) {
+    camRec.className = "camera-indicator " + (cam.recording ? "recording" : "");
+    camRec.innerText = cam.recording ? "RECORDING" : "NOT RECORDING";
+  }
+
+  const sys = state.system || {};
+  byId("wifiRssi").innerText = sys.wifi_rssi ? `${sys.wifi_rssi} dBm` : "—";
+  byId("firmware").innerText = sys.firmware || "—";
+  byId("freeHeap").innerText = sys.free_heap ? `${sys.free_heap} bytes` : "—";
+
+  const diag = state.sensors?.diagnostics || {};
+  byId("lightingIna").innerText = healthText(diag.ina226_lighting);
+  byId("conveyorIna").innerText = healthText(diag.ina226_conveyor);
+  byId("ct1Health").innerText = healthText(diag.dht_ct1);
+  byId("ct2Health").innerText = healthText(diag.dht_ct2);
+  byId("switchyardHealth").innerText = healthText(diag.dallas_switchyard);
+  byId("heaterTrust").innerText = healthText(diag.heater_trust);
+
+  if (state.last_telemetry) {
+    try {
+      byId("lastTelemetry").innerText = new Date(state.last_telemetry).toLocaleTimeString();
+    } catch (e) {
+      byId("lastTelemetry").innerText = String(state.last_telemetry);
+    }
+  }
+}
+
+/* ============================================================
+   CONTROL API
+   ============================================================ */
+async function control(url) {
+  try {
+    const res = await fetch(url, { method: "POST" });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showMessage(data.message || "Command executed successfully", true);
+      if (data.state) updateDashboard(data.state);
+      else fetchState();
+    } else {
+      showMessage(data.error || "Command failed", false);
+    }
+  } catch (err) {
+    showMessage("Network error sending command", false);
+  }
+}
+
+async function fetchState() {
+  try {
+    const res = await fetch(STATE_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP error");
+    const data = await res.json();
+    if (data.success && data.state) {
+      updateDashboard(data.state);
+      setStatus("backendStatus", "ok");
+    }
+  } catch (err) {
+    setStatus("backendStatus", "bad");
+  }
+}
+
+function connectWebSocket() {
+  const protocol = location.protocol === "https:" ? "wss:" : "ws:";
+  const wsUrl = `${protocol}//${location.host}/ws`;
+
+  socket = new WebSocket(wsUrl);
+
+  socket.onopen = () => {
+    setStatus("wsStatus", "ok");
+  };
+
+  socket.onmessage = (event) => {
+    try {
+      const msg = JSON.parse(event.data);
+      if (msg.type === "state" && msg.state) {
+        updateDashboard(msg.state);
+      }
+    } catch (e) {}
+  };
+
+  socket.onclose = () => {
+    setStatus("wsStatus", "bad");
+    setTimeout(connectWebSocket, 3000);
+  };
+
+  socket.onerror = () => {
+    setStatus("wsStatus", "bad");
+  };
+}
+
+/* ============================================================
+   CHARTS & HISTORICAL DATA
+   ============================================================ */
+function setActiveRange(group, range) {
+  const buttons = document.querySelectorAll(`button[id^="${group}Range"]`);
+  buttons.forEach(btn => btn.classList.remove("active"));
+  const activeBtn = byId(`${group}Range${range.toUpperCase()}`) || byId(`${group}Range${range}`);
+  if (activeBtn) activeBtn.classList.add("active");
+}
+
+function formatChartTime(timestamp, range) {
+  const date = new Date(timestamp);
+  if (isNaN(date.getTime())) return timestamp;
+  if (range === "1h" || range === "1d") {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+  return date.toLocaleDateString([], { month: 'numeric', day: 'numeric' });
+}
+
+function drawMultiLineChart(canvasId, labels, datasets, yTitle) {
+  const canvas = byId(canvasId);
+  if (!canvas) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const width = Math.max(350, Math.floor(rect.width));
+  const height = 300;
+  const dpr = window.devicePixelRatio || 1;
+
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, width, height);
+
+  if (!datasets.length || !datasets[0].data.length) {
+    ctx.fillStyle = "#94a3b8";
+    ctx.font = "14px Inter, Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("No historical data available yet", width / 2, height / 2);
+    return;
+  }
+
+  const padding = { left: 60, right: 25, top: 30, bottom: 45 };
+  const chartWidth = width - padding.left - padding.right;
+  const chartHeight = height - padding.top - padding.bottom;
+
+  let allValues = [];
+  datasets.forEach(dataset => {
+    dataset.data.forEach(value => {
+      const numberValue = Number(value);
+      if (Number.isFinite(numberValue)) allValues.push(numberValue);
+    });
+  });
+
+  if (!allValues.length) {
+    ctx.fillStyle = "#94a3b8";
+    ctx.font = "14px Inter, Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("No historical data available yet", width / 2, height / 2);
+    return;
+  }
+
+  let min = Math.min(...allValues);
+  let max = Math.max(...allValues);
+  if (min > 0) min = 0;
+  if (max <= min) max = min + 1;
+
+  const range = max - min;
+  min -= range * 0.08;
+  max += range * 0.08;
+
+  // GRID LINES
+  ctx.font = "11px Inter, Arial";
+  ctx.textAlign = "right";
+  ctx.fillStyle = "#64748b";
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+  ctx.lineWidth = 1;
+
+  for (let i = 0; i <= 4; i++) {
+    const ratio = i / 4;
+    const y = padding.top + chartHeight - ratio * chartHeight;
+
+    ctx.beginPath();
+    ctx.moveTo(padding.left, y);
+    ctx.lineTo(width - padding.right, y);
+    ctx.stroke();
+
+    const value = min + ratio * (max - min);
+    ctx.fillText(value.toFixed(1), padding.left - 8, y + 4);
+  }
+
+  // AXIS
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+  ctx.beginPath();
+  ctx.moveTo(padding.left, padding.top);
+  ctx.lineTo(padding.left, padding.top + chartHeight);
+  ctx.lineTo(width - padding.right, padding.top + chartHeight);
+  ctx.stroke();
+
+  // X LABELS
+  ctx.fillStyle = "#94a3b8";
+  ctx.font = "10px Inter, Arial";
+  ctx.textAlign = "center";
+  const labelCount = Math.min(6, labels.length);
+
+  for (let i = 0; i < labelCount; i++) {
+    const index = Math.floor(i * (labels.length - 1) / Math.max(1, labelCount - 1));
+    const x = padding.left + (index / Math.max(1, labels.length - 1)) * chartWidth;
+    ctx.fillText(labels[index], x, height - 15);
+  }
+
+  // DATA LINES
+  datasets.forEach(dataset => {
+    if (!dataset.data.length) return;
+    ctx.beginPath();
+
+    dataset.data.forEach((value, index) => {
+      const numberValue = Number(value) || 0;
+      const x = padding.left + (index / Math.max(1, dataset.data.length - 1)) * chartWidth;
+      const y = padding.top + chartHeight - ((numberValue - min) / (max - min)) * chartHeight;
+
+      if (index === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+
+    ctx.strokeStyle = dataset.color;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+  });
+
+  // LEGEND
+  let legendX = padding.left;
+  datasets.forEach(dataset => {
+    ctx.fillStyle = dataset.color;
+    ctx.fillRect(legendX, 10, 14, 4);
+
+    ctx.fillStyle = "#cbd5e1";
+    ctx.font = "600 11px Inter, Arial";
+    ctx.textAlign = "left";
+    ctx.fillText(dataset.label, legendX + 20, 15);
+    legendX += 130;
+  });
+
+  ctx.save();
+  ctx.translate(14, padding.top + chartHeight / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillStyle = "#94a3b8";
+  ctx.font = "11px Inter, Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(yTitle, 0, 0);
+  ctx.restore();
+}
+
+/* ============================================================
+   POWER HISTORY
+   ============================================================ */
+async function loadPowerHistory(range = "1h") {
+  currentPowerRange = range;
+  setActiveRange("power", range);
+
+  try {
+    const res = await fetch(`/api/history/power?range=${encodeURIComponent(range)}`, { cache: "no-store" });
+    if (!res.ok) throw new Error("Power history request failed");
+    const result = await res.json();
+    if (!result.success) throw new Error(result.error || "Failed to load power data");
+
+    const points = result.data || [];
+    const labels = points.map(p => formatChartTime(p.recorded_at, range));
+    const conveyorData = points.map(p => p.conveyor_watts);
+    const lightingData = points.map(p => p.lighting_watts);
+    const totalData = points.map(p => p.total_watts);
+
+    const latest = points.length ? points[points.length - 1].total_watts : null;
+    byId("chartTotalCurrent").innerText = number(latest);
+
+    drawMultiLineChart("powerChart", labels, [
+      { label: "Conveyor", color: "#38bdf8", data: conveyorData },
+      { label: "Lighting", color: "#facc15", data: lightingData },
+      { label: "Total Power", color: "#a78bfa", data: totalData }
+    ], "Power (Watts)");
+  } catch (err) {
+    console.error("Error loading power history:", err);
+  }
+}
+
+/* ============================================================
+   PRODUCTION HISTORY
+   ============================================================ */
+async function loadProductionHistory(range = "1h") {
+  currentProductionRange = range;
+  setActiveRange("production", range);
+
+  try {
+    const res = await fetch(`/api/history/production?range=${encodeURIComponent(range)}`, { cache: "no-store" });
+    if (!res.ok) throw new Error("Production history request failed");
+    const result = await res.json();
+    if (!result.success) throw new Error(result.error || "Failed to load production data");
+
+    const points = result.data || [];
+    const labels = points.map(p => formatChartTime(p.recorded_at, range));
+    const countData = points.map(p => p.product_count);
+    const lifetimeData = points.map(p => p.lifetime_count);
+
+    const latest = points.length ? points[points.length - 1].product_count : null;
+    byId("chartProductionCurrent").innerText = latest !== null ? latest : "—";
+
+    drawMultiLineChart("productionChart", labels, [
+      { label: "Cycle Count", color: "#34d399", data: countData },
+      { label: "Lifetime Total", color: "#818cf8", data: lifetimeData }
+    ], "Units");
+  } catch (err) {
+    console.error("Error loading production history:", err);
+  }
+}
+
+/* ============================================================
+   INITIALIZE
+   ============================================================ */
+function initialize() {
+  const savedTab = localStorage.getItem('activeFactoryTab') || 'tab-overview';
+  switchTab(savedTab);
+
+  fetchState();
+  connectWebSocket();
+
+  loadPowerHistory("1h");
+  loadProductionHistory("1h");
+
+  setInterval(fetchState, 5000);
+  setInterval(() => {
+    loadPowerHistory(currentPowerRange);
+    loadProductionHistory(currentProductionRange);
+  }, 30000);
+}
+
+window.addEventListener("resize", () => {
+  loadPowerHistory(currentPowerRange);
+  loadProductionHistory(currentProductionRange);
+});
+
+window.addEventListener("load", initialize);
+</script>
+
+</body>
+</html>

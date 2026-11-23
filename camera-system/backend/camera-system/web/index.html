@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Factory Model – Intrusion Recordings</title>
+<style>
+*{box-sizing:border-box}:root{--bg:#f4f6f8;--s:#fff;--t:#1f2937;--m:#64748b;--b:#e2e8f0;--h:#0f172a;--p:#2563eb}
+body.dark{--bg:#0b1120;--s:#111827;--t:#e5e7eb;--m:#94a3b8;--b:#263449;--h:#020617}
+body{margin:0;background:var(--bg);color:var(--t);font:14px Arial,sans-serif}
+.header{background:var(--h);color:#fff;padding:18px 25px}.head{display:flex;justify-content:space-between;align-items:center;gap:15px}
+h1{font-size:22px;margin:0}.sub{margin-top:5px;color:#cbd5e1;font-size:13px}
+button,select,input{font:inherit}.head button{background:transparent;color:#fff;border:1px solid #475569;border-radius:6px;padding:8px 11px;cursor:pointer}
+.wrap{max-width:1400px;margin:auto;padding:20px}.latest,.toolbar,.stat,.empty,.list,.card{background:var(--s);border:1px solid var(--b)}
+.latest{border-left:5px solid #dc2626;border-radius:9px;padding:15px 18px;margin-bottom:15px}
+.latest-top{display:flex;justify-content:space-between}.latest-info{margin-top:9px;color:var(--m);display:flex;gap:14px;flex-wrap:wrap}
+.toolbar{border-radius:8px;padding:13px 15px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:15px}
+select,input{background:var(--s);color:var(--t);border:1px solid var(--b);border-radius:6px;padding:9px 10px}input{min-width:220px}
+.refresh,.view button{border:1px solid var(--b);background:var(--s);color:var(--t);border-radius:6px;padding:8px 11px;cursor:pointer}
+.view{display:flex;border:1px solid var(--b);border-radius:6px;overflow:hidden}.view button+button{border-left:1px solid var(--b)}.view .active{background:var(--p);color:#fff}
+.count{margin-left:auto;color:var(--m);font-size:12px}.storage{width:100%;color:var(--m);font-size:12px}
+.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:15px}.stat{border-radius:8px;padding:11px}.label{color:var(--m);font-size:12px}.value{font-size:18px;font-weight:700;margin-top:3px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px}.card{border-radius:9px;overflow:hidden;transition:.12s}.card:hover{transform:translateY(-2px);box-shadow:0 6px 16px #0001}.card.new{outline:2px solid #f59e0b}
+.thumb{width:100%;height:165px;object-fit:cover;background:#0b1220;display:block}.body{padding:13px}.top{display:flex;justify-content:space-between;gap:8px}.badge{font-size:11px;background:#eff6ff;color:#1d4ed8;padding:4px 7px;border-radius:5px}.date{margin-top:9px}.file{font-size:11px;color:var(--m);word-break:break-all;margin-top:5px}.meta{color:var(--m);font-size:12px;display:flex;gap:12px;margin:10px 0}.actions{display:flex;gap:8px}.actions button{flex:1;border-radius:6px;padding:9px;cursor:pointer}.play{background:var(--p);color:#fff;border:0}.dl{background:var(--s);color:var(--t);border:1px solid var(--b)}
+.list{display:flex;flex-direction:column;border-radius:8px;overflow:hidden}.list .card{display:grid;grid-template-columns:90px 1fr 140px 130px;border:0;border-bottom:1px solid var(--b);border-radius:0;padding:13px 16px;align-items:center;gap:14px}.list .card:last-child{border:0}.list .thumb{display:none}.list .body{display:contents}.list .date{margin:0}.list .file{margin:3px 0}.list .meta{margin:0}.list .actions{justify-content:flex-end}.empty{padding:45px;text-align:center;color:var(--m);border-radius:8px}
+.modal{display:none;position:fixed;inset:0;background:#000e;z-index:1000;align-items:center;justify-content:center;padding:20px}.modalbox{width:95%;max-width:1100px;background:#111827;padding:15px;border-radius:8px}.mhead{display:flex;justify-content:space-between;color:#fff;margin-bottom:8px}.close{font-size:28px;cursor:pointer}.modal video{width:100%;max-height:72vh;background:#000}.mfoot{display:flex;justify-content:space-between;margin-top:10px;gap:8px}.mfoot button{background:#1f2937;color:#fff;border:1px solid #475569;border-radius:6px;padding:8px 11px;cursor:pointer}
+.toast{display:none;position:fixed;right:20px;bottom:20px;background:#111827;color:#fff;padding:13px 16px;border-radius:8px;z-index:2000;box-shadow:0 8px 25px #0005}
+@media(max-width:900px){.summary{grid-template-columns:repeat(2,1fr)}.list .card{grid-template-columns:1fr}.list .actions{justify-content:stretch}}@media(max-width:650px){.wrap{padding:12px}.count{margin-left:0;width:100%}.head{align-items:flex-start}.latest-info{flex-direction:column;gap:5px}input{min-width:160px}}
+</style>
+</head>
+<body>
+<header class="header"><div class="head"><div><h1>Factory Model – Intrusion Recordings</h1><div class="sub">Digital Twin Intrusion Event Recordings</div></div><div><button onclick="theme()" id="theme">☾</button> <button onclick="pageFS()">⛶</button></div></div></header>
+
+<main class="wrap">
+<section class="latest"><div class="latest-top"><strong>🚨 Latest Intrusion Event</strong><span>LIVE</span></div><div class="latest-info" id="latest">Loading...</div><div style="margin-top:10px"><button class="play" onclick="latestView()">▶ View Latest Recording</button></div></section>
+
+<section class="summary">
+<div class="stat"><div class="label">Total Recordings</div><div class="value" id="total">0</div></div>
+<div class="stat"><div class="label">Zone 1</div><div class="value" id="z1">0</div></div>
+<div class="stat"><div class="label">Zone 2</div><div class="value" id="z2">0</div></div>
+<div class="stat"><div class="label">Zone 3</div><div class="value" id="z3">0</div></div>
+<div class="stat"><div class="label">Zone 4</div><div class="value" id="z4">0</div></div>
+</section>
+
+<section class="toolbar">
+<label>Zone:</label><select id="zone"><option value="all">All Zones</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+<label>Date:</label><select id="date"><option value="all">All</option><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="7">Last 7 Days</option></select>
+<input id="search" placeholder="Search filename or zone">
+<select id="sort"><option value="new">Newest</option><option value="old">Oldest</option></select>
+<button class="refresh" onclick="load()">↻ Refresh</button>
+<div class="view"><button id="gridBtn" class="active" onclick="setView('grid')">▦ Grid</button><button id="listBtn" onclick="setView('list')">☷ List</button></div>
+<span class="count" id="count">Loading...</span><div class="storage" id="storage">Storage: loading...</div>
+</section>
+
+<div id="records" class="grid"></div>
+</main>
+
+<div class="modal" id="modal"><div class="modalbox"><div class="mhead"><span id="mtitle"></span><span class="close" onclick="closeVideo()">&times;</span></div><video id="player" controls playsinline></video><div class="mfoot"><div><button onclick="prev()">← Previous</button> <button onclick="next()">Next →</button></div><button onclick="downloadCurrent()">⬇ Download</button></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+let all=[],filtered=[],idx=-1,known=null,latestFile=null;
+const $=id=>document.getElementById(id);
+function esc(v){const d=document.createElement("div");d.textContent=v;return d.innerHTML}
+function setView(v){$("records").className=v==="grid"?"grid":"list";$("gridBtn").classList.toggle("active",v==="grid");$("listBtn").classList.toggle("active",v==="list");localStorage.factoryView=v;render()}
+function theme(){document.body.classList.toggle("dark");localStorage.factoryTheme=document.body.classList.contains("dark")?"dark":"light";$("theme").textContent=document.body.classList.contains("dark")?"☀":"☾"}
+function pageFS(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}
+function loadTheme(){let d=localStorage.factoryTheme==="dark";document.body.classList.toggle("dark",d);$("theme").textContent=d?"☀":"☾"}
+function bytes(n){if(!n)return"0 B";let u=["B","KB","MB","GB","TB"],i=Math.floor(Math.log(n)/Math.log(1024));return (n/1024**i).toFixed(i?1:0)+" "+u[i]}
+async function load(){
+ try{
+  let r=await fetch("/api/recordings",{cache:"no-store"}),d=await r.json(),incoming=d.recordings||[],files=new Set(incoming.map(x=>x.filename));
+  if(known){let n=incoming.filter(x=>!known.has(x.filename));if(n.length)toast("🚨 New intrusion recording",`Zone ${n[0].zone} • ${n[0].display_time}`)}
+  known=files;all=incoming;latestFile=all[0]?.filename||null;
+  $("total").textContent=d.total||0;$("z1").textContent=d.zones?.["1"]||0;$("z2").textContent=d.zones?.["2"]||0;$("z3").textContent=d.zones?.["3"]||0;$("z4").textContent=d.zones?.["4"]||0;
+  $("latest").innerHTML=all.length?`<strong>Zone ${all[0].zone}</strong> • ${esc(all[0].display_time)} • ${all[0].duration_seconds}s • ${all[0].size_mb} MB • Camera ${esc(all[0].camera)}`:"No MP4 intrusion recordings available.";
+  render();loadStorage()
+ }catch(e){console.error(e);$("records").innerHTML='<div class="empty">Unable to load intrusion recordings.</div>'}
+}
+async function loadStorage(){try{let r=await fetch("/api/storage",{cache:"no-store"}),d=await r.json();$("storage").textContent=`Storage: ${bytes(d.used_bytes)} used / ${bytes(d.free_bytes)} available (${d.used_percent}% used)`}catch{$("storage").textContent="Storage: unavailable"}}
+function render(){
+ let z=$("zone").value,date=$("date").value,q=$("search").value.toLowerCase().trim(),sort=$("sort").value;
+ filtered=all.filter(x=>(z==="all"||String(x.zone)===z)&&(!q||x.filename.toLowerCase().includes(q)||`zone ${x.zone}`.includes(q)||`zone${x.zone}`.includes(q)));
+ let now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime()/1000;
+ if(date==="today")filtered=filtered.filter(x=>x.timestamp>=today);
+ if(date==="yesterday")filtered=filtered.filter(x=>x.timestamp>=today-86400&&x.timestamp<today);
+ if(date==="7")filtered=filtered.filter(x=>x.timestamp>=today-6*86400);
+ filtered.sort((a,b)=>sort==="new"?b.timestamp-a.timestamp:a.timestamp-b.timestamp);
+ $("count").textContent=`${filtered.length} recording(s)`;
+ if(!filtered.length){$("records").innerHTML='<div class="empty">No matching MP4 intrusion recordings found.</div>';return}
+ $("records").innerHTML=filtered.map((x,i)=>`<article class="card ${x.filename===latestFile?"new":""}">
+ <img class="thumb" src="${x.thumbnail}" loading="lazy" onerror="this.style.visibility='hidden'" alt="">
+ <div class="body"><div class="top"><strong>Zone ${x.zone}</strong><span class="badge">Camera ${esc(x.camera)}</span></div>
+ <div class="date">${esc(x.display_time)}</div><div class="file">${esc(x.filename)}</div><div class="meta"><span>${x.duration_seconds}s</span><span>${x.size_mb} MB</span></div>
+ <div class="actions"><button class="play" onclick="openAt(${i})">▶ View</button><button class="dl" onclick="downloadAt(${i})">⬇</button></div></div></article>`).join("")
+}
+function openAt(i){idx=i;open(filtered[i])}
+function latestView(){if(!all.length)return;let i=filtered.findIndex(x=>x.filename===all[0].filename);if(i<0){filtered=[all[0]];i=0}idx=i;open(filtered[i])}
+function open(x){$("mtitle").textContent=`Zone ${x.zone} • ${x.display_time} • Camera ${x.camera}`;$("player").src=x.video;$("modal").style.display="flex";$("player").play().catch(()=>{})}
+function closeVideo(){$("player").pause();$("player").removeAttribute("src");$("player").load();$("modal").style.display="none"}
+function prev(){if(filtered.length){idx=(idx-1+filtered.length)%filtered.length;open(filtered[idx])}}
+function next(){if(filtered.length){idx=(idx+1)%filtered.length;open(filtered[idx])}}
+function downloadAt(i){let a=document.createElement("a");a.href=filtered[i].download;a.download=filtered[i].filename;document.body.appendChild(a);a.click();a.remove()}
+function downloadCurrent(){if(idx>=0)downloadAt(idx)}
+function toast(t,m){$("toast").innerHTML=`<strong>${esc(t)}</strong>${esc(m)}`;$("toast").style.display="block";clearTimeout(window.tt);window.tt=setTimeout(()=>$("toast").style.display="none",7000)}
+["zone","date","sort"].forEach(id=>$(id).addEventListener("change",render));$("search").addEventListener("input",render);
+$("modal").addEventListener("click",e=>{if(e.target===$("modal"))closeVideo()});document.addEventListener("keydown",e=>{if(e.key==="Escape")closeVideo();if($("modal").style.display==="flex"){if(e.key==="ArrowLeft")prev();if(e.key==="ArrowRight")next()}});
+loadTheme();setView(localStorage.factoryView==="list"?"list":"grid");load();setInterval(load,30000);
+</script>
+</body>
+</html>
