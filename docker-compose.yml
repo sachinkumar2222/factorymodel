@@ -34,7 +34,7 @@ services:
       - PORT=8081
       - RECORDINGS_DIR=/opt/factory-camera/recordings
     volumes:
-      - camera-recordings-data:/opt/factory-camera/recordings
+      - ${RECORDINGS_PATH:-./recordings}:/opt/factory-camera/recordings
 
   camera-dashboard:
     build:
@@ -51,7 +51,7 @@ services:
       - WEB_ROOT=/opt/factory-camera/web
       - RECORDINGS_DIR=/opt/factory-camera/recordings
     volumes:
-      - camera-recordings-data:/opt/factory-camera/recordings
+      - ${RECORDINGS_PATH:-./recordings}:/opt/factory-camera/recordings
       - ./camera-system/backend/camera-system/web:/opt/factory-camera/web
 
 volumes:
