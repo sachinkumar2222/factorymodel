@@ -8,6 +8,7 @@ node_modules/
 
 # Runtime databases
 *.db
+!data/factory_model.db
 *.db-shm
 *.db-wal
 
