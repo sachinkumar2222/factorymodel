@@ -308,6 +308,7 @@ const ESP32_URL =
   process.env.ESP32_URL ||
   (process.env.DEVICE_IP ? `http://${process.env.DEVICE_IP}` : "http://10.10.12.75");
 const DEVICE_KEY = process.env.DEVICE_KEY || "";
+const CAMERA_URL = process.env.CAMERA_URL || "http://camera-recorder:8081";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -379,6 +380,7 @@ let deviceState = {
   },
 
   camera: {
+    connected: false,
     recording: false,
     zone: 0
   },
@@ -400,6 +402,54 @@ let deviceState = {
   lastTelemetry: null,
   lastSeen: null
 };
+
+/* ============================================================
+   CAMERA SERVICE HEALTH MONITOR
+   ============================================================ */
+
+async function pollCameraService() {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2000);
+    const resp = await fetch(`${CAMERA_URL}/status`, { signal: controller.signal });
+    clearTimeout(timeout);
+    if (resp.ok) {
+      const data = await resp.json();
+      const isRec = Boolean(data.recording || (data.active_recording_count > 0));
+      const activeZone = data.active_recordings && Object.keys(data.active_recordings).length > 0
+        ? Number(Object.keys(data.active_recordings)[0])
+        : 0;
+
+      const prevConnected = deviceState.camera?.connected;
+      const prevRec = deviceState.camera?.recording;
+
+      deviceState.camera = {
+        connected: true,
+        recording: isRec,
+        zone: activeZone || (deviceState.camera?.zone ?? 0),
+        activeRecordings: data.active_recordings || {}
+      };
+
+      if (prevConnected !== true || prevRec !== isRec) {
+        broadcastState();
+      }
+      return;
+    }
+  } catch (err) {
+    // service not reachable
+  }
+
+  if (deviceState.camera) {
+    const prevConnected = deviceState.camera.connected;
+    deviceState.camera.connected = false;
+    if (prevConnected !== false) {
+      broadcastState();
+    }
+  }
+}
+
+setInterval(pollCameraService, 4000);
+pollCameraService();
 
 /* ============================================================
    HELPER FUNCTIONS

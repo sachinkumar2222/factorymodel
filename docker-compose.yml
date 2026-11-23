@@ -15,6 +15,7 @@ services:
       - DEVICE_IP=${DEVICE_IP:-10.10.12.75}
       - ESP32_URL=${ESP32_URL:-http://10.10.12.75}
       - DEVICE_KEY=${DEVICE_KEY:-af00deb797d56dd65ebcc7e6d644a867cdcd9460430c15e20c5b551da342a0ff}
+      - CAMERA_URL=${CAMERA_URL:-http://camera-recorder:8081}
     volumes:
       - ./data:/app/data
       - ./http-version/backend/public:/app/public
