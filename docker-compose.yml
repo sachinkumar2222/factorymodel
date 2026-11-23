@@ -35,6 +35,7 @@ services:
       - RECORDINGS_DIR=/opt/factory-camera/recordings
     volumes:
       - camera-recordings-data:/opt/factory-camera/recordings
+      - ./camera-system/backend/camera-system/web:/opt/factory-camera/web
 
 volumes:
   factory-db-data:
