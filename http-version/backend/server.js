@@ -1609,14 +1609,12 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* Sensor Box */
     .sensor-box {
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 12px;
-      padding: 10px 12px;
+      background: transparent;
+      border: none;
+      padding: 4px 6px;
       display: flex;
       flex-direction: column;
       gap: 3px;
-      backdrop-filter: blur(8px);
     }
     .sensor-label {
       font-size: 16px;
@@ -1625,6 +1623,7 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
       display: flex;
       align-items: center;
       text-transform: uppercase;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
     }
     .sensor-value-row {
       display: flex;
@@ -1926,14 +1925,12 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 12px;
-      padding: 10px 12px;
+      background: transparent;
+      border: none;
+      padding: 4px 6px;
       display: flex;
       flex-direction: column;
       gap: 3px;
-      backdrop-filter: blur(8px);
     }
     .sensor-label {
       font-size: 16px;
@@ -1941,6 +1938,7 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       color: ${labelColor};
       letter-spacing: 0.04em;
       text-transform: uppercase;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
     }
     .sensor-value-row {
       display: flex;
@@ -2229,14 +2227,12 @@ function lightingUnifiedDisplayPage() {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 12px;
-      padding: 10px 12px;
+      background: transparent;
+      border: none;
+      padding: 4px 6px;
       display: flex;
       flex-direction: column;
       gap: 3px;
-      backdrop-filter: blur(8px);
     }
     .sensor-label {
       font-size: 16px;
@@ -2244,6 +2240,7 @@ function lightingUnifiedDisplayPage() {
       color: #fef08a;
       letter-spacing: 0.04em;
       text-transform: uppercase;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
     }
     .sensor-value-row {
       display: flex;
@@ -2532,14 +2529,12 @@ function productionCountsDisplayPage() {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 12px;
-      padding: 10px 12px;
+      background: transparent;
+      border: none;
+      padding: 4px 6px;
       display: flex;
       flex-direction: column;
       gap: 3px;
-      backdrop-filter: blur(8px);
     }
     .sensor-label {
       font-size: 16px;
@@ -2547,6 +2542,7 @@ function productionCountsDisplayPage() {
       color: #a7f3d0;
       letter-spacing: 0.04em;
       text-transform: uppercase;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
     }
     .sensor-value-row {
       display: flex;
@@ -2693,14 +2689,12 @@ function conveyorUnifiedDisplayPage() {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 12px;
-      padding: 10px 14px;
+      background: transparent;
+      border: none;
+      padding: 4px 6px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      backdrop-filter: blur(8px);
     }
     .sensor-label {
       font-size: 16px;
@@ -2708,6 +2702,7 @@ function conveyorUnifiedDisplayPage() {
       color: #c7d2fe;
       letter-spacing: 0.04em;
       text-transform: uppercase;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
     }
     .sensor-value-row {
       display: flex;
@@ -3101,14 +3096,13 @@ function laserCombinedDisplayPage() {
       gap: 8px;
     }
     .zone-box {
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 12px;
       padding: 8px 10px;
       display: flex;
       flex-direction: column;
       gap: 5px;
-      backdrop-filter: blur(8px);
     }
     .zone-header {
       display: flex;
