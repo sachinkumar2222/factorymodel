@@ -2106,7 +2106,6 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
           <span class="card-icon">${icon}</span>
           <span class="card-title">Cooling Tower ${towerNum}</span>
         </div>
-        <span class="badge-status" id="badge-status">ONLINE</span>
       </div>
 
       <div class="sensor-grid">
@@ -2449,7 +2448,6 @@ function lightingUnifiedDisplayPage() {
           <span class="card-icon">💡</span>
           <span class="card-title">Lighting & Power</span>
         </div>
-        <span class="badge-status" id="badge-status">ONLINE</span>
       </div>
 
       <div class="sensor-grid">
@@ -2735,7 +2733,6 @@ function productionCountsDisplayPage() {
           <span class="card-icon">🏭</span>
           <span class="card-title">Product Counts</span>
         </div>
-        <span class="badge-status" id="badge-status">ONLINE</span>
       </div>
 
       <div class="sensor-grid">
@@ -2990,7 +2987,6 @@ function conveyorUnifiedDisplayPage() {
           <span class="card-icon">🔄</span>
           <span class="card-title">Conveyor System</span>
         </div>
-        <span class="badge-status" id="badge-status">ONLINE</span>
       </div>
 
       <div class="sensor-grid">
