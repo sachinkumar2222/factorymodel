@@ -1385,7 +1385,6 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
   } else if (type === "switch") {
     bodyHtml = `
       <div class="control-row">
-        <span class="control-name">${rowLabel}</span>
         <div class="btn-group">
           <span class="state-btn btn-on" id="btn-on">ON</span>
           <span class="state-btn btn-off" id="btn-off">OFF</span>
@@ -1394,7 +1393,6 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
   } else if (type === "laser") {
     bodyHtml = `
       <div class="control-row">
-        <span class="control-name">${rowLabel}</span>
         <div class="btn-group">
           <span class="laser-pill safe" id="laser-pill">SAFE</span>
         </div>
@@ -1402,7 +1400,6 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
   } else if (type === "servo") {
     bodyHtml = `
       <div class="control-row">
-        <span class="control-name">${rowLabel}</span>
         <div class="btn-group">
           <span class="state-btn btn-home" id="btn-home">HOME</span>
           <span class="state-btn btn-move" id="btn-move">MOVED</span>
@@ -1411,7 +1408,6 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
   } else if (type === "camera") {
     bodyHtml = `
       <div class="control-row">
-        <span class="control-name">${rowLabel}</span>
         <div class="btn-group">
           <span class="state-btn btn-rec" id="btn-rec">REC</span>
           <span class="state-btn btn-idle" id="btn-idle">IDLE</span>
@@ -1465,152 +1461,138 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 1. Emerald (Vibrant Mint / Emerald Green) */
     .theme-emerald {
-      background: linear-gradient(145deg, rgba(16, 185, 129, 0.18) 0%, rgba(5, 150, 105, 0.32) 100%);
-      border: 1px solid rgba(52, 211, 153, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(16, 185, 129, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(16, 185, 129, 0.12);
     }
-    .theme-emerald .card-title { color: #ecfdf5; }
     .theme-emerald .sensor-label { color: #a7f3d0; }
     .theme-emerald .sensor-unit { color: #6ee7b7; }
 
     /* 2. Amber / Hot Flame Orange (Switchyard Temp) */
     .theme-amber {
-      background: linear-gradient(145deg, rgba(249, 115, 22, 0.18) 0%, rgba(194, 65, 12, 0.32) 100%);
-      border: 1px solid rgba(251, 146, 60, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(249, 115, 22, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(251, 146, 60, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(249, 115, 22, 0.12);
     }
-    .theme-amber .card-title { color: #fff7ed; }
     .theme-amber .sensor-label { color: #fed7aa; }
     .theme-amber .sensor-unit { color: #fdba74; }
 
     /* 3. Teal / Electric Cyan (Cooling Tower 1) */
     .theme-teal {
-      background: linear-gradient(145deg, rgba(6, 182, 212, 0.18) 0%, rgba(8, 145, 178, 0.32) 100%);
-      border: 1px solid rgba(34, 211, 238, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(6, 182, 212, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(34, 211, 238, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(6, 182, 212, 0.12);
     }
-    .theme-teal .card-title { color: #ecfeff; }
     .theme-teal .sensor-label { color: #a5f3fc; }
     .theme-teal .sensor-unit { color: #67e8f9; }
 
     /* 4. Gold / Sunburst Golden Yellow (Lighting & Power) */
     .theme-gold {
-      background: linear-gradient(145deg, rgba(234, 179, 8, 0.18) 0%, rgba(180, 83, 9, 0.32) 100%);
-      border: 1px solid rgba(253, 224, 71, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(234, 179, 8, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(253, 224, 71, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(234, 179, 8, 0.12);
     }
-    .theme-gold .card-title { color: #fefce8; }
     .theme-gold .sensor-label { color: #fef08a; }
     .theme-gold .sensor-unit { color: #fde047; }
 
     /* 5. Rose / Ruby Crimson (Industrial Heater) */
     .theme-rose, .theme-coral {
-      background: linear-gradient(145deg, rgba(225, 29, 72, 0.18) 0%, rgba(159, 18, 57, 0.32) 100%);
-      border: 1px solid rgba(251, 113, 133, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(225, 29, 72, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(251, 113, 133, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(225, 29, 72, 0.12);
     }
-    .theme-rose .card-title, .theme-coral .card-title { color: #fff1f2; }
     .theme-rose .sensor-label, .theme-coral .sensor-label { color: #fecdd3; }
     .theme-rose .sensor-unit, .theme-coral .sensor-unit { color: #fda4af; }
 
     /* 6. Indigo / Electric Purple (Conveyor System) */
     .theme-indigo {
-      background: linear-gradient(145deg, rgba(147, 51, 234, 0.18) 0%, rgba(109, 40, 217, 0.32) 100%);
-      border: 1px solid rgba(192, 132, 252, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(147, 51, 234, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(192, 132, 252, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(147, 51, 234, 0.12);
     }
-    .theme-indigo .card-title { color: #faf5ff; }
     .theme-indigo .sensor-label { color: #e9d5ff; }
     .theme-indigo .sensor-unit { color: #c084fc; }
 
     /* 7. Blue / Deep Indigo Navy (Person 1 Servo) */
     .theme-blue {
-      background: linear-gradient(145deg, rgba(79, 70, 229, 0.18) 0%, rgba(49, 46, 129, 0.32) 100%);
-      border: 1px solid rgba(129, 140, 248, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(79, 70, 229, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(129, 140, 248, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(79, 70, 229, 0.12);
     }
-    .theme-blue .card-title { color: #eef2ff; }
     .theme-blue .sensor-label { color: #c7d2fe; }
     .theme-blue .sensor-unit { color: #a5b4fc; }
 
     /* 8. Slate / Gunmetal Platinum (Security Camera) */
     .theme-slate {
-      background: linear-gradient(145deg, rgba(71, 85, 105, 0.22) 0%, rgba(30, 41, 59, 0.38) 100%);
-      border: 1px solid rgba(203, 213, 225, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(148, 163, 184, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(203, 213, 225, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(148, 163, 184, 0.12);
     }
-    .theme-slate .card-title { color: #f8fafc; }
     .theme-slate .sensor-label { color: #cbd5e1; }
     .theme-slate .sensor-unit { color: #94a3b8; }
 
     /* 9. Lime / Electric Spring Green */
     .theme-lime {
-      background: linear-gradient(145deg, rgba(132, 204, 22, 0.18) 0%, rgba(77, 124, 15, 0.32) 100%);
-      border: 1px solid rgba(190, 242, 100, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(132, 204, 22, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(190, 242, 100, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(132, 204, 22, 0.12);
     }
-    .theme-lime .card-title { color: #f7fee7; }
     .theme-lime .sensor-label { color: #d9f99d; }
     .theme-lime .sensor-unit { color: #bef264; }
 
     /* 10. Cyan / Royal Deep Blue (Cooling Tower 2) */
     .theme-cyan {
-      background: linear-gradient(145deg, rgba(37, 99, 235, 0.18) 0%, rgba(29, 78, 216, 0.32) 100%);
-      border: 1px solid rgba(96, 165, 250, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(37, 99, 235, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(96, 165, 250, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(37, 99, 235, 0.12);
     }
-    .theme-cyan .card-title { color: #eff6ff; }
     .theme-cyan .sensor-label { color: #bfdbfe; }
     .theme-cyan .sensor-unit { color: #93c5fd; }
 
     /* 11. Violet / Purple */
     .theme-violet {
-      background: linear-gradient(145deg, rgba(168, 85, 247, 0.18) 0%, rgba(126, 34, 206, 0.32) 100%);
-      border: 1px solid rgba(216, 180, 254, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(168, 85, 247, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(216, 180, 254, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(168, 85, 247, 0.12);
     }
-    .theme-violet .card-title { color: #f5f3ff; }
     .theme-violet .sensor-label { color: #ddd6fe; }
     .theme-violet .sensor-unit { color: #c4b5fd; }
 
     /* 12. Crimson / Blood Red */
     .theme-crimson {
-      background: linear-gradient(145deg, rgba(220, 38, 38, 0.18) 0%, rgba(153, 27, 27, 0.32) 100%);
-      border: 1px solid rgba(248, 113, 113, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(220, 38, 38, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(248, 113, 113, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(220, 38, 38, 0.12);
     }
-    .theme-crimson .card-title { color: #fff1f2; }
     .theme-crimson .sensor-label { color: #fecdd3; }
     .theme-crimson .sensor-unit { color: #fda4af; }
 
     /* 13. Copper / Warm Bronze */
     .theme-copper {
-      background: linear-gradient(145deg, rgba(217, 119, 6, 0.18) 0%, rgba(146, 64, 14, 0.32) 100%);
-      border: 1px solid rgba(251, 191, 36, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(217, 119, 6, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(217, 119, 6, 0.12);
     }
-    .theme-copper .card-title { color: #fffbeb; }
     .theme-copper .sensor-label { color: #fde68a; }
     .theme-copper .sensor-unit { color: #fbbf24; }
 
     /* 15. Fuchsia / Hot Magenta Pink (Person 2 Servo) */
     .theme-fuchsia {
-      background: linear-gradient(145deg, rgba(236, 72, 153, 0.18) 0%, rgba(190, 24, 93, 0.32) 100%);
-      border: 1px solid rgba(244, 114, 182, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(236, 72, 153, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(244, 114, 182, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(236, 72, 153, 0.12);
     }
-    .theme-fuchsia .card-title { color: #fdf2f8; }
     .theme-fuchsia .sensor-label { color: #fbcfe8; }
     .theme-fuchsia .sensor-unit { color: #f472b6; }
 
     /* 16. Laser Hazard State */
     .theme-laser-safe {
-      background: linear-gradient(145deg, rgba(24, 24, 27, 0.25) 0%, rgba(9, 9, 11, 0.42) 100%);
-      border: 1px solid rgba(239, 68, 68, 0.50);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(239, 68, 68, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(239, 68, 68, 0.40);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(239, 68, 68, 0.12);
     }
     .theme-laser-intrusion {
-      background: linear-gradient(145deg, rgba(185, 28, 28, 0.45) 0%, rgba(127, 29, 29, 0.65) 100%);
+      background: rgba(185, 28, 28, 0.35);
       border: 1.5px solid #fca5a5;
       box-shadow: 0 0 30px rgba(239, 68, 68, 0.70), inset 0 0 20px rgba(239, 68, 68, 0.35);
       animation: alert-border-pulse 0.8s infinite alternate;
@@ -1624,32 +1606,27 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
     .card-header {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-      padding-bottom: 8px;
+      justify-content: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+      padding-bottom: 6px;
     }
     .card-title-wrap {
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
     }
     .card-icon {
-      font-size: 20px;
+      font-size: 22px;
       line-height: 1;
     }
     .card-title {
-      font-size: 19px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
-      line-height: 1.2;
+      display: none !important;
     }
 
     /* Sensor Box */
     .sensor-box {
-      background: rgba(15, 23, 42, 0.20);
-      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
       padding: 10px 12px;
       display: flex;
@@ -1658,7 +1635,7 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
       backdrop-filter: blur(8px);
     }
     .sensor-label {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 700;
       letter-spacing: 0.02em;
       display: flex;
@@ -1688,28 +1665,26 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
     .control-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      background: rgba(15, 23, 42, 0.38);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 10px;
-      padding: 10px 12px;
-      gap: 8px;
+      padding: 6px 8px;
     }
     .control-name {
-      font-size: 18px;
-      font-weight: 700;
-      color: #ffffff;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+      display: none !important;
     }
     .btn-group {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       align-items: center;
+      width: 100%;
     }
     .state-btn {
-      font-size: 13px;
+      flex: 1;
+      font-size: 14px;
       font-weight: 800;
-      padding: 6px 13px;
+      padding: 7px 12px;
       border-radius: 8px;
       border: 1px solid rgba(255, 255, 255, 0.22);
       color: rgba(255, 255, 255, 0.45);
@@ -1717,6 +1692,7 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
       transition: all 0.2s ease;
       line-height: 1.2;
       text-align: center;
+      cursor: pointer;
     }
     .state-btn.active-on {
       background: #10b981;
@@ -1903,12 +1879,10 @@ app.get("/display/switchyard-temp", (req, res) => {
    ============================================================ */
 function coolingTowerDisplayPage(towerNum, customTheme) {
   const isTower2 = Number(towerNum) === 2;
-  const bg = isTower2
-    ? "linear-gradient(145deg, rgba(37, 99, 235, 0.18) 0%, rgba(29, 78, 216, 0.32) 100%)"
-    : "linear-gradient(145deg, rgba(6, 182, 212, 0.18) 0%, rgba(8, 145, 178, 0.32) 100%)";
-  const border = isTower2 ? "1px solid rgba(96, 165, 250, 0.45)" : "1px solid rgba(34, 211, 238, 0.45)";
-  const shadowGlow = isTower2 ? "rgba(37, 99, 235, 0.2)" : "rgba(6, 182, 212, 0.2)";
-  const textShadowGlow = isTower2 ? "rgba(37, 99, 235, 0.4)" : "rgba(6, 182, 212, 0.4)";
+  const bg = "rgba(15, 23, 42, 0.22)";
+  const border = isTower2 ? "1px solid rgba(96, 165, 250, 0.35)" : "1px solid rgba(34, 211, 238, 0.35)";
+  const shadowGlow = isTower2 ? "rgba(37, 99, 235, 0.12)" : "rgba(6, 182, 212, 0.12)";
+  const textShadowGlow = isTower2 ? "rgba(37, 99, 235, 0.3)" : "rgba(6, 182, 212, 0.3)";
   const titleColor = isTower2 ? "#eff6ff" : "#ecfeff";
   const labelColor = isTower2 ? "#bfdbfe" : "#a5f3fc";
   const unitColor = isTower2 ? "#93c5fd" : "#67e8f9";
@@ -1953,7 +1927,7 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       -webkit-backdrop-filter: blur(20px) saturate(190%);
       background: ${bg};
       border: ${border};
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px ${shadowGlow};
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 15px ${shadowGlow};
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -1964,38 +1938,24 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
     .card-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-      padding-bottom: 8px;
+      justify-content: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+      padding-bottom: 6px;
     }
     .card-title-wrap {
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
     }
     .card-icon {
-      font-size: 20px;
+      font-size: 22px;
       line-height: 1;
     }
     .card-title {
-      font-size: 19px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
-      color: ${titleColor};
-      line-height: 1.2;
+      display: none !important;
     }
     .badge-status {
-      font-size: 11px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      background: rgba(15, 23, 42, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      color: ${badgeColor};
+      display: none !important;
     }
 
     .sensor-grid {
@@ -2004,8 +1964,8 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(15, 23, 42, 0.20);
-      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
       padding: 8px 10px;
       display: flex;
@@ -2014,7 +1974,7 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       backdrop-filter: blur(8px);
     }
     .sensor-label {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       color: ${labelColor};
       letter-spacing: 0.02em;
@@ -2044,34 +2004,32 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      border-top: 1px solid rgba(255, 255, 255, 0.10);
       padding-top: 8px;
     }
     .control-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      background: rgba(15, 23, 42, 0.38);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 10px;
-      padding: 8px 12px;
-      gap: 8px;
+      padding: 6px 8px;
     }
     .control-name {
-      font-size: 16px;
-      font-weight: 700;
-      color: #ffffff;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+      display: none !important;
     }
     .btn-group {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       align-items: center;
+      width: 100%;
     }
     .state-btn {
-      font-size: 13px;
+      flex: 1;
+      font-size: 14px;
       font-weight: 800;
-      padding: 5px 13px;
+      padding: 7px 12px;
       border-radius: 8px;
       border: 1px solid rgba(255, 255, 255, 0.22);
       color: rgba(255, 255, 255, 0.45);
@@ -2080,6 +2038,7 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       transition: all 0.2s ease;
       line-height: 1.2;
       user-select: none;
+      text-align: center;
     }
     .state-btn:active {
       transform: scale(0.96);
@@ -2088,13 +2047,13 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       background: #10b981;
       color: #ffffff;
       border-color: #34d399;
-      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.6);
     }
     .state-btn.active-off {
       background: #dc2626;
       color: #ffffff;
       border-color: #f87171;
-      box-shadow: 0 0 12px rgba(220, 38, 38, 0.6);
+      box-shadow: 0 0 14px rgba(220, 38, 38, 0.6);
     }
   </style>
 </head>
@@ -2104,7 +2063,6 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       <div class="card-header">
         <div class="card-title-wrap">
           <span class="card-icon">${icon}</span>
-          <span class="card-title">Cooling Tower ${towerNum}</span>
         </div>
       </div>
 
@@ -2128,7 +2086,6 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
 
       <div class="controls-section">
         <div class="control-row">
-          <span class="control-name">Mist Maker</span>
           <div class="btn-group">
             <button class="state-btn" id="btn-on" onclick="setMist(true)">ON</button>
             <button class="state-btn" id="btn-off" onclick="setMist(false)">OFF</button>
@@ -2293,9 +2250,9 @@ function lightingUnifiedDisplayPage() {
       color: #ffffff;
       backdrop-filter: blur(20px) saturate(190%);
       -webkit-backdrop-filter: blur(20px) saturate(190%);
-      background: linear-gradient(145deg, rgba(234, 179, 8, 0.18) 0%, rgba(180, 83, 9, 0.32) 100%);
-      border: 1px solid rgba(253, 224, 71, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(234, 179, 8, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(253, 224, 71, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 15px rgba(234, 179, 8, 0.12);
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -2306,38 +2263,24 @@ function lightingUnifiedDisplayPage() {
     .card-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-      padding-bottom: 8px;
+      justify-content: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+      padding-bottom: 6px;
     }
     .card-title-wrap {
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
     }
     .card-icon {
-      font-size: 20px;
+      font-size: 22px;
       line-height: 1;
     }
     .card-title {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
-      color: #fefce8;
-      line-height: 1.2;
+      display: none !important;
     }
     .badge-status {
-      font-size: 11px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      background: rgba(15, 23, 42, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      color: #fde047;
+      display: none !important;
     }
 
     .sensor-grid {
@@ -2346,8 +2289,8 @@ function lightingUnifiedDisplayPage() {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(15, 23, 42, 0.20);
-      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
       padding: 8px 10px;
       display: flex;
@@ -2386,34 +2329,32 @@ function lightingUnifiedDisplayPage() {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      border-top: 1px solid rgba(255, 255, 255, 0.10);
       padding-top: 8px;
     }
     .control-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      background: rgba(15, 23, 42, 0.38);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 10px;
-      padding: 8px 12px;
-      gap: 8px;
+      padding: 6px 8px;
     }
     .control-name {
-      font-size: 16px;
-      font-weight: 700;
-      color: #ffffff;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+      display: none !important;
     }
     .btn-group {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       align-items: center;
+      width: 100%;
     }
     .state-btn {
-      font-size: 13px;
+      flex: 1;
+      font-size: 14px;
       font-weight: 800;
-      padding: 5px 13px;
+      padding: 7px 12px;
       border-radius: 8px;
       border: 1px solid rgba(255, 255, 255, 0.22);
       color: rgba(255, 255, 255, 0.45);
@@ -2422,6 +2363,7 @@ function lightingUnifiedDisplayPage() {
       transition: all 0.2s ease;
       line-height: 1.2;
       user-select: none;
+      text-align: center;
     }
     .state-btn:active {
       transform: scale(0.96);
@@ -2430,13 +2372,13 @@ function lightingUnifiedDisplayPage() {
       background: #10b981;
       color: #ffffff;
       border-color: #34d399;
-      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.6);
     }
     .state-btn.active-off {
       background: #dc2626;
       color: #ffffff;
       border-color: #f87171;
-      box-shadow: 0 0 12px rgba(220, 38, 38, 0.6);
+      box-shadow: 0 0 14px rgba(220, 38, 38, 0.6);
     }
   </style>
 </head>
@@ -2446,7 +2388,6 @@ function lightingUnifiedDisplayPage() {
       <div class="card-header">
         <div class="card-title-wrap">
           <span class="card-icon">💡</span>
-          <span class="card-title">Lighting & Power</span>
         </div>
       </div>
 
@@ -2470,7 +2411,6 @@ function lightingUnifiedDisplayPage() {
 
       <div class="controls-section">
         <div class="control-row">
-          <span class="control-name">Factory Lights</span>
           <div class="btn-group">
             <button class="state-btn" id="btn-on" onclick="setLighting(true)">ON</button>
             <button class="state-btn" id="btn-off" onclick="setLighting(false)">OFF</button>
@@ -2635,9 +2575,9 @@ function productionCountsDisplayPage() {
       color: #ffffff;
       backdrop-filter: blur(20px) saturate(190%);
       -webkit-backdrop-filter: blur(20px) saturate(190%);
-      background: linear-gradient(145deg, rgba(16, 185, 129, 0.18) 0%, rgba(5, 150, 105, 0.32) 100%);
-      border: 1px solid rgba(52, 211, 153, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(16, 185, 129, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 15px rgba(16, 185, 129, 0.12);
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -2648,38 +2588,24 @@ function productionCountsDisplayPage() {
     .card-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-      padding-bottom: 8px;
+      justify-content: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+      padding-bottom: 6px;
     }
     .card-title-wrap {
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
     }
     .card-icon {
-      font-size: 20px;
+      font-size: 22px;
       line-height: 1;
     }
     .card-title {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
-      color: #ecfdf5;
-      line-height: 1.2;
+      display: none !important;
     }
     .badge-status {
-      font-size: 11px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      background: rgba(15, 23, 42, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      color: #6ee7b7;
+      display: none !important;
     }
 
     .sensor-grid {
@@ -2688,8 +2614,8 @@ function productionCountsDisplayPage() {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(15, 23, 42, 0.20);
-      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
       padding: 8px 10px;
       display: flex;
@@ -2731,7 +2657,6 @@ function productionCountsDisplayPage() {
       <div class="card-header">
         <div class="card-title-wrap">
           <span class="card-icon">🏭</span>
-          <span class="card-title">Product Counts</span>
         </div>
       </div>
 
@@ -2833,9 +2758,9 @@ function conveyorUnifiedDisplayPage() {
       color: #ffffff;
       backdrop-filter: blur(20px) saturate(190%);
       -webkit-backdrop-filter: blur(20px) saturate(190%);
-      background: linear-gradient(145deg, rgba(147, 51, 234, 0.18) 0%, rgba(109, 40, 217, 0.32) 100%);
-      border: 1px solid rgba(192, 132, 252, 0.45);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(147, 51, 234, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(192, 132, 252, 0.35);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 15px rgba(147, 51, 234, 0.12);
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -2846,38 +2771,24 @@ function conveyorUnifiedDisplayPage() {
     .card-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-      padding-bottom: 8px;
+      justify-content: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+      padding-bottom: 6px;
     }
     .card-title-wrap {
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
     }
     .card-icon {
-      font-size: 20px;
+      font-size: 22px;
       line-height: 1;
     }
     .card-title {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
-      color: #eef2ff;
-      line-height: 1.2;
+      display: none !important;
     }
     .badge-status {
-      font-size: 11px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      background: rgba(15, 23, 42, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      color: #a5b4fc;
+      display: none !important;
     }
 
     .sensor-grid {
@@ -2886,8 +2797,8 @@ function conveyorUnifiedDisplayPage() {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(15, 23, 42, 0.20);
-      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
       padding: 8px 12px;
       display: flex;
@@ -2925,34 +2836,32 @@ function conveyorUnifiedDisplayPage() {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      border-top: 1px solid rgba(255, 255, 255, 0.10);
       padding-top: 8px;
     }
     .control-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      background: rgba(15, 23, 42, 0.38);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 10px;
-      padding: 8px 12px;
-      gap: 8px;
+      padding: 6px 8px;
     }
     .control-name {
-      font-size: 16px;
-      font-weight: 700;
-      color: #ffffff;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+      display: none !important;
     }
     .btn-group {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       align-items: center;
+      width: 100%;
     }
     .state-btn {
-      font-size: 13px;
+      flex: 1;
+      font-size: 14px;
       font-weight: 800;
-      padding: 5px 13px;
+      padding: 7px 12px;
       border-radius: 8px;
       border: 1px solid rgba(255, 255, 255, 0.22);
       color: rgba(255, 255, 255, 0.45);
@@ -2961,6 +2870,7 @@ function conveyorUnifiedDisplayPage() {
       transition: all 0.2s ease;
       line-height: 1.2;
       user-select: none;
+      text-align: center;
     }
     .state-btn:active {
       transform: scale(0.96);
@@ -2969,13 +2879,13 @@ function conveyorUnifiedDisplayPage() {
       background: #10b981;
       color: #ffffff;
       border-color: #34d399;
-      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.6);
     }
     .state-btn.active-off {
       background: #dc2626;
       color: #ffffff;
       border-color: #f87171;
-      box-shadow: 0 0 12px rgba(220, 38, 38, 0.6);
+      box-shadow: 0 0 14px rgba(220, 38, 38, 0.6);
     }
   </style>
 </head>
@@ -2985,7 +2895,6 @@ function conveyorUnifiedDisplayPage() {
       <div class="card-header">
         <div class="card-title-wrap">
           <span class="card-icon">🔄</span>
-          <span class="card-title">Conveyor System</span>
         </div>
       </div>
 
@@ -3001,7 +2910,6 @@ function conveyorUnifiedDisplayPage() {
 
       <div class="controls-section">
         <div class="control-row">
-          <span class="control-name">Conveyor Motor</span>
           <div class="btn-group">
             <button class="state-btn" id="btn-on" onclick="setConveyor(true)">ON</button>
             <button class="state-btn" id="btn-off" onclick="setConveyor(false)">OFF</button>
@@ -3250,12 +3158,12 @@ function laserCombinedDisplayPage() {
     }
 
     .theme-laser-safe {
-      background: linear-gradient(145deg, rgba(24, 24, 27, 0.25) 0%, rgba(9, 9, 11, 0.42) 100%);
-      border: 1px solid rgba(239, 68, 68, 0.50);
-      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(239, 68, 68, 0.18);
+      background: rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(239, 68, 68, 0.40);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(239, 68, 68, 0.12);
     }
     .theme-laser-intrusion {
-      background: linear-gradient(145deg, rgba(185, 28, 28, 0.45) 0%, rgba(127, 29, 29, 0.65) 100%);
+      background: rgba(185, 28, 28, 0.35);
       border: 1.5px solid #fca5a5;
       box-shadow: 0 0 30px rgba(239, 68, 68, 0.70), inset 0 0 20px rgba(239, 68, 68, 0.35);
       animation: alert-border-pulse 0.8s infinite alternate;
@@ -3269,8 +3177,8 @@ function laserCombinedDisplayPage() {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+      padding-bottom: 6px;
     }
     .card-title-wrap {
       display: flex;
@@ -3278,16 +3186,11 @@ function laserCombinedDisplayPage() {
       gap: 8px;
     }
     .card-icon {
-      font-size: 20px;
+      font-size: 22px;
       line-height: 1;
     }
     .card-title {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
-      color: #ffffff;
+      display: none !important;
     }
     .status-summary-badge {
       font-size: 11px;
@@ -3317,8 +3220,8 @@ function laserCombinedDisplayPage() {
       gap: 8px;
     }
     .zone-box {
-      background: rgba(15, 23, 42, 0.20);
-      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
       padding: 8px 10px;
       display: flex;
@@ -3374,7 +3277,6 @@ function laserCombinedDisplayPage() {
       <div class="card-header">
         <div class="card-title-wrap">
           <span class="card-icon">🚨</span>
-          <span class="card-title">Laser Safety Fence</span>
         </div>
         <span class="status-summary-badge safe" id="overall-status">SAFE</span>
       </div>
