@@ -493,9 +493,14 @@ function normalizeCoolingTowerSensorMapping(state) {
 }
 
 function broadcastState() {
+  const fullState = {
+    ...deviceState,
+    backend: { connected: true },
+    esp32: { connected: Boolean(deviceState.online) }
+  };
   const message = JSON.stringify({
     type: "state",
-    state: deviceState
+    state: fullState
   });
 
   wss.clients.forEach((client) => {
@@ -608,7 +613,11 @@ app.get("/api/health", (req, res) => {
 app.get("/api/state", (req, res) => {
   res.json({
     success: true,
-    state: deviceState
+    state: {
+      ...deviceState,
+      backend: { connected: true },
+      esp32: { connected: Boolean(deviceState.online) }
+    }
   });
 });
 

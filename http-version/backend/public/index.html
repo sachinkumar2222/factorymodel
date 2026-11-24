@@ -1253,32 +1253,37 @@ function updateDashboard(state) {
   if (!state) return;
   currentState = state;
 
-  setStatus("backendStatus", state.backend?.connected ? "ok" : "bad");
-  setStatus("espStatus", state.esp32?.connected ? "ok" : "bad");
-  setStatus("cameraStatus", state.camera?.recording ? "warn" : (state.camera?.connected ? "ok" : "bad"));
+  const isBackendOk = state.backend?.connected ?? true;
+  const isEspOk = Boolean(state.esp32?.connected ?? state.online ?? (state.device === "factory-esp32" && state.online));
+  const isCamRec = Boolean(state.camera?.recording);
+  const isCamOk = Boolean(state.camera?.connected);
+
+  setStatus("backendStatus", isBackendOk ? "ok" : "bad");
+  setStatus("espStatus", isEspOk ? "ok" : "bad");
+  setStatus("cameraStatus", isCamRec ? "warn" : (isCamOk ? "ok" : "bad"));
 
   const env = state.sensors?.environment || {};
-  byId("switchyardTemp").innerText = number(env.switchyard_celsius);
-  byId("ct1Temp").innerText = number(env.cooling_tower_1?.temperature);
-  byId("ct1Humidity").innerText = number(env.cooling_tower_1?.humidity);
-  byId("ct2Temp").innerText = number(env.cooling_tower_2?.temperature);
-  byId("ct2Humidity").innerText = number(env.cooling_tower_2?.humidity);
+  byId("switchyardTemp").innerText = number(state.sensors?.temperatureC ?? env.switchyard_celsius ?? state.sensors?.temperature);
+  byId("ct1Temp").innerText = number(state.sensors?.coolingTower1TempC ?? env.cooling_tower_1?.temperature);
+  byId("ct1Humidity").innerText = number(state.sensors?.coolingTower1Humidity ?? env.cooling_tower_1?.humidity);
+  byId("ct2Temp").innerText = number(state.sensors?.coolingTower2TempC ?? env.cooling_tower_2?.temperature);
+  byId("ct2Humidity").innerText = number(state.sensors?.coolingTower2Humidity ?? env.cooling_tower_2?.humidity);
 
   const prod = state.sensors?.production || {};
-  byId("productCount").innerText = prod.count ?? "—";
-  byId("productLifetime").innerText = prod.lifetime_count ?? "—";
+  byId("productCount").innerText = (state.sensors?.productCount ?? prod.count ?? "—");
+  byId("productLifetime").innerText = (state.sensors?.productCountTotal ?? prod.lifetime_count ?? "—");
 
   const act = state.actuators || {};
-  setActuatorState("conveyorState", act.conveyor?.state);
-  setActuatorState("lightingState", act.lighting?.state);
-  setActuatorState("mist1State", act.mist1?.state);
-  setActuatorState("mist2State", act.mist2?.state);
-  setActuatorState("heaterState", act.heater?.state);
+  setActuatorState("conveyorState", typeof act.conveyor === 'boolean' ? act.conveyor : act.conveyor?.state);
+  setActuatorState("lightingState", typeof act.lighting === 'boolean' ? act.lighting : act.lighting?.state);
+  setActuatorState("mist1State", typeof act.mist1 === 'boolean' ? act.mist1 : act.mist1?.state);
+  setActuatorState("mist2State", typeof act.mist2 === 'boolean' ? act.mist2 : act.mist2?.state);
+  setActuatorState("heaterState", typeof act.heater === 'boolean' ? act.heater : act.heater?.state);
 
   const pwr = state.sensors?.power || {};
-  const conveyorW = number(pwr.conveyor?.watts);
-  const lightingW = number(pwr.lighting?.watts);
-  const totalW = number(pwr.total_watts);
+  const conveyorW = number(state.sensors?.conveyorPowerW ?? pwr.conveyor?.watts);
+  const lightingW = number(state.sensors?.lightingPowerW ?? pwr.lighting?.watts);
+  const totalW = number(state.sensors?.powerW ?? pwr.total_watts);
 
   byId("conveyorPower").innerText = conveyorW;
   byId("lightingPower").innerText = lightingW;
@@ -1289,10 +1294,11 @@ function updateDashboard(state) {
   byId("summaryTotalPower").innerText = totalW;
 
   const lasers = state.sensors?.lasers || {};
-  updateLaser("laser1", "laser1State", lasers.laser1);
-  updateLaser("laser2", "laser2State", lasers.laser2);
-  updateLaser("laser3", "laser3State", lasers.laser3);
-  updateLaser("laser4", "laser4State", lasers.laser4);
+  const z = state.laserZones || {};
+  updateLaser("laser1", "laser1State", z.zone1 === "INTRUSION" || lasers.laser1 === true);
+  updateLaser("laser2", "laser2State", z.zone2 === "INTRUSION" || lasers.laser2 === true);
+  updateLaser("laser3", "laser3State", z.zone3 === "INTRUSION" || lasers.laser3 === true);
+  updateLaser("laser4", "laser4State", z.zone4 === "INTRUSION" || lasers.laser4 === true);
 
   const cam = state.camera || {};
   byId("cameraZone").innerText = cam.zone ?? 0;
@@ -1303,23 +1309,25 @@ function updateDashboard(state) {
   }
 
   const sys = state.system || {};
-  byId("wifiRssi").innerText = sys.wifi_rssi ? `${sys.wifi_rssi} dBm` : "—";
-  byId("firmware").innerText = sys.firmware || "—";
-  byId("freeHeap").innerText = sys.free_heap ? `${sys.free_heap} bytes` : "—";
+  const net = state.network || {};
+  byId("wifiRssi").innerText = (sys.wifi_rssi ?? net.rssi) ? `${sys.wifi_rssi ?? net.rssi} dBm` : "—";
+  byId("firmware").innerText = (sys.firmware ?? sys.firmwareVersion) || "—";
+  byId("freeHeap").innerText = (sys.free_heap ?? sys.freeHeap) ? `${sys.free_heap ?? sys.freeHeap} bytes` : "—";
 
   const diag = state.sensors?.diagnostics || {};
-  byId("lightingIna").innerText = healthText(diag.ina226_lighting);
-  byId("conveyorIna").innerText = healthText(diag.ina226_conveyor);
-  byId("ct1Health").innerText = healthText(diag.dht_ct1);
-  byId("ct2Health").innerText = healthText(diag.dht_ct2);
-  byId("switchyardHealth").innerText = healthText(diag.dallas_switchyard);
-  byId("heaterTrust").innerText = healthText(diag.heater_trust);
+  byId("lightingIna").innerText = healthText(sys.lightingIna_ok ?? diag.ina226_lighting);
+  byId("conveyorIna").innerText = healthText(sys.conveyorIna_ok ?? diag.ina226_conveyor);
+  byId("ct1Health").innerText = healthText(sys.coolingTower1_ok ?? diag.dht_ct1);
+  byId("ct2Health").innerText = healthText(sys.coolingTower2_ok ?? diag.dht_ct2);
+  byId("switchyardHealth").innerText = healthText(sys.switchyardTemp_ok ?? diag.dallas_switchyard);
+  byId("heaterTrust").innerText = healthText(sys.heaterTempTrusted ?? diag.heater_trust);
 
-  if (state.last_telemetry) {
+  const lastTime = state.lastTelemetry || state.last_telemetry || state.timestamp;
+  if (lastTime) {
     try {
-      byId("lastTelemetry").innerText = new Date(state.last_telemetry).toLocaleTimeString();
+      byId("lastTelemetry").innerText = new Date(lastTime).toLocaleTimeString();
     } catch (e) {
-      byId("lastTelemetry").innerText = String(state.last_telemetry);
+      byId("lastTelemetry").innerText = String(lastTime);
     }
   }
 }
