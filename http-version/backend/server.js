@@ -1461,138 +1461,138 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 1. Emerald (Vibrant Mint / Emerald Green) */
     .theme-emerald {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(52, 211, 153, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(16, 185, 129, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(52, 211, 153, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(16, 185, 129, 0.22);
     }
     .theme-emerald .sensor-label { color: #a7f3d0; }
     .theme-emerald .sensor-unit { color: #6ee7b7; }
 
     /* 2. Amber / Hot Flame Orange (Switchyard Temp) */
     .theme-amber {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(251, 146, 60, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(249, 115, 22, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(251, 146, 60, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(249, 115, 22, 0.22);
     }
     .theme-amber .sensor-label { color: #fed7aa; }
     .theme-amber .sensor-unit { color: #fdba74; }
 
     /* 3. Teal / Electric Cyan (Cooling Tower 1) */
     .theme-teal {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(34, 211, 238, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(6, 182, 212, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(34, 211, 238, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(6, 182, 212, 0.22);
     }
     .theme-teal .sensor-label { color: #a5f3fc; }
     .theme-teal .sensor-unit { color: #67e8f9; }
 
     /* 4. Gold / Sunburst Golden Yellow (Lighting & Power) */
     .theme-gold {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(253, 224, 71, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(234, 179, 8, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(253, 224, 71, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(234, 179, 8, 0.22);
     }
     .theme-gold .sensor-label { color: #fef08a; }
     .theme-gold .sensor-unit { color: #fde047; }
 
     /* 5. Rose / Ruby Crimson (Industrial Heater) */
     .theme-rose, .theme-coral {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(251, 113, 133, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(225, 29, 72, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(251, 113, 133, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(225, 29, 72, 0.22);
     }
     .theme-rose .sensor-label, .theme-coral .sensor-label { color: #fecdd3; }
     .theme-rose .sensor-unit, .theme-coral .sensor-unit { color: #fda4af; }
 
     /* 6. Indigo / Electric Purple (Conveyor System) */
     .theme-indigo {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(192, 132, 252, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(147, 51, 234, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(192, 132, 252, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(147, 51, 234, 0.22);
     }
     .theme-indigo .sensor-label { color: #e9d5ff; }
     .theme-indigo .sensor-unit { color: #c084fc; }
 
     /* 7. Blue / Deep Indigo Navy (Person 1 Servo) */
     .theme-blue {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(129, 140, 248, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(79, 70, 229, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(129, 140, 248, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(79, 70, 229, 0.22);
     }
     .theme-blue .sensor-label { color: #c7d2fe; }
     .theme-blue .sensor-unit { color: #a5b4fc; }
 
     /* 8. Slate / Gunmetal Platinum (Security Camera) */
     .theme-slate {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(203, 213, 225, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(148, 163, 184, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(203, 213, 225, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(148, 163, 184, 0.22);
     }
     .theme-slate .sensor-label { color: #cbd5e1; }
     .theme-slate .sensor-unit { color: #94a3b8; }
 
     /* 9. Lime / Electric Spring Green */
     .theme-lime {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(190, 242, 100, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(132, 204, 22, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(190, 242, 100, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(132, 204, 22, 0.22);
     }
     .theme-lime .sensor-label { color: #d9f99d; }
     .theme-lime .sensor-unit { color: #bef264; }
 
     /* 10. Cyan / Royal Deep Blue (Cooling Tower 2) */
     .theme-cyan {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(96, 165, 250, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(37, 99, 235, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(96, 165, 250, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(37, 99, 235, 0.22);
     }
     .theme-cyan .sensor-label { color: #bfdbfe; }
     .theme-cyan .sensor-unit { color: #93c5fd; }
 
     /* 11. Violet / Purple */
     .theme-violet {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(216, 180, 254, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(168, 85, 247, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(216, 180, 254, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(168, 85, 247, 0.22);
     }
     .theme-violet .sensor-label { color: #ddd6fe; }
     .theme-violet .sensor-unit { color: #c4b5fd; }
 
     /* 12. Crimson / Blood Red */
     .theme-crimson {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(248, 113, 113, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(220, 38, 38, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(248, 113, 113, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(220, 38, 38, 0.22);
     }
     .theme-crimson .sensor-label { color: #fecdd3; }
     .theme-crimson .sensor-unit { color: #fda4af; }
 
     /* 13. Copper / Warm Bronze */
     .theme-copper {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(251, 191, 36, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(217, 119, 6, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(251, 191, 36, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(217, 119, 6, 0.22);
     }
     .theme-copper .sensor-label { color: #fde68a; }
     .theme-copper .sensor-unit { color: #fbbf24; }
 
     /* 15. Fuchsia / Hot Magenta Pink (Person 2 Servo) */
     .theme-fuchsia {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(244, 114, 182, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(236, 72, 153, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(244, 114, 182, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(236, 72, 153, 0.22);
     }
     .theme-fuchsia .sensor-label { color: #fbcfe8; }
     .theme-fuchsia .sensor-unit { color: #f472b6; }
 
     /* 16. Laser Hazard State */
     .theme-laser-safe {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(239, 68, 68, 0.40);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(239, 68, 68, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(239, 68, 68, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(239, 68, 68, 0.22);
     }
     .theme-laser-intrusion {
-      background: rgba(185, 28, 28, 0.35);
+      background: rgba(185, 28, 28, 0.55);
       border: 1.5px solid #fca5a5;
       box-shadow: 0 0 30px rgba(239, 68, 68, 0.70), inset 0 0 20px rgba(239, 68, 68, 0.35);
       animation: alert-border-pulse 0.8s infinite alternate;
@@ -1602,31 +1602,15 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
       100% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.8), inset 0 0 30px rgba(239, 68, 68, 0.5); }
     }
 
-    /* Card Header */
+    /* Card Header (Hidden - No top icon) */
     .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-      padding-bottom: 6px;
-    }
-    .card-title-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .card-icon {
-      font-size: 22px;
-      line-height: 1;
-    }
-    .card-title {
       display: none !important;
     }
 
     /* Sensor Box */
     .sensor-box {
-      background: rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 12px;
       padding: 10px 12px;
       display: flex;
@@ -1635,9 +1619,9 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
       backdrop-filter: blur(8px);
     }
     .sensor-label {
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.02em;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
       display: flex;
       align-items: center;
       text-transform: uppercase;
@@ -1666,8 +1650,8 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 10px;
       padding: 6px 8px;
     }
@@ -1682,13 +1666,13 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
     }
     .state-btn {
       flex: 1;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 800;
-      padding: 7px 12px;
+      padding: 8px 14px;
       border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      color: rgba(255, 255, 255, 0.45);
-      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: rgba(255, 255, 255, 0.85);
+      background: rgba(0, 0, 0, 0.45);
       transition: all 0.2s ease;
       line-height: 1.2;
       text-align: center;
@@ -1698,25 +1682,25 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
       background: #10b981;
       color: #ffffff;
       border-color: #34d399;
-      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.6);
     }
     .state-btn.active-off {
       background: #dc2626;
       color: #ffffff;
       border-color: #f87171;
-      box-shadow: 0 0 12px rgba(220, 38, 38, 0.6);
+      box-shadow: 0 0 14px rgba(220, 38, 38, 0.6);
     }
     .state-btn.active-home {
       background: #2563eb;
       color: #ffffff;
       border-color: #60a5fa;
-      box-shadow: 0 0 12px rgba(37, 99, 235, 0.6);
+      box-shadow: 0 0 14px rgba(37, 99, 235, 0.6);
     }
     .state-btn.active-move {
       background: #f59e0b;
       color: #ffffff;
       border-color: #fbbf24;
-      box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
     }
     .state-btn.active-rec {
       background: #dc2626;
@@ -1763,12 +1747,6 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 <body>
   <div class="card-wrap">
     <div class="card theme-${theme}" id="card">
-      <div class="card-header">
-        <div class="card-title-wrap">
-          <span class="card-icon">${icon}</span>
-          <span class="card-title">${title}</span>
-        </div>
-      </div>
       ${bodyHtml}
     </div>
   </div>
@@ -1879,10 +1857,10 @@ app.get("/display/switchyard-temp", (req, res) => {
    ============================================================ */
 function coolingTowerDisplayPage(towerNum, customTheme) {
   const isTower2 = Number(towerNum) === 2;
-  const bg = "rgba(15, 23, 42, 0.22)";
-  const border = isTower2 ? "1px solid rgba(96, 165, 250, 0.35)" : "1px solid rgba(34, 211, 238, 0.35)";
-  const shadowGlow = isTower2 ? "rgba(37, 99, 235, 0.12)" : "rgba(6, 182, 212, 0.12)";
-  const textShadowGlow = isTower2 ? "rgba(37, 99, 235, 0.3)" : "rgba(6, 182, 212, 0.3)";
+  const bg = "linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%)";
+  const border = isTower2 ? "1.5px solid rgba(96, 165, 250, 0.55)" : "1.5px solid rgba(34, 211, 238, 0.55)";
+  const shadowGlow = isTower2 ? "rgba(37, 99, 235, 0.25)" : "rgba(6, 182, 212, 0.25)";
+  const textShadowGlow = isTower2 ? "rgba(37, 99, 235, 0.4)" : "rgba(6, 182, 212, 0.4)";
   const titleColor = isTower2 ? "#eff6ff" : "#ecfeff";
   const labelColor = isTower2 ? "#bfdbfe" : "#a5f3fc";
   const unitColor = isTower2 ? "#93c5fd" : "#67e8f9";
@@ -1927,7 +1905,7 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       -webkit-backdrop-filter: blur(20px) saturate(190%);
       background: ${bg};
       border: ${border};
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 15px ${shadowGlow};
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px ${shadowGlow};
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -1936,22 +1914,6 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
     }
 
     .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-      padding-bottom: 6px;
-    }
-    .card-title-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .card-icon {
-      font-size: 22px;
-      line-height: 1;
-    }
-    .card-title {
       display: none !important;
     }
     .badge-status {
@@ -1964,20 +1926,20 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 12px;
-      padding: 8px 10px;
+      padding: 10px 12px;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 3px;
       backdrop-filter: blur(8px);
     }
     .sensor-label {
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 800;
       color: ${labelColor};
-      letter-spacing: 0.02em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
     }
     .sensor-value-row {
@@ -1987,7 +1949,7 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       margin-top: 2px;
     }
     .sensor-value {
-      font-size: 28px;
+      font-size: 30px;
       font-weight: 800;
       color: #ffffff;
       letter-spacing: -0.02em;
@@ -1995,7 +1957,7 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px ${textShadowGlow};
     }
     .sensor-unit {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       color: ${unitColor};
     }
@@ -2011,8 +1973,8 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 10px;
       padding: 6px 8px;
     }
@@ -2027,13 +1989,13 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
     }
     .state-btn {
       flex: 1;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 800;
-      padding: 7px 12px;
+      padding: 8px 14px;
       border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      color: rgba(255, 255, 255, 0.45);
-      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: rgba(255, 255, 255, 0.85);
+      background: rgba(0, 0, 0, 0.45);
       cursor: pointer;
       transition: all 0.2s ease;
       line-height: 1.2;
@@ -2060,12 +2022,6 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
 <body>
   <div class="card-wrap">
     <div class="card" id="card">
-      <div class="card-header">
-        <div class="card-title-wrap">
-          <span class="card-icon">${icon}</span>
-        </div>
-      </div>
-
       <div class="sensor-grid">
         <div class="sensor-box">
           <span class="sensor-label">Temperature</span>
@@ -2250,9 +2206,9 @@ function lightingUnifiedDisplayPage() {
       color: #ffffff;
       backdrop-filter: blur(20px) saturate(190%);
       -webkit-backdrop-filter: blur(20px) saturate(190%);
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(253, 224, 71, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 15px rgba(234, 179, 8, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(253, 224, 71, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(234, 179, 8, 0.25);
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -2261,22 +2217,6 @@ function lightingUnifiedDisplayPage() {
     }
 
     .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-      padding-bottom: 6px;
-    }
-    .card-title-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .card-icon {
-      font-size: 22px;
-      line-height: 1;
-    }
-    .card-title {
       display: none !important;
     }
     .badge-status {
@@ -2289,20 +2229,20 @@ function lightingUnifiedDisplayPage() {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 12px;
-      padding: 8px 10px;
+      padding: 10px 12px;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 3px;
       backdrop-filter: blur(8px);
     }
     .sensor-label {
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 800;
       color: #fef08a;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
     }
     .sensor-value-row {
@@ -2312,7 +2252,7 @@ function lightingUnifiedDisplayPage() {
       margin-top: 2px;
     }
     .sensor-value {
-      font-size: 26px;
+      font-size: 30px;
       font-weight: 800;
       color: #ffffff;
       letter-spacing: -0.02em;
@@ -2320,7 +2260,7 @@ function lightingUnifiedDisplayPage() {
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(234, 179, 8, 0.4);
     }
     .sensor-unit {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       color: #fde047;
     }
@@ -2336,8 +2276,8 @@ function lightingUnifiedDisplayPage() {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 10px;
       padding: 6px 8px;
     }
@@ -2352,13 +2292,13 @@ function lightingUnifiedDisplayPage() {
     }
     .state-btn {
       flex: 1;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 800;
-      padding: 7px 12px;
+      padding: 8px 14px;
       border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      color: rgba(255, 255, 255, 0.45);
-      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: rgba(255, 255, 255, 0.85);
+      background: rgba(0, 0, 0, 0.45);
       cursor: pointer;
       transition: all 0.2s ease;
       line-height: 1.2;
@@ -2385,12 +2325,6 @@ function lightingUnifiedDisplayPage() {
 <body>
   <div class="card-wrap">
     <div class="card" id="card">
-      <div class="card-header">
-        <div class="card-title-wrap">
-          <span class="card-icon">💡</span>
-        </div>
-      </div>
-
       <div class="sensor-grid">
         <div class="sensor-box">
           <span class="sensor-label">Light Power</span>
@@ -2575,9 +2509,9 @@ function productionCountsDisplayPage() {
       color: #ffffff;
       backdrop-filter: blur(20px) saturate(190%);
       -webkit-backdrop-filter: blur(20px) saturate(190%);
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(52, 211, 153, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 15px rgba(16, 185, 129, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(52, 211, 153, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(16, 185, 129, 0.25);
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -2586,22 +2520,6 @@ function productionCountsDisplayPage() {
     }
 
     .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-      padding-bottom: 6px;
-    }
-    .card-title-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .card-icon {
-      font-size: 22px;
-      line-height: 1;
-    }
-    .card-title {
       display: none !important;
     }
     .badge-status {
@@ -2614,20 +2532,20 @@ function productionCountsDisplayPage() {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 12px;
-      padding: 8px 10px;
+      padding: 10px 12px;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 3px;
       backdrop-filter: blur(8px);
     }
     .sensor-label {
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 800;
       color: #a7f3d0;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
     }
     .sensor-value-row {
@@ -2637,7 +2555,7 @@ function productionCountsDisplayPage() {
       margin-top: 2px;
     }
     .sensor-value {
-      font-size: 26px;
+      font-size: 30px;
       font-weight: 800;
       color: #ffffff;
       letter-spacing: -0.02em;
@@ -2645,7 +2563,7 @@ function productionCountsDisplayPage() {
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(16, 185, 129, 0.4);
     }
     .sensor-unit {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       color: #6ee7b7;
     }
@@ -2654,12 +2572,6 @@ function productionCountsDisplayPage() {
 <body>
   <div class="card-wrap">
     <div class="card" id="card">
-      <div class="card-header">
-        <div class="card-title-wrap">
-          <span class="card-icon">🏭</span>
-        </div>
-      </div>
-
       <div class="sensor-grid">
         <div class="sensor-box">
           <span class="sensor-label">Batch Count</span>
@@ -2758,9 +2670,9 @@ function conveyorUnifiedDisplayPage() {
       color: #ffffff;
       backdrop-filter: blur(20px) saturate(190%);
       -webkit-backdrop-filter: blur(20px) saturate(190%);
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(192, 132, 252, 0.35);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 15px rgba(147, 51, 234, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(192, 132, 252, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(147, 51, 234, 0.25);
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -2769,22 +2681,6 @@ function conveyorUnifiedDisplayPage() {
     }
 
     .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-      padding-bottom: 6px;
-    }
-    .card-title-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .card-icon {
-      font-size: 22px;
-      line-height: 1;
-    }
-    .card-title {
       display: none !important;
     }
     .badge-status {
@@ -2797,20 +2693,20 @@ function conveyorUnifiedDisplayPage() {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 12px;
-      padding: 8px 12px;
+      padding: 10px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       backdrop-filter: blur(8px);
     }
     .sensor-label {
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 800;
       color: #c7d2fe;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
     }
     .sensor-value-row {
@@ -2819,7 +2715,7 @@ function conveyorUnifiedDisplayPage() {
       gap: 4px;
     }
     .sensor-value {
-      font-size: 26px;
+      font-size: 30px;
       font-weight: 800;
       color: #ffffff;
       letter-spacing: -0.02em;
@@ -2827,7 +2723,7 @@ function conveyorUnifiedDisplayPage() {
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(99, 102, 241, 0.4);
     }
     .sensor-unit {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       color: #a5b4fc;
     }
@@ -2843,8 +2739,8 @@ function conveyorUnifiedDisplayPage() {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 10px;
       padding: 6px 8px;
     }
@@ -2859,13 +2755,13 @@ function conveyorUnifiedDisplayPage() {
     }
     .state-btn {
       flex: 1;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 800;
-      padding: 7px 12px;
+      padding: 8px 14px;
       border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      color: rgba(255, 255, 255, 0.45);
-      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: rgba(255, 255, 255, 0.85);
+      background: rgba(0, 0, 0, 0.45);
       cursor: pointer;
       transition: all 0.2s ease;
       line-height: 1.2;
@@ -2892,12 +2788,6 @@ function conveyorUnifiedDisplayPage() {
 <body>
   <div class="card-wrap">
     <div class="card" id="card">
-      <div class="card-header">
-        <div class="card-title-wrap">
-          <span class="card-icon">🔄</span>
-        </div>
-      </div>
-
       <div class="sensor-grid">
         <div class="sensor-box">
           <span class="sensor-label">Conveyor Power</span>
@@ -3158,12 +3048,12 @@ function laserCombinedDisplayPage() {
     }
 
     .theme-laser-safe {
-      background: rgba(15, 23, 42, 0.22);
-      border: 1px solid rgba(239, 68, 68, 0.40);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(239, 68, 68, 0.12);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(10, 16, 30, 0.62) 100%);
+      border: 1.5px solid rgba(239, 68, 68, 0.55);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(239, 68, 68, 0.22);
     }
     .theme-laser-intrusion {
-      background: rgba(185, 28, 28, 0.35);
+      background: rgba(185, 28, 28, 0.55);
       border: 1.5px solid #fca5a5;
       box-shadow: 0 0 30px rgba(239, 68, 68, 0.70), inset 0 0 20px rgba(239, 68, 68, 0.35);
       animation: alert-border-pulse 0.8s infinite alternate;
@@ -3176,26 +3066,17 @@ function laserCombinedDisplayPage() {
     .card-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       border-bottom: 1px solid rgba(255, 255, 255, 0.10);
       padding-bottom: 6px;
     }
     .card-title-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .card-icon {
-      font-size: 22px;
-      line-height: 1;
-    }
-    .card-title {
       display: none !important;
     }
     .status-summary-badge {
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 800;
-      padding: 3px 8px;
+      padding: 4px 12px;
       border-radius: 6px;
       letter-spacing: 0.05em;
       text-transform: uppercase;
@@ -3220,8 +3101,8 @@ function laserCombinedDisplayPage() {
       gap: 8px;
     }
     .zone-box {
-      background: rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 12px;
       padding: 8px 10px;
       display: flex;
@@ -3235,16 +3116,16 @@ function laserCombinedDisplayPage() {
       justify-content: space-between;
     }
     .zone-name {
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 800;
       color: #fed7aa;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
     }
     .zone-pill {
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 800;
-      padding: 4px 8px;
+      padding: 5px 10px;
       border-radius: 6px;
       text-transform: uppercase;
       letter-spacing: 0.04em;
@@ -3275,9 +3156,6 @@ function laserCombinedDisplayPage() {
   <div class="card-wrap">
     <div class="card theme-laser-safe" id="card">
       <div class="card-header">
-        <div class="card-title-wrap">
-          <span class="card-icon">🚨</span>
-        </div>
         <span class="status-summary-badge safe" id="overall-status">SAFE</span>
       </div>
 
