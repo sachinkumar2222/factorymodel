@@ -1465,9 +1465,9 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 1. Emerald (Vibrant Mint / Emerald Green) */
     .theme-emerald {
-      background: linear-gradient(145deg, rgba(16, 185, 129, 0.35) 0%, rgba(5, 150, 105, 0.52) 100%);
-      border: 1.5px solid rgba(52, 211, 153, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(16, 185, 129, 0.3);
+      background: linear-gradient(145deg, rgba(16, 185, 129, 0.18) 0%, rgba(5, 150, 105, 0.32) 100%);
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(16, 185, 129, 0.18);
     }
     .theme-emerald .card-title { color: #ecfdf5; }
     .theme-emerald .sensor-label { color: #a7f3d0; }
@@ -1475,9 +1475,9 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 2. Amber / Hot Flame Orange (Switchyard Temp) */
     .theme-amber {
-      background: linear-gradient(145deg, rgba(249, 115, 22, 0.35) 0%, rgba(194, 65, 12, 0.52) 100%);
-      border: 1.5px solid rgba(251, 146, 60, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(249, 115, 22, 0.3);
+      background: linear-gradient(145deg, rgba(249, 115, 22, 0.18) 0%, rgba(194, 65, 12, 0.32) 100%);
+      border: 1px solid rgba(251, 146, 60, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(249, 115, 22, 0.18);
     }
     .theme-amber .card-title { color: #fff7ed; }
     .theme-amber .sensor-label { color: #fed7aa; }
@@ -1485,9 +1485,9 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 3. Teal / Electric Cyan (Cooling Tower 1) */
     .theme-teal {
-      background: linear-gradient(145deg, rgba(6, 182, 212, 0.35) 0%, rgba(8, 145, 178, 0.52) 100%);
-      border: 1.5px solid rgba(34, 211, 238, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(6, 182, 212, 0.3);
+      background: linear-gradient(145deg, rgba(6, 182, 212, 0.18) 0%, rgba(8, 145, 178, 0.32) 100%);
+      border: 1px solid rgba(34, 211, 238, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(6, 182, 212, 0.18);
     }
     .theme-teal .card-title { color: #ecfeff; }
     .theme-teal .sensor-label { color: #a5f3fc; }
@@ -1495,9 +1495,9 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 4. Gold / Sunburst Golden Yellow (Lighting & Power) */
     .theme-gold {
-      background: linear-gradient(145deg, rgba(234, 179, 8, 0.35) 0%, rgba(180, 83, 9, 0.52) 100%);
-      border: 1.5px solid rgba(253, 224, 71, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(234, 179, 8, 0.3);
+      background: linear-gradient(145deg, rgba(234, 179, 8, 0.18) 0%, rgba(180, 83, 9, 0.32) 100%);
+      border: 1px solid rgba(253, 224, 71, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(234, 179, 8, 0.18);
     }
     .theme-gold .card-title { color: #fefce8; }
     .theme-gold .sensor-label { color: #fef08a; }
@@ -1505,9 +1505,9 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 5. Rose / Ruby Crimson (Industrial Heater) */
     .theme-rose, .theme-coral {
-      background: linear-gradient(145deg, rgba(225, 29, 72, 0.35) 0%, rgba(159, 18, 57, 0.52) 100%);
-      border: 1.5px solid rgba(251, 113, 133, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(225, 29, 72, 0.3);
+      background: linear-gradient(145deg, rgba(225, 29, 72, 0.18) 0%, rgba(159, 18, 57, 0.32) 100%);
+      border: 1px solid rgba(251, 113, 133, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(225, 29, 72, 0.18);
     }
     .theme-rose .card-title, .theme-coral .card-title { color: #fff1f2; }
     .theme-rose .sensor-label, .theme-coral .sensor-label { color: #fecdd3; }
@@ -1515,9 +1515,9 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 6. Indigo / Electric Purple (Conveyor System) */
     .theme-indigo {
-      background: linear-gradient(145deg, rgba(147, 51, 234, 0.35) 0%, rgba(109, 40, 217, 0.52) 100%);
-      border: 1.5px solid rgba(192, 132, 252, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(147, 51, 234, 0.3);
+      background: linear-gradient(145deg, rgba(147, 51, 234, 0.18) 0%, rgba(109, 40, 217, 0.32) 100%);
+      border: 1px solid rgba(192, 132, 252, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(147, 51, 234, 0.18);
     }
     .theme-indigo .card-title { color: #faf5ff; }
     .theme-indigo .sensor-label { color: #e9d5ff; }
@@ -1525,9 +1525,9 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 7. Blue / Deep Indigo Navy (Person 1 Servo) */
     .theme-blue {
-      background: linear-gradient(145deg, rgba(79, 70, 229, 0.35) 0%, rgba(49, 46, 129, 0.52) 100%);
-      border: 1.5px solid rgba(129, 140, 248, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(79, 70, 229, 0.3);
+      background: linear-gradient(145deg, rgba(79, 70, 229, 0.18) 0%, rgba(49, 46, 129, 0.32) 100%);
+      border: 1px solid rgba(129, 140, 248, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(79, 70, 229, 0.18);
     }
     .theme-blue .card-title { color: #eef2ff; }
     .theme-blue .sensor-label { color: #c7d2fe; }
@@ -1535,9 +1535,9 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 8. Slate / Gunmetal Platinum (Security Camera) */
     .theme-slate {
-      background: linear-gradient(145deg, rgba(71, 85, 105, 0.40) 0%, rgba(30, 41, 59, 0.60) 100%);
-      border: 1.5px solid rgba(203, 213, 225, 0.55);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(148, 163, 184, 0.3);
+      background: linear-gradient(145deg, rgba(71, 85, 105, 0.22) 0%, rgba(30, 41, 59, 0.38) 100%);
+      border: 1px solid rgba(203, 213, 225, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(148, 163, 184, 0.18);
     }
     .theme-slate .card-title { color: #f8fafc; }
     .theme-slate .sensor-label { color: #cbd5e1; }
@@ -1545,9 +1545,9 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 9. Lime / Electric Spring Green */
     .theme-lime {
-      background: linear-gradient(145deg, rgba(132, 204, 22, 0.35) 0%, rgba(77, 124, 15, 0.52) 100%);
-      border: 1.5px solid rgba(190, 242, 100, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(132, 204, 22, 0.3);
+      background: linear-gradient(145deg, rgba(132, 204, 22, 0.18) 0%, rgba(77, 124, 15, 0.32) 100%);
+      border: 1px solid rgba(190, 242, 100, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(132, 204, 22, 0.18);
     }
     .theme-lime .card-title { color: #f7fee7; }
     .theme-lime .sensor-label { color: #d9f99d; }
@@ -1555,9 +1555,9 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 10. Cyan / Royal Deep Blue (Cooling Tower 2) */
     .theme-cyan {
-      background: linear-gradient(145deg, rgba(37, 99, 235, 0.35) 0%, rgba(29, 78, 216, 0.52) 100%);
-      border: 1.5px solid rgba(96, 165, 250, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(37, 99, 235, 0.3);
+      background: linear-gradient(145deg, rgba(37, 99, 235, 0.18) 0%, rgba(29, 78, 216, 0.32) 100%);
+      border: 1px solid rgba(96, 165, 250, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(37, 99, 235, 0.18);
     }
     .theme-cyan .card-title { color: #eff6ff; }
     .theme-cyan .sensor-label { color: #bfdbfe; }
@@ -1565,9 +1565,9 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 11. Violet / Purple */
     .theme-violet {
-      background: linear-gradient(145deg, rgba(168, 85, 247, 0.35) 0%, rgba(126, 34, 206, 0.52) 100%);
-      border: 1.5px solid rgba(216, 180, 254, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(168, 85, 247, 0.3);
+      background: linear-gradient(145deg, rgba(168, 85, 247, 0.18) 0%, rgba(126, 34, 206, 0.32) 100%);
+      border: 1px solid rgba(216, 180, 254, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(168, 85, 247, 0.18);
     }
     .theme-violet .card-title { color: #f5f3ff; }
     .theme-violet .sensor-label { color: #ddd6fe; }
@@ -1575,9 +1575,9 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 12. Crimson / Blood Red */
     .theme-crimson {
-      background: linear-gradient(145deg, rgba(220, 38, 38, 0.35) 0%, rgba(153, 27, 27, 0.52) 100%);
-      border: 1.5px solid rgba(248, 113, 113, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(220, 38, 38, 0.3);
+      background: linear-gradient(145deg, rgba(220, 38, 38, 0.18) 0%, rgba(153, 27, 27, 0.32) 100%);
+      border: 1px solid rgba(248, 113, 113, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(220, 38, 38, 0.18);
     }
     .theme-crimson .card-title { color: #fff1f2; }
     .theme-crimson .sensor-label { color: #fecdd3; }
@@ -1585,9 +1585,9 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 13. Copper / Warm Bronze */
     .theme-copper {
-      background: linear-gradient(145deg, rgba(217, 119, 6, 0.35) 0%, rgba(146, 64, 14, 0.52) 100%);
-      border: 1.5px solid rgba(251, 191, 36, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(217, 119, 6, 0.3);
+      background: linear-gradient(145deg, rgba(217, 119, 6, 0.18) 0%, rgba(146, 64, 14, 0.32) 100%);
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(217, 119, 6, 0.18);
     }
     .theme-copper .card-title { color: #fffbeb; }
     .theme-copper .sensor-label { color: #fde68a; }
@@ -1595,9 +1595,9 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 15. Fuchsia / Hot Magenta Pink (Person 2 Servo) */
     .theme-fuchsia {
-      background: linear-gradient(145deg, rgba(236, 72, 153, 0.35) 0%, rgba(190, 24, 93, 0.52) 100%);
-      border: 1.5px solid rgba(244, 114, 182, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(236, 72, 153, 0.3);
+      background: linear-gradient(145deg, rgba(236, 72, 153, 0.18) 0%, rgba(190, 24, 93, 0.32) 100%);
+      border: 1px solid rgba(244, 114, 182, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(236, 72, 153, 0.18);
     }
     .theme-fuchsia .card-title { color: #fdf2f8; }
     .theme-fuchsia .sensor-label { color: #fbcfe8; }
@@ -1605,16 +1605,14 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* 16. Laser Hazard State */
     .theme-laser-safe {
-      background: linear-gradient(145deg, rgba(24, 24, 27, 0.45) 0%, rgba(9, 9, 11, 0.65) 100%);
-      border: 1.5px solid rgba(239, 68, 68, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(239, 68, 68, 0.3);
+      background: linear-gradient(145deg, rgba(24, 24, 27, 0.25) 0%, rgba(9, 9, 11, 0.42) 100%);
+      border: 1px solid rgba(239, 68, 68, 0.50);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(239, 68, 68, 0.18);
     }
     .theme-laser-intrusion {
-      background: linear-gradient(145deg, rgba(185, 28, 28, 0.55) 0%, rgba(127, 29, 29, 0.75) 100%);
+      background: linear-gradient(145deg, rgba(185, 28, 28, 0.45) 0%, rgba(127, 29, 29, 0.65) 100%);
       border: 1.5px solid #fca5a5;
-      box-shadow: 0 0 35px rgba(239, 68, 68, 0.75), inset 0 0 25px rgba(239, 68, 68, 0.4);
-      animation: alert-border-pulse 0.8s infinite alternate;
-    }
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.70), inset 0 0 20px rgba(239, 68, 68, 0.35);
       animation: alert-border-pulse 0.8s infinite alternate;
     }
     @keyframes alert-border-pulse {
@@ -1650,8 +1648,8 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* Sensor Box */
     .sensor-box {
-      background: rgba(15, 23, 42, 0.42);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(15, 23, 42, 0.20);
+      border: 1px solid rgba(255, 255, 255, 0.10);
       border-radius: 12px;
       padding: 10px 12px;
       display: flex;
@@ -1906,11 +1904,11 @@ app.get("/display/switchyard-temp", (req, res) => {
 function coolingTowerDisplayPage(towerNum, customTheme) {
   const isTower2 = Number(towerNum) === 2;
   const bg = isTower2
-    ? "linear-gradient(145deg, rgba(37, 99, 235, 0.35) 0%, rgba(29, 78, 216, 0.52) 100%)"
-    : "linear-gradient(145deg, rgba(6, 182, 212, 0.35) 0%, rgba(8, 145, 178, 0.52) 100%)";
-  const border = isTower2 ? "1.5px solid rgba(96, 165, 250, 0.65)" : "1.5px solid rgba(34, 211, 238, 0.65)";
-  const shadowGlow = isTower2 ? "rgba(37, 99, 235, 0.3)" : "rgba(6, 182, 212, 0.3)";
-  const textShadowGlow = isTower2 ? "rgba(37, 99, 235, 0.5)" : "rgba(6, 182, 212, 0.5)";
+    ? "linear-gradient(145deg, rgba(37, 99, 235, 0.18) 0%, rgba(29, 78, 216, 0.32) 100%)"
+    : "linear-gradient(145deg, rgba(6, 182, 212, 0.18) 0%, rgba(8, 145, 178, 0.32) 100%)";
+  const border = isTower2 ? "1px solid rgba(96, 165, 250, 0.45)" : "1px solid rgba(34, 211, 238, 0.45)";
+  const shadowGlow = isTower2 ? "rgba(37, 99, 235, 0.2)" : "rgba(6, 182, 212, 0.2)";
+  const textShadowGlow = isTower2 ? "rgba(37, 99, 235, 0.4)" : "rgba(6, 182, 212, 0.4)";
   const titleColor = isTower2 ? "#eff6ff" : "#ecfeff";
   const labelColor = isTower2 ? "#bfdbfe" : "#a5f3fc";
   const unitColor = isTower2 ? "#93c5fd" : "#67e8f9";
@@ -2006,8 +2004,8 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(15, 23, 42, 0.42);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(15, 23, 42, 0.20);
+      border: 1px solid rgba(255, 255, 255, 0.10);
       border-radius: 12px;
       padding: 8px 10px;
       display: flex;
@@ -2295,9 +2293,9 @@ function lightingUnifiedDisplayPage() {
       color: #ffffff;
       backdrop-filter: blur(20px) saturate(190%);
       -webkit-backdrop-filter: blur(20px) saturate(190%);
-      background: linear-gradient(145deg, rgba(234, 179, 8, 0.35) 0%, rgba(180, 83, 9, 0.52) 100%);
-      border: 1.5px solid rgba(253, 224, 71, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(234, 179, 8, 0.3);
+      background: linear-gradient(145deg, rgba(234, 179, 8, 0.18) 0%, rgba(180, 83, 9, 0.32) 100%);
+      border: 1px solid rgba(253, 224, 71, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(234, 179, 8, 0.18);
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -2348,8 +2346,8 @@ function lightingUnifiedDisplayPage() {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(15, 23, 42, 0.42);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(15, 23, 42, 0.20);
+      border: 1px solid rgba(255, 255, 255, 0.10);
       border-radius: 12px;
       padding: 8px 10px;
       display: flex;
@@ -2637,9 +2635,9 @@ function productionCountsDisplayPage() {
       color: #ffffff;
       backdrop-filter: blur(20px) saturate(190%);
       -webkit-backdrop-filter: blur(20px) saturate(190%);
-      background: linear-gradient(145deg, rgba(16, 185, 129, 0.35) 0%, rgba(5, 150, 105, 0.52) 100%);
-      border: 1.5px solid rgba(52, 211, 153, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(16, 185, 129, 0.3);
+      background: linear-gradient(145deg, rgba(16, 185, 129, 0.18) 0%, rgba(5, 150, 105, 0.32) 100%);
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(16, 185, 129, 0.18);
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -2690,8 +2688,8 @@ function productionCountsDisplayPage() {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(15, 23, 42, 0.42);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(15, 23, 42, 0.20);
+      border: 1px solid rgba(255, 255, 255, 0.10);
       border-radius: 12px;
       padding: 8px 10px;
       display: flex;
@@ -2835,9 +2833,9 @@ function conveyorUnifiedDisplayPage() {
       color: #ffffff;
       backdrop-filter: blur(20px) saturate(190%);
       -webkit-backdrop-filter: blur(20px) saturate(190%);
-      background: linear-gradient(145deg, rgba(147, 51, 234, 0.35) 0%, rgba(109, 40, 217, 0.52) 100%);
-      border: 1.5px solid rgba(192, 132, 252, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(147, 51, 234, 0.3);
+      background: linear-gradient(145deg, rgba(147, 51, 234, 0.18) 0%, rgba(109, 40, 217, 0.32) 100%);
+      border: 1px solid rgba(192, 132, 252, 0.45);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(147, 51, 234, 0.18);
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -2888,8 +2886,8 @@ function conveyorUnifiedDisplayPage() {
       gap: 8px;
     }
     .sensor-box {
-      background: rgba(15, 23, 42, 0.42);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(15, 23, 42, 0.20);
+      border: 1px solid rgba(255, 255, 255, 0.10);
       border-radius: 12px;
       padding: 8px 12px;
       display: flex;
@@ -3252,14 +3250,14 @@ function laserCombinedDisplayPage() {
     }
 
     .theme-laser-safe {
-      background: linear-gradient(145deg, rgba(24, 24, 27, 0.45) 0%, rgba(9, 9, 11, 0.65) 100%);
-      border: 1.5px solid rgba(239, 68, 68, 0.65);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(239, 68, 68, 0.3);
+      background: linear-gradient(145deg, rgba(24, 24, 27, 0.25) 0%, rgba(9, 9, 11, 0.42) 100%);
+      border: 1px solid rgba(239, 68, 68, 0.50);
+      box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.35), 0 0 15px rgba(239, 68, 68, 0.18);
     }
     .theme-laser-intrusion {
-      background: linear-gradient(145deg, rgba(185, 28, 28, 0.55) 0%, rgba(127, 29, 29, 0.75) 100%);
+      background: linear-gradient(145deg, rgba(185, 28, 28, 0.45) 0%, rgba(127, 29, 29, 0.65) 100%);
       border: 1.5px solid #fca5a5;
-      box-shadow: 0 0 35px rgba(239, 68, 68, 0.75), inset 0 0 25px rgba(239, 68, 68, 0.4);
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.70), inset 0 0 20px rgba(239, 68, 68, 0.35);
       animation: alert-border-pulse 0.8s infinite alternate;
     }
     @keyframes alert-border-pulse {
@@ -3319,8 +3317,8 @@ function laserCombinedDisplayPage() {
       gap: 8px;
     }
     .zone-box {
-      background: rgba(15, 23, 42, 0.42);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(15, 23, 42, 0.20);
+      border: 1px solid rgba(255, 255, 255, 0.10);
       border-radius: 12px;
       padding: 8px 10px;
       display: flex;
