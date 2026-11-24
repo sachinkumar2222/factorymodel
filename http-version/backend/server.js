@@ -654,6 +654,8 @@ app.post("/api/device/telemetry", (req, res) => {
       telemetry.state || telemetry
     );
 
+    const wasCameraConnected = deviceState.camera?.connected ?? true;
+
     deviceState = {
       ...deviceState,
       ...incomingState,
@@ -676,6 +678,10 @@ app.post("/api/device/telemetry", (req, res) => {
       lastSeen:
         new Date().toISOString()
     };
+
+    if (deviceState.camera) {
+      deviceState.camera.connected = wasCameraConnected;
+    }
 
     // Persist only genuine ESP32 telemetry.
     saveTelemetryHistory(deviceState);

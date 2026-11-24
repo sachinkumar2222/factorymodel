@@ -880,7 +880,7 @@ input {
     </div>
 
     <div class="head-actions">
-      <a href="http://localhost:4000" target="_blank" class="head-btn link-dashboard">
+      <a id="mainDashboardLink" href="javascript:void(0)" onclick="window.open('http://' + (location.hostname || '10.10.12.66') + ':4000', '_blank')" class="head-btn link-dashboard">
         📊 Open Main Dashboard
       </a>
       <button class="head-btn" onclick="theme()" id="theme">☾ Dark</button>

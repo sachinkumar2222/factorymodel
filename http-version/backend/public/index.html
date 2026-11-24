@@ -1068,7 +1068,7 @@ footer {
       <p style="color:var(--text-muted); font-size:13px; line-height:1.6; margin-bottom:16px;">
         The switchyard vision server runs on port <code>8082</code> with automated recording when laser zones are tripped.
       </p>
-      <a href="http://localhost:8082" target="_blank" style="display:inline-flex; align-items:center; gap:8px; text-decoration:none; background:#0284c7; color:#fff; padding:10px 18px; border-radius:8px; font-weight:700; font-size:13px;">
+      <a id="cameraPortalBtn" href="javascript:void(0)" onclick="window.open('http://' + (location.hostname || '10.10.12.66') + ':8082', '_blank')" style="display:inline-flex; align-items:center; gap:8px; text-decoration:none; background:#0284c7; color:#fff; padding:10px 18px; border-radius:8px; font-weight:700; font-size:13px;">
         <span>Open Camera Surveillance Portal</span> ↗
       </a>
     </div>
