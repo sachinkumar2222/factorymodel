@@ -17,24 +17,23 @@
       --bg-card: rgba(8, 14, 28, 0.58);
       --bg-card-hover: rgba(14, 24, 45, 0.72);
       --border-color: rgba(255, 255, 255, 0.22);
-      --border-highlight: rgba(0, 242, 254, 0.65);
+      --border-highlight: rgba(0, 245, 160, 0.65);
       --text-main: #ffffff;
       --text-muted: #e2e8f0;
       --text-dim: #cbd5e1;
 
-      /* Vibrant Neon Color Palette */
-      --neon-cyan: #00f2fe;
-      --neon-teal: #00f5d4;
+      /* Vibrant Non-Blue Neon Color Palette (Anti-Blend for Sky-Blue Environments) */
       --neon-emerald: #00f5a0;
       --neon-amber: #ffbe0b;
-      --neon-rose: #ff007f;
+      --neon-orange: #ff7700;
+      --neon-rose: #ff2a5f;
       --neon-purple: #b5179e;
-      --neon-blue: #4361ee;
-      --neon-laser: #ff2a5f;
+      --neon-magenta: #e879f9;
+      --neon-gold: #ffe600;
 
       --shadow-sm: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
       --shadow-md: 0 12px 35px -5px rgba(0, 0, 0, 0.6);
-      --shadow-glow: 0 0 20px rgba(0, 242, 254, 0.35);
+      --shadow-glow: 0 0 20px rgba(0, 245, 160, 0.35);
     }
 
     * {
@@ -67,19 +66,19 @@
     }
 
     ::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, rgba(0, 242, 254, 0.45), rgba(67, 97, 238, 0.45));
+      background: linear-gradient(180deg, rgba(0, 245, 160, 0.55), rgba(255, 190, 11, 0.55));
       border-radius: 6px;
-      border: 1px solid rgba(0, 242, 254, 0.2);
+      border: 1px solid rgba(0, 245, 160, 0.3);
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(180deg, rgba(0, 242, 254, 0.75), rgba(67, 97, 238, 0.75));
-      box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+      background: linear-gradient(180deg, rgba(0, 245, 160, 0.85), rgba(255, 190, 11, 0.85));
+      box-shadow: 0 0 10px rgba(0, 245, 160, 0.5);
     }
 
     * {
       scrollbar-width: thin;
-      scrollbar-color: rgba(0, 242, 254, 0.45) rgba(6, 9, 19, 0.25);
+      scrollbar-color: rgba(0, 245, 160, 0.55) rgba(6, 9, 19, 0.25);
     }
 
     /* ============================================================
@@ -89,14 +88,14 @@
       background: rgba(10, 15, 26, 0.45);
       backdrop-filter: blur(18px) saturate(190%);
       -webkit-backdrop-filter: blur(18px) saturate(190%);
-      border-bottom: 1.5px solid rgba(0, 242, 254, 0.25);
+      border-bottom: 1.5px solid rgba(0, 245, 160, 0.28);
       padding: 16px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 20px;
       flex-wrap: wrap;
-      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.45), 0 0 20px rgba(0, 242, 254, 0.12);
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.45), 0 0 20px rgba(0, 245, 160, 0.14);
     }
 
     .brand-wrapper {
@@ -108,13 +107,13 @@
     .brand-icon {
       width: 48px;
       height: 48px;
-      background: linear-gradient(135deg, #00f2fe, #4361ee);
+      background: linear-gradient(135deg, #ffbe0b, #ff2a5f);
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 24px;
-      box-shadow: 0 0 20px rgba(0, 242, 254, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 20px rgba(255, 190, 11, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.3);
       border: 1px solid rgba(255, 255, 255, 0.25);
     }
 
@@ -122,7 +121,7 @@
       font-size: 24px;
       font-weight: 800;
       letter-spacing: 0.5px;
-      background: linear-gradient(90deg, #ffffff 0%, #00f2fe 100%);
+      background: linear-gradient(90deg, #ffffff 0%, #ffbe0b 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 2px 4px #000000);
@@ -225,7 +224,7 @@
       background: rgba(15, 23, 42, 0.7);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(0, 242, 254, 0.35);
+      border: 1px solid rgba(0, 245, 160, 0.35);
       color: #ffffff;
       padding: 8px 16px;
       border-radius: 20px;
@@ -242,10 +241,10 @@
     }
 
     .btn-fullscreen:hover {
-      background: rgba(0, 242, 254, 0.25);
+      background: rgba(0, 245, 160, 0.25);
       color: #ffffff;
-      border-color: #00f2fe;
-      box-shadow: 0 0 14px rgba(0, 242, 254, 0.45);
+      border-color: #00f5a0;
+      box-shadow: 0 0 14px rgba(0, 245, 160, 0.45);
     }
 
     /* ============================================================
@@ -293,11 +292,11 @@
     }
 
     .nav-tab.active {
-      color: #00f2fe;
-      border-bottom-color: #00f2fe;
-      background: linear-gradient(180deg, transparent 0%, rgba(0, 242, 254, 0.16) 100%);
-      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(0, 242, 254, 0.85);
-      box-shadow: inset 0 -3px 12px rgba(0, 242, 254, 0.35);
+      color: #00f5a0;
+      border-bottom-color: #00f5a0;
+      background: linear-gradient(180deg, transparent 0%, rgba(0, 245, 160, 0.16) 100%);
+      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(0, 245, 160, 0.85);
+      box-shadow: inset 0 -3px 12px rgba(0, 245, 160, 0.35);
     }
 
     .nav-tab .tab-icon {
@@ -344,7 +343,7 @@
       background: rgba(8, 14, 28, 0.65);
       backdrop-filter: blur(16px) saturate(190%);
       -webkit-backdrop-filter: blur(16px) saturate(190%);
-      border: 1px solid rgba(0, 242, 254, 0.28);
+      border: 1px solid rgba(0, 245, 160, 0.30);
       border-radius: 14px;
       padding: 16px 22px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
@@ -353,12 +352,12 @@
     .tab-header-title {
       font-size: 24px;
       font-weight: 800;
-      color: #00f2fe;
+      color: #00f5a0;
       display: flex;
       align-items: center;
       gap: 12px;
       letter-spacing: 0.02em;
-      text-shadow: 0 2px 4px #000000, 0 0 14px rgba(0, 242, 254, 0.75);
+      text-shadow: 0 2px 4px #000000, 0 0 14px rgba(0, 245, 160, 0.75);
     }
 
     .tab-header-subtitle {
@@ -394,7 +393,7 @@
     .card:hover {
       background: var(--bg-card-hover);
       border-color: var(--border-highlight);
-      box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 242, 254, 0.3);
+      box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 245, 160, 0.3);
       transform: translateY(-3px);
     }
 
@@ -429,9 +428,9 @@
     .card .unit {
       font-size: 21px;
       font-weight: 800;
-      color: #00f2fe;
+      color: #fde047;
       margin-top: 6px;
-      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(0, 242, 254, 0.6);
+      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(253, 224, 71, 0.6);
     }
 
     .card .subvalue {
@@ -451,10 +450,10 @@
 
     .card .subvalue strong {
       font-family: 'JetBrains Mono', monospace;
-      color: #00f2fe;
+      color: #00f5a0;
       font-size: 22px;
       font-weight: 800;
-      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(0, 242, 254, 0.6);
+      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(0, 245, 160, 0.6);
     }
 
     /* Neon Accent Borders & Top Lines with Bright Neon Titles, Values, & Units */
@@ -490,9 +489,48 @@
       text-shadow: 0 2px 4px #000000, 0 0 10px rgba(253, 224, 71, 0.6);
     }
 
+    /* Orange Accent - Warm Flame Orange */
+    .card.accent-orange {
+      border-color: rgba(255, 119, 0, 0.45);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 119, 0, 0.20);
+    }
+
+    .card.accent-orange::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #ff7700, #ff9e00);
+      box-shadow: 0 0 12px #ff7700;
+    }
+
+    .card.accent-orange h3 {
+      color: #ff7700;
+      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(255, 119, 0, 0.65);
+    }
+
+    .card.accent-orange .value {
+      color: #ff7700;
+      border-color: rgba(255, 119, 0, 0.45);
+      text-shadow: 0 3px 6px #000000, 0 0 16px rgba(255, 119, 0, 0.75);
+    }
+
+    .card.accent-orange .unit {
+      color: #fed7aa;
+      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(254, 215, 170, 0.6);
+    }
+
+    .card.accent-orange .subvalue strong {
+      color: #ff7700;
+      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(255, 119, 0, 0.7);
+    }
+
+    /* Re-mapped teal/cyan to Emerald / Orange for backwards compatibility */
     .card.accent-teal {
-      border-color: rgba(0, 245, 212, 0.45);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(0, 245, 212, 0.20);
+      border-color: rgba(0, 245, 160, 0.45);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(0, 245, 160, 0.20);
     }
 
     .card.accent-teal::before {
@@ -502,34 +540,34 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: linear-gradient(90deg, #00f5d4, #00bbf9);
-      box-shadow: 0 0 12px #00f5d4;
+      background: linear-gradient(90deg, #00f5a0, #10b981);
+      box-shadow: 0 0 12px #00f5a0;
     }
 
     .card.accent-teal h3 {
-      color: #00f5d4;
-      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(0, 245, 212, 0.65);
+      color: #00f5a0;
+      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(0, 245, 160, 0.65);
     }
 
     .card.accent-teal .value {
-      color: #00f5d4;
-      border-color: rgba(0, 245, 212, 0.45);
-      text-shadow: 0 3px 6px #000000, 0 0 16px rgba(0, 245, 212, 0.75);
+      color: #00f5a0;
+      border-color: rgba(0, 245, 160, 0.45);
+      text-shadow: 0 3px 6px #000000, 0 0 16px rgba(0, 245, 160, 0.75);
     }
 
     .card.accent-teal .unit {
-      color: #67e8f9;
-      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(103, 232, 249, 0.6);
+      color: #6ee7b7;
+      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(110, 231, 183, 0.6);
     }
 
     .card.accent-teal .subvalue strong {
-      color: #00f5d4;
-      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(0, 245, 212, 0.7);
+      color: #00f5a0;
+      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(0, 245, 160, 0.7);
     }
 
     .card.accent-cyan {
-      border-color: rgba(0, 242, 254, 0.45);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(0, 242, 254, 0.20);
+      border-color: rgba(255, 119, 0, 0.45);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 119, 0, 0.20);
     }
 
     .card.accent-cyan::before {
@@ -539,29 +577,29 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: linear-gradient(90deg, #00f2fe, #4facfe);
-      box-shadow: 0 0 12px #00f2fe;
+      background: linear-gradient(90deg, #ff7700, #ff9e00);
+      box-shadow: 0 0 12px #ff7700;
     }
 
     .card.accent-cyan h3 {
-      color: #00f2fe;
-      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(0, 242, 254, 0.65);
+      color: #ff7700;
+      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(255, 119, 0, 0.65);
     }
 
     .card.accent-cyan .value {
-      color: #00f2fe;
-      border-color: rgba(0, 242, 254, 0.45);
-      text-shadow: 0 3px 6px #000000, 0 0 16px rgba(0, 242, 254, 0.75);
+      color: #ff7700;
+      border-color: rgba(255, 119, 0, 0.45);
+      text-shadow: 0 3px 6px #000000, 0 0 16px rgba(255, 119, 0, 0.75);
     }
 
     .card.accent-cyan .unit {
-      color: #38bdf8;
-      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(56, 189, 248, 0.6);
+      color: #fed7aa;
+      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(254, 215, 170, 0.6);
     }
 
     .card.accent-cyan .subvalue strong {
-      color: #00f2fe;
-      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(0, 242, 254, 0.7);
+      color: #ff7700;
+      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(255, 119, 0, 0.7);
     }
 
     .card.accent-emerald {
@@ -639,8 +677,8 @@
     }
 
     .card.accent-indigo {
-      border-color: rgba(67, 97, 238, 0.45);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(67, 97, 238, 0.20);
+      border-color: rgba(255, 190, 11, 0.45);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 190, 11, 0.20);
     }
 
     .card.accent-indigo::before {
@@ -650,29 +688,29 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: linear-gradient(90deg, #4361ee, #3a0ca3);
-      box-shadow: 0 0 12px #4361ee;
+      background: linear-gradient(90deg, #ffbe0b, #ffe600);
+      box-shadow: 0 0 12px #ffbe0b;
     }
 
     .card.accent-indigo h3 {
-      color: #818cf8;
-      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(129, 140, 248, 0.65);
+      color: #ffe600;
+      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(255, 230, 0, 0.65);
     }
 
     .card.accent-indigo .value {
-      color: #818cf8;
-      border-color: rgba(129, 140, 248, 0.45);
-      text-shadow: 0 3px 6px #000000, 0 0 16px rgba(129, 140, 248, 0.75);
+      color: #ffe600;
+      border-color: rgba(255, 230, 0, 0.45);
+      text-shadow: 0 3px 6px #000000, 0 0 16px rgba(255, 230, 0, 0.75);
     }
 
     .card.accent-indigo .unit {
-      color: #a5b4fc;
-      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(165, 180, 252, 0.6);
+      color: #fde047;
+      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(253, 224, 71, 0.6);
     }
 
     .card.accent-indigo .subvalue strong {
-      color: #818cf8;
-      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(129, 140, 248, 0.7);
+      color: #ffe600;
+      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(255, 230, 0, 0.7);
     }
 
     .card.accent-rose {
@@ -802,14 +840,14 @@
     }
 
     .btn-blue {
-      background: linear-gradient(135deg, #00f2fe, #0284c7);
+      background: linear-gradient(135deg, #ff7700, #ea580c);
       color: #ffffff;
-      border: 1.5px solid #67e8f9;
-      box-shadow: 0 0 18px rgba(0, 242, 254, 0.5);
+      border: 1.5px solid #fed7aa;
+      box-shadow: 0 0 18px rgba(255, 119, 0, 0.5);
     }
 
     .btn-blue:hover {
-      box-shadow: 0 0 26px rgba(0, 242, 254, 0.75);
+      box-shadow: 0 0 26px rgba(255, 119, 0, 0.75);
     }
 
     .btn-home {
@@ -928,10 +966,10 @@
       background: var(--bg-card);
       backdrop-filter: blur(18px) saturate(200%);
       -webkit-backdrop-filter: blur(18px) saturate(200%);
-      border: 1.5px solid rgba(0, 242, 254, 0.35);
+      border: 1.5px solid rgba(0, 245, 160, 0.35);
       border-radius: 16px;
       padding: 24px;
-      box-shadow: var(--shadow-sm), 0 0 20px rgba(0, 242, 254, 0.15);
+      box-shadow: var(--shadow-sm), 0 0 20px rgba(0, 245, 160, 0.15);
       margin-bottom: 24px;
     }
 
@@ -953,11 +991,11 @@
 
     .chart-info strong {
       font-family: 'JetBrains Mono', monospace;
-      color: #00f2fe;
+      color: #00f5a0;
       font-size: 24px;
       font-weight: 800;
       margin-left: 6px;
-      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(0, 242, 254, 0.6);
+      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(0, 245, 160, 0.6);
     }
 
     .chart-controls {
@@ -988,10 +1026,10 @@
     }
 
     .btn-range.active {
-      background: linear-gradient(135deg, #00f2fe, #0284c7);
-      color: #032030;
-      border-color: #00f2fe;
-      box-shadow: 0 0 16px rgba(0, 242, 254, 0.6);
+      background: linear-gradient(135deg, #00f5a0, #059669);
+      color: #022c22;
+      border-color: #00f5a0;
+      box-shadow: 0 0 16px rgba(0, 245, 160, 0.6);
     }
 
     canvas {
@@ -1025,7 +1063,7 @@
     .system-item:hover {
       border-color: var(--border-highlight);
       background: var(--bg-card-hover);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 14px rgba(0, 242, 254, 0.25);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 14px rgba(0, 245, 160, 0.25);
     }
 
     .system-label {
@@ -1039,12 +1077,12 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 22px;
       font-weight: 800;
-      color: #00f2fe;
+      color: #00f5a0;
       padding: 6px 14px;
       background: rgba(0, 0, 0, 0.45);
       border-radius: 8px;
-      border: 1.5px solid rgba(0, 242, 254, 0.35);
-      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(0, 242, 254, 0.7);
+      border: 1.5px solid rgba(0, 245, 160, 0.35);
+      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(0, 245, 160, 0.7);
     }
 
     /* ============================================================
@@ -1187,7 +1225,7 @@
         </div>
 
         <!-- Cooling Tower 1 -->
-        <div class="card accent-teal">
+        <div class="card accent-emerald">
           <h3>💧 Cooling Tower 1</h3>
           <div class="value" id="ct1Temp">—</div>
           <div class="unit">°C</div>
@@ -1198,7 +1236,7 @@
         </div>
 
         <!-- Cooling Tower 2 -->
-        <div class="card accent-cyan">
+        <div class="card accent-rose">
           <h3>❄️ Cooling Tower 2</h3>
           <div class="value" id="ct2Temp">—</div>
           <div class="unit">°C</div>
@@ -1216,14 +1254,14 @@
         </div>
 
         <!-- Product Count -->
-        <div class="card accent-emerald">
+        <div class="card accent-orange">
           <h3>📦 Product Count</h3>
           <div class="value" id="productCount">—</div>
           <div class="unit">Current Cycle / Batch</div>
         </div>
 
         <!-- Lifetime Product Count -->
-        <div class="card accent-indigo">
+        <div class="card accent-amber">
           <h3>🏭 Lifetime Product Count</h3>
           <div class="value" id="productLifetime">—</div>
           <div class="unit">Total Lifetime Units</div>
@@ -1240,10 +1278,10 @@
         </div>
 
         <div class="grid">
-          <div class="card accent-cyan">
+          <div class="card accent-orange">
             <h3>Conveyor Belt Power</h3>
             <div class="value"
-              style="font-size:36px; color:#00f2fe; text-shadow:0 3px 6px #000, 0 0 14px rgba(0, 242, 254, 0.6);">
+              style="font-size:36px; color:#ff7700; text-shadow:0 3px 6px #000, 0 0 14px rgba(255, 119, 0, 0.6);">
               <span id="summaryConveyorPower">—</span>
             </div>
             <div class="unit">Watts (W)</div>
@@ -1283,7 +1321,7 @@
 
       <div class="grid">
         <!-- CONVEYOR -->
-        <div class="card accent-indigo">
+        <div class="card accent-orange">
           <h3>📦 Conveyor Belt Motor</h3>
           <div class="state" id="conveyorState">OFF</div>
           <div class="control-row">
@@ -1311,7 +1349,7 @@
         </div>
 
         <!-- MIST 1 -->
-        <div class="card accent-teal">
+        <div class="card accent-emerald">
           <h3>💧 Cooling Mist Maker 1</h3>
           <div class="state" id="mist1State">OFF</div>
           <div class="control-row">
@@ -1321,7 +1359,7 @@
         </div>
 
         <!-- MIST 2 -->
-        <div class="card accent-cyan">
+        <div class="card accent-rose">
           <h3>❄️ Cooling Mist Maker 2</h3>
           <div class="state" id="mist2State">OFF</div>
           <div class="control-row">
@@ -1359,7 +1397,7 @@
 
       <div class="grid">
         <!-- PERSON 1 -->
-        <div class="card accent-cyan">
+        <div class="card accent-orange">
           <h3>👤 Person 1 Robotic Servo</h3>
           <div class="subvalue" style="border-top:none; margin-top:0; padding-top:0; margin-bottom:14px;">
             <span>Motion Range</span>
@@ -1372,7 +1410,7 @@
         </div>
 
         <!-- PERSON 2 -->
-        <div class="card accent-teal">
+        <div class="card accent-emerald">
           <h3>👤 Person 2 Robotic Servo</h3>
           <div class="subvalue" style="border-top:none; margin-top:0; padding-top:0; margin-bottom:14px;">
             <span>Motion Range</span>
@@ -1492,21 +1530,21 @@
         </div>
       </div>
 
-      <div class="card accent-teal camera-box" style="margin-bottom: 20px;">
+      <div class="card accent-emerald camera-box" style="margin-bottom: 20px;">
         <div>
           <h3 style="font-size:22px; color:#ffffff; margin-bottom:8px; font-weight:800; text-shadow:0 2px 4px #000;">
             Switchyard Safety Camera Feed</h3>
           <div class="subvalue" style="border-top:none; padding-top:0;">
             <span>Active Recording Trigger Zone:</span>
             <strong id="cameraZone"
-              style="font-size:24px; color:#00f2fe; margin-left:8px; text-shadow:0 2px 4px #000, 0 0 10px rgba(0, 242, 254, 0.6);">0</strong>
+              style="font-size:24px; color:#00f5a0; margin-left:8px; text-shadow:0 2px 4px #000, 0 0 10px rgba(0, 245, 160, 0.6);">0</strong>
           </div>
         </div>
 
         <div id="cameraRecording" class="camera-indicator">NOT RECORDING</div>
       </div>
 
-      <div class="card accent-cyan">
+      <div class="card accent-rose">
         <h3>Live Camera Integration</h3>
         <p
           style="color:#f1f5f9; font-size:20px; font-weight:600; line-height:1.6; margin-bottom:18px; text-shadow:0 2px 4px #000;">
@@ -1515,7 +1553,7 @@
         </p>
         <a id="cameraPortalBtn" href="javascript:void(0)"
           onclick="window.open('http://' + (location.hostname || '10.10.12.66') + ':8082', '_blank')"
-          style="display:inline-flex; align-items:center; gap:10px; text-decoration:none; background:linear-gradient(135deg, #00f2fe 0%, #0284c7 100%); color:#032030; padding:12px 24px; border-radius:10px; font-weight:800; font-size:20px; border:1.5px solid #67e8f9; box-shadow:0 0 18px rgba(0, 242, 254, 0.5); transition:all 0.2s ease;">
+          style="display:inline-flex; align-items:center; gap:10px; text-decoration:none; background:linear-gradient(135deg, #ff2a5f 0%, #b5179e 100%); color:#ffffff; padding:12px 24px; border-radius:10px; font-weight:800; font-size:20px; border:1.5px solid #ff70a6; box-shadow:0 0 18px rgba(255, 42, 95, 0.5); transition:all 0.2s ease;">
           <span>Open Camera Surveillance Portal</span> ↗
         </a>
       </div>
@@ -2023,9 +2061,9 @@
         byId("chartTotalCurrent").innerText = number(latest);
 
         drawMultiLineChart("powerChart", labels, [
-          { label: "Conveyor", color: "#00f2fe", data: conveyorData },
+          { label: "Conveyor", color: "#ff7700", data: conveyorData },
           { label: "Lighting", color: "#ffbe0b", data: lightingData },
-          { label: "Total Power", color: "#b5179e", data: totalData }
+          { label: "Total Power", color: "#e879f9", data: totalData }
         ], "Power (Watts)");
       } catch (err) {
         console.error("Error loading power history:", err);
