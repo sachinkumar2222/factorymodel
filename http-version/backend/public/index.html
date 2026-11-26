@@ -14,10 +14,10 @@
   <style>
     :root {
       --bg-main: transparent;
-      --bg-card: rgba(10, 16, 30, 0.42);
-      --bg-card-hover: rgba(20, 32, 58, 0.58);
-      --border-color: rgba(255, 255, 255, 0.18);
-      --border-highlight: rgba(0, 242, 254, 0.55);
+      --bg-card: rgba(8, 14, 28, 0.58);
+      --bg-card-hover: rgba(14, 24, 45, 0.72);
+      --border-color: rgba(255, 255, 255, 0.22);
+      --border-highlight: rgba(0, 242, 254, 0.65);
       --text-main: #ffffff;
       --text-muted: #e2e8f0;
       --text-dim: #cbd5e1;
@@ -341,25 +341,30 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-      padding-bottom: 14px;
+      background: rgba(8, 14, 28, 0.65);
+      backdrop-filter: blur(16px) saturate(190%);
+      -webkit-backdrop-filter: blur(16px) saturate(190%);
+      border: 1px solid rgba(0, 242, 254, 0.28);
+      border-radius: 14px;
+      padding: 16px 22px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     }
 
     .tab-header-title {
       font-size: 24px;
       font-weight: 800;
-      color: #ffffff;
+      color: #00f2fe;
       display: flex;
       align-items: center;
       gap: 12px;
       letter-spacing: 0.02em;
-      text-shadow: 0 2px 6px #000000, 0 0 12px rgba(0, 242, 254, 0.45);
+      text-shadow: 0 2px 4px #000000, 0 0 14px rgba(0, 242, 254, 0.75);
     }
 
     .tab-header-subtitle {
       font-size: 20px;
-      color: #cbd5e1;
-      font-weight: 600;
+      color: #f1f5f9;
+      font-weight: 700;
       margin-top: 4px;
       text-shadow: 0 2px 4px #000000;
     }
@@ -413,7 +418,12 @@
       color: #ffffff;
       line-height: 1.1;
       letter-spacing: -0.5px;
-      text-shadow: 0 3px 6px #000000, 0 0 14px rgba(255, 255, 255, 0.5);
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      text-shadow: 0 3px 6px #000000;
     }
 
     .card .unit {
@@ -426,8 +436,10 @@
 
     .card .subvalue {
       margin-top: 16px;
-      padding-top: 14px;
-      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 8px 12px;
+      background: rgba(0, 0, 0, 0.40);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
       font-size: 20px;
       font-weight: 700;
       color: #f1f5f9;
@@ -445,7 +457,7 @@
       text-shadow: 0 2px 4px #000000, 0 0 10px rgba(0, 242, 254, 0.6);
     }
 
-    /* Neon Accent Borders & Top Lines with Bright Neon Titles */
+    /* Neon Accent Borders & Top Lines with Bright Neon Titles, Values, & Units */
     .card.accent-amber {
       border-color: rgba(255, 190, 11, 0.45);
       box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 190, 11, 0.20);
@@ -465,6 +477,17 @@
     .card.accent-amber h3 {
       color: #ffbe0b;
       text-shadow: 0 2px 4px #000000, 0 0 12px rgba(255, 190, 11, 0.65);
+    }
+
+    .card.accent-amber .value {
+      color: #ffbe0b;
+      border-color: rgba(255, 190, 11, 0.45);
+      text-shadow: 0 3px 6px #000000, 0 0 16px rgba(255, 190, 11, 0.75);
+    }
+
+    .card.accent-amber .unit {
+      color: #fde047;
+      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(253, 224, 71, 0.6);
     }
 
     .card.accent-teal {
@@ -488,6 +511,22 @@
       text-shadow: 0 2px 4px #000000, 0 0 12px rgba(0, 245, 212, 0.65);
     }
 
+    .card.accent-teal .value {
+      color: #00f5d4;
+      border-color: rgba(0, 245, 212, 0.45);
+      text-shadow: 0 3px 6px #000000, 0 0 16px rgba(0, 245, 212, 0.75);
+    }
+
+    .card.accent-teal .unit {
+      color: #67e8f9;
+      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(103, 232, 249, 0.6);
+    }
+
+    .card.accent-teal .subvalue strong {
+      color: #00f5d4;
+      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(0, 245, 212, 0.7);
+    }
+
     .card.accent-cyan {
       border-color: rgba(0, 242, 254, 0.45);
       box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(0, 242, 254, 0.20);
@@ -507,6 +546,22 @@
     .card.accent-cyan h3 {
       color: #00f2fe;
       text-shadow: 0 2px 4px #000000, 0 0 12px rgba(0, 242, 254, 0.65);
+    }
+
+    .card.accent-cyan .value {
+      color: #00f2fe;
+      border-color: rgba(0, 242, 254, 0.45);
+      text-shadow: 0 3px 6px #000000, 0 0 16px rgba(0, 242, 254, 0.75);
+    }
+
+    .card.accent-cyan .unit {
+      color: #38bdf8;
+      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(56, 189, 248, 0.6);
+    }
+
+    .card.accent-cyan .subvalue strong {
+      color: #00f2fe;
+      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(0, 242, 254, 0.7);
     }
 
     .card.accent-emerald {
@@ -530,6 +585,22 @@
       text-shadow: 0 2px 4px #000000, 0 0 12px rgba(0, 245, 160, 0.65);
     }
 
+    .card.accent-emerald .value {
+      color: #00f5a0;
+      border-color: rgba(0, 245, 160, 0.45);
+      text-shadow: 0 3px 6px #000000, 0 0 16px rgba(0, 245, 160, 0.75);
+    }
+
+    .card.accent-emerald .unit {
+      color: #6ee7b7;
+      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(110, 231, 183, 0.6);
+    }
+
+    .card.accent-emerald .subvalue strong {
+      color: #00f5a0;
+      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(0, 245, 160, 0.7);
+    }
+
     .card.accent-violet {
       border-color: rgba(181, 23, 158, 0.45);
       box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(181, 23, 158, 0.20);
@@ -549,6 +620,22 @@
     .card.accent-violet h3 {
       color: #e879f9;
       text-shadow: 0 2px 4px #000000, 0 0 12px rgba(232, 121, 249, 0.65);
+    }
+
+    .card.accent-violet .value {
+      color: #e879f9;
+      border-color: rgba(232, 121, 249, 0.45);
+      text-shadow: 0 3px 6px #000000, 0 0 16px rgba(232, 121, 249, 0.75);
+    }
+
+    .card.accent-violet .unit {
+      color: #f472b6;
+      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(244, 114, 182, 0.6);
+    }
+
+    .card.accent-violet .subvalue strong {
+      color: #e879f9;
+      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(232, 121, 249, 0.7);
     }
 
     .card.accent-indigo {
@@ -572,6 +659,22 @@
       text-shadow: 0 2px 4px #000000, 0 0 12px rgba(129, 140, 248, 0.65);
     }
 
+    .card.accent-indigo .value {
+      color: #818cf8;
+      border-color: rgba(129, 140, 248, 0.45);
+      text-shadow: 0 3px 6px #000000, 0 0 16px rgba(129, 140, 248, 0.75);
+    }
+
+    .card.accent-indigo .unit {
+      color: #a5b4fc;
+      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(165, 180, 252, 0.6);
+    }
+
+    .card.accent-indigo .subvalue strong {
+      color: #818cf8;
+      text-shadow: 0 2px 4px #000000, 0 0 12px rgba(129, 140, 248, 0.7);
+    }
+
     .card.accent-rose {
       border-color: rgba(255, 42, 95, 0.45);
       box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 42, 95, 0.20);
@@ -591,6 +694,17 @@
     .card.accent-rose h3 {
       color: #ff5277;
       text-shadow: 0 2px 4px #000000, 0 0 12px rgba(255, 82, 119, 0.65);
+    }
+
+    .card.accent-rose .value {
+      color: #ff5277;
+      border-color: rgba(255, 82, 119, 0.45);
+      text-shadow: 0 3px 6px #000000, 0 0 16px rgba(255, 82, 119, 0.75);
+    }
+
+    .card.accent-rose .unit {
+      color: #fda4af;
+      text-shadow: 0 2px 4px #000000, 0 0 10px rgba(253, 164, 175, 0.6);
     }
 
     /* ============================================================
