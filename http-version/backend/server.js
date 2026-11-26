@@ -1477,14 +1477,14 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
     .theme-amber .sensor-label { color: #fed7aa; }
     .theme-amber .sensor-unit { color: #fdba74; }
 
-    /* 3. Teal / Electric Cyan (Cooling Tower 1) */
+    /* 3. Teal / Electric Cyan (Cooling Tower 1) -> Re-mapped to Warm Amber/Gold */
     .theme-teal {
       background: linear-gradient(145deg, rgba(15, 23, 42, 0.35) 0%, rgba(10, 16, 30, 0.30) 100%);
-      border: 1.5px solid rgba(34, 211, 238, 0.55);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(6, 182, 212, 0.22);
+      border: 1.5px solid rgba(255, 190, 11, 0.65);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 190, 11, 0.35);
     }
-    .theme-teal .sensor-label { color: #a5f3fc; }
-    .theme-teal .sensor-unit { color: #67e8f9; }
+    .theme-teal .sensor-label { color: #fde047; }
+    .theme-teal .sensor-unit { color: #fef08a; }
 
     /* 4. Gold / Sunburst Golden Yellow (Lighting & Power) */
     .theme-gold {
@@ -1513,14 +1513,14 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
     .theme-indigo .sensor-label { color: #e9d5ff; }
     .theme-indigo .sensor-unit { color: #c084fc; }
 
-    /* 7. Blue / Deep Indigo Navy (Person 1 Servo) */
+    /* 7. Blue / Deep Indigo Navy -> Re-mapped to Flame Orange */
     .theme-blue {
       background: linear-gradient(145deg, rgba(15, 23, 42, 0.35) 0%, rgba(10, 16, 30, 0.30) 100%);
-      border: 1.5px solid rgba(129, 140, 248, 0.55);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(79, 70, 229, 0.22);
+      border: 1.5px solid rgba(255, 119, 0, 0.65);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 119, 0, 0.35);
     }
-    .theme-blue .sensor-label { color: #c7d2fe; }
-    .theme-blue .sensor-unit { color: #a5b4fc; }
+    .theme-blue .sensor-label { color: #fed7aa; }
+    .theme-blue .sensor-unit { color: #ffbe0b; }
 
     /* 8. Slate / Gunmetal Platinum (Security Camera) */
     .theme-slate {
@@ -1540,14 +1540,14 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
     .theme-lime .sensor-label { color: #d9f99d; }
     .theme-lime .sensor-unit { color: #bef264; }
 
-    /* 10. Cyan / Royal Deep Blue (Cooling Tower 2) */
+    /* 10. Cyan / Royal Deep Blue (Cooling Tower 2) -> Re-mapped to Flame Orange */
     .theme-cyan {
       background: linear-gradient(145deg, rgba(15, 23, 42, 0.35) 0%, rgba(10, 16, 30, 0.30) 100%);
-      border: 1.5px solid rgba(96, 165, 250, 0.55);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(37, 99, 235, 0.22);
+      border: 1.5px solid rgba(255, 119, 0, 0.65);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 119, 0, 0.35);
     }
-    .theme-cyan .sensor-label { color: #bfdbfe; }
-    .theme-cyan .sensor-unit { color: #93c5fd; }
+    .theme-cyan .sensor-label { color: #fed7aa; }
+    .theme-cyan .sensor-unit { color: #ffbe0b; }
 
     /* 11. Violet / Purple */
     .theme-violet {
@@ -1609,21 +1609,22 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
 
     /* Sensor Box */
     .sensor-box {
-      background: transparent;
-      border: none;
-      padding: 4px 6px;
+      background: rgba(0, 0, 0, 0.40);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 8px;
       display: flex;
       flex-direction: column;
       gap: 3px;
     }
     .sensor-label {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 800;
       letter-spacing: 0.04em;
       display: flex;
       align-items: center;
       text-transform: uppercase;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95);
     }
     .sensor-value-row {
       display: flex;
@@ -1640,8 +1641,8 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 12px rgba(255, 255, 255, 0.25);
     }
     .sensor-unit {
-      font-size: 19px;
-      font-weight: 700;
+      font-size: 20px;
+      font-weight: 800;
     }
 
     /* Control / Actuator Row */
@@ -1857,13 +1858,14 @@ app.get("/display/switchyard-temp", (req, res) => {
 function coolingTowerDisplayPage(towerNum, customTheme) {
   const isTower2 = Number(towerNum) === 2;
   const bg = "linear-gradient(145deg, rgba(15, 23, 42, 0.35) 0%, rgba(10, 16, 30, 0.30) 100%)";
-  const border = isTower2 ? "1.5px solid rgba(96, 165, 250, 0.55)" : "1.5px solid rgba(34, 211, 238, 0.55)";
-  const shadowGlow = isTower2 ? "rgba(37, 99, 235, 0.25)" : "rgba(6, 182, 212, 0.25)";
-  const textShadowGlow = isTower2 ? "rgba(37, 99, 235, 0.4)" : "rgba(6, 182, 212, 0.4)";
-  const titleColor = isTower2 ? "#eff6ff" : "#ecfeff";
-  const labelColor = isTower2 ? "#bfdbfe" : "#a5f3fc";
-  const unitColor = isTower2 ? "#93c5fd" : "#67e8f9";
-  const badgeColor = isTower2 ? "#bfdbfe" : "#a5f3fc";
+  // Bright non-blue neon colors: Amber / Warm Gold for Tower 1, Flame Orange for Tower 2
+  const border = isTower2 ? "1.5px solid rgba(255, 119, 0, 0.65)" : "1.5px solid rgba(255, 190, 11, 0.65)";
+  const shadowGlow = isTower2 ? "rgba(255, 119, 0, 0.35)" : "rgba(255, 190, 11, 0.35)";
+  const textShadowGlow = isTower2 ? "rgba(255, 119, 0, 0.5)" : "rgba(255, 190, 11, 0.5)";
+  const titleColor = isTower2 ? "#fff7ed" : "#fefce8";
+  const labelColor = isTower2 ? "#ff9e00" : "#ffbe0b";
+  const unitColor = isTower2 ? "#fed7aa" : "#fde047";
+  const badgeColor = isTower2 ? "#fed7aa" : "#fde047";
   const icon = isTower2 ? "❄️" : "💧";
 
   return `<!DOCTYPE html>
@@ -1896,9 +1898,9 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
     }
 
     .card {
-      width: 330px;
+      width: 340px;
       border-radius: 18px;
-      padding: 13px 15px;
+      padding: 14px 16px;
       color: #ffffff;
       backdrop-filter: blur(20px) saturate(190%);
       -webkit-backdrop-filter: blur(20px) saturate(190%);
@@ -1925,20 +1927,21 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       gap: 8px;
     }
     .sensor-box {
-      background: transparent;
-      border: none;
-      padding: 4px 6px;
+      background: rgba(0, 0, 0, 0.40);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 8px;
       display: flex;
       flex-direction: column;
       gap: 3px;
     }
     .sensor-label {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 800;
       color: ${labelColor};
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95);
     }
     .sensor-value-row {
       display: flex;
@@ -1955,9 +1958,10 @@ function coolingTowerDisplayPage(towerNum, customTheme) {
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px ${textShadowGlow};
     }
     .sensor-unit {
-      font-size: 18px;
-      font-weight: 700;
+      font-size: 20px;
+      font-weight: 800;
       color: ${unitColor};
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
     }
 
     .controls-section {
@@ -2227,20 +2231,21 @@ function lightingUnifiedDisplayPage() {
       gap: 8px;
     }
     .sensor-box {
-      background: transparent;
-      border: none;
-      padding: 4px 6px;
+      background: rgba(0, 0, 0, 0.40);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 8px;
       display: flex;
       flex-direction: column;
       gap: 3px;
     }
     .sensor-label {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 800;
       color: #fef08a;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95);
     }
     .sensor-value-row {
       display: flex;
@@ -2257,9 +2262,10 @@ function lightingUnifiedDisplayPage() {
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(234, 179, 8, 0.4);
     }
     .sensor-unit {
-      font-size: 18px;
-      font-weight: 700;
+      font-size: 20px;
+      font-weight: 800;
       color: #fde047;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
     }
 
     .controls-section {
