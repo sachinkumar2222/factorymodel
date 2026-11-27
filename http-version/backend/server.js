@@ -75,7 +75,7 @@ try {
   if (lastRow) {
     console.log(`[SQLITE] Preloaded last telemetry: Lifetime=${lastRow.product_count_total}, Power=${lastRow.total_power_w}W`);
   }
-} catch (e) {}
+} catch (e) { }
 
 // Prepared statement for telemetry history
 const insertTelemetryHistory = db.prepare(`
@@ -329,7 +329,7 @@ function getLastDbState() {
         productCountTotal: row.product_count_total
       };
     }
-  } catch (e) {}
+  } catch (e) { }
   return {};
 }
 
@@ -2584,7 +2584,7 @@ function productionCountsDisplayPage() {
         </div>
 
         <div class="sensor-box">
-          <span class="sensor-label">Lifetime Count</span>
+          <span class="sensor-label">total Count</span>
           <div class="sensor-value-row">
             <span class="sensor-value" id="val-life-count">--</span>
             <span class="sensor-unit">pcs</span>
@@ -2918,7 +2918,7 @@ app.get(
       const isLifetime = req.path.includes("lifetime");
       res.send(
         iframeDisplayPage({
-          title: isLifetime ? "Lifetime Count" : "Batch Count",
+          title: isLifetime ? "total Count" : "Batch Count",
           valueExpression: isLifetime
             ? `Number(state.sensors?.productCountTotal).toFixed(0)`
             : `Number(state.sensors?.productCount).toFixed(0)`,
