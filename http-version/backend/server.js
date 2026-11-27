@@ -522,35 +522,49 @@ function monitorResponse(res, type, data) {
 }
 
 
-async function esp32Post(endpoint) {
-  const response = await fetch(`${ESP32_URL}${endpoint}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Device-Key": DEVICE_KEY
-    }
-  });
-
-  const text = await response.text();
-
-  let data;
+async function esp32Post(endpoint, body = null, timeoutMs = 4000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    data = JSON.parse(text);
-  } catch {
-    data = {
-      success: response.ok,
-      raw: text
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Device-Key": DEVICE_KEY
+      },
+      signal: controller.signal
     };
-  }
+    if (body !== null && body !== undefined) {
+      options.body = JSON.stringify(body);
+    }
 
-  if (!response.ok) {
-    throw new Error(
-      `ESP32 returned HTTP ${response.status}: ${text}`
-    );
-  }
+    const response = await fetch(`${ESP32_URL}${endpoint}`, options);
+    clearTimeout(timer);
 
-  return data;
+    const text = await response.text();
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = {
+        success: response.ok,
+        raw: text
+      };
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        `ESP32 returned HTTP ${response.status}: ${text}`
+      );
+    }
+
+    return data;
+  } catch (err) {
+    clearTimeout(timer);
+    throw err;
+  }
 }
 
 
@@ -821,50 +835,85 @@ app.post("/api/control/heater/off", async (req, res) => {
 /* ---------- Person 1 ---------- */
 
 app.post("/api/control/person1/home", async (req, res) => {
-  await forwardControl(
-    req,
-    res,
-    "/api/control/person1/home"
-  );
+  try {
+    let result = null;
+    try {
+      result = await esp32Post("/api/control/person1/home");
+    } catch (e1) {
+      // Fallback: try direct angle endpoint 180 (home for Person 1) or device command
+      try {
+        result = await esp32Post("/api/control/person1/180");
+      } catch (e2) {
+        result = await esp32Post("/api/device/command", { command: "homePerson1" });
+      }
+    }
+
+    if (!deviceState.servos) deviceState.servos = {};
+    deviceState.servos.person1Angle = 180;
+    if (result && result.state) {
+      deviceState = {
+        ...deviceState,
+        ...normalizeCoolingTowerSensorMapping(result.state),
+        deviceId: result.state.deviceId || DEVICE_ID,
+        online: true,
+        lastSeen: new Date().toISOString()
+      };
+    }
+    broadcastState();
+
+    res.json({
+      success: true,
+      message: "Person 1 returned to Home (180°)",
+      angle: 180,
+      state: deviceState,
+      result
+    });
+  } catch (error) {
+    console.error("[PERSON1 HOME ERROR]", error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
 });
 
 
 app.post("/api/control/person1/move", async (req, res) => {
   try {
-    const currentAngle =
-      Number(deviceState.servos?.person1Angle);
+    const currentAngle = Number(deviceState.servos?.person1Angle);
+    // Person 1 range: 0° - 180°. If at or near 180, move to 0; otherwise move to 180.
+    const targetAngle = currentAngle === 180 ? 0 : 180;
 
-    const targetAngle =
-      currentAngle === 180 ? 0 : 180;
+    let result = null;
+    try {
+      result = await esp32Post(`/api/control/person1/${targetAngle}`);
+    } catch (e1) {
+      // Fallback: try device command format
+      result = await esp32Post("/api/device/command", { command: "person1", value: targetAngle });
+    }
 
-    const endpoint =
-      `/api/control/person1/${targetAngle}`;
-
-    const result = await esp32Post(endpoint);
-
+    if (!deviceState.servos) deviceState.servos = {};
+    deviceState.servos.person1Angle = targetAngle;
     if (result && result.state) {
       deviceState = {
         ...deviceState,
         ...normalizeCoolingTowerSensorMapping(result.state),
-        deviceId:
-          result.state.deviceId || DEVICE_ID,
+        deviceId: result.state.deviceId || DEVICE_ID,
         online: true,
-        lastSeen:
-          new Date().toISOString()
+        lastSeen: new Date().toISOString()
       };
-
-      broadcastState();
     }
+    broadcastState();
 
     res.json({
       success: true,
+      message: `Person 1 moved to ${targetAngle}°`,
       targetAngle,
+      state: deviceState,
       result
     });
-
   } catch (error) {
     console.error("[PERSON1 MOVE ERROR]", error);
-
     res.status(500).json({
       success: false,
       error: error.message
@@ -876,50 +925,85 @@ app.post("/api/control/person1/move", async (req, res) => {
 /* ---------- Person 2 ---------- */
 
 app.post("/api/control/person2/home", async (req, res) => {
-  await forwardControl(
-    req,
-    res,
-    "/api/control/person2/home"
-  );
+  try {
+    let result = null;
+    try {
+      result = await esp32Post("/api/control/person2/home");
+    } catch (e1) {
+      // Fallback: try direct angle endpoint 0 (home for Person 2) or device command
+      try {
+        result = await esp32Post("/api/control/person2/0");
+      } catch (e2) {
+        result = await esp32Post("/api/device/command", { command: "homePerson2" });
+      }
+    }
+
+    if (!deviceState.servos) deviceState.servos = {};
+    deviceState.servos.person2Angle = 0;
+    if (result && result.state) {
+      deviceState = {
+        ...deviceState,
+        ...normalizeCoolingTowerSensorMapping(result.state),
+        deviceId: result.state.deviceId || DEVICE_ID,
+        online: true,
+        lastSeen: new Date().toISOString()
+      };
+    }
+    broadcastState();
+
+    res.json({
+      success: true,
+      message: "Person 2 returned to Home (0°)",
+      angle: 0,
+      state: deviceState,
+      result
+    });
+  } catch (error) {
+    console.error("[PERSON2 HOME ERROR]", error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
 });
 
 
 app.post("/api/control/person2/move", async (req, res) => {
   try {
-    const currentAngle =
-      Number(deviceState.servos?.person2Angle);
+    const currentAngle = Number(deviceState.servos?.person2Angle);
+    // Person 2 range: 0° - 150°. If at or near 0, move to 150; otherwise move to 0.
+    const targetAngle = currentAngle === 0 ? 150 : 0;
 
-    const targetAngle =
-      currentAngle === 0 ? 150 : 0;
+    let result = null;
+    try {
+      result = await esp32Post(`/api/control/person2/${targetAngle}`);
+    } catch (e1) {
+      // Fallback: try device command format
+      result = await esp32Post("/api/device/command", { command: "person2", value: targetAngle });
+    }
 
-    const endpoint =
-      `/api/control/person2/${targetAngle}`;
-
-    const result = await esp32Post(endpoint);
-
+    if (!deviceState.servos) deviceState.servos = {};
+    deviceState.servos.person2Angle = targetAngle;
     if (result && result.state) {
       deviceState = {
         ...deviceState,
         ...normalizeCoolingTowerSensorMapping(result.state),
-        deviceId:
-          result.state.deviceId || DEVICE_ID,
+        deviceId: result.state.deviceId || DEVICE_ID,
         online: true,
-        lastSeen:
-          new Date().toISOString()
+        lastSeen: new Date().toISOString()
       };
-
-      broadcastState();
     }
+    broadcastState();
 
     res.json({
       success: true,
+      message: `Person 2 moved to ${targetAngle}°`,
       targetAngle,
+      state: deviceState,
       result
     });
-
   } catch (error) {
     console.error("[PERSON2 MOVE ERROR]", error);
-
     res.status(500).json({
       success: false,
       error: error.message

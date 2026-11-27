@@ -1509,8 +1509,8 @@
         <div class="card accent-orange">
           <h3>👤 Person 1 Robotic Servo</h3>
           <div class="subvalue" style="border-top:none; margin-top:0; padding-top:0; margin-bottom:14px;">
-            <span>Motion Range</span>
-            <strong>0° – 180°</strong>
+            <span>Current Angle / Status</span>
+            <strong id="person1AngleDisplay">180° (HOME)</strong>
           </div>
           <div class="control-row">
             <button class="btn-home" onclick="control('/api/control/person1/home')">⌂ HOME POSITION</button>
@@ -1522,8 +1522,8 @@
         <div class="card accent-emerald">
           <h3>👤 Person 2 Robotic Servo</h3>
           <div class="subvalue" style="border-top:none; margin-top:0; padding-top:0; margin-bottom:14px;">
-            <span>Motion Range</span>
-            <strong>0° – 150°</strong>
+            <span>Current Angle / Status</span>
+            <strong id="person2AngleDisplay">0° (HOME)</strong>
           </div>
           <div class="control-row">
             <button class="btn-home" onclick="control('/api/control/person2/home')">⌂ HOME POSITION</button>
@@ -1919,6 +1919,14 @@
         camRec.innerText = cam.recording ? "RECORDING" : "NOT RECORDING";
       }
 
+      const srv = state.servos || {};
+      const p1Angle = srv.person1Angle ?? 180;
+      const p2Angle = srv.person2Angle ?? 0;
+      const p1El = byId("person1AngleDisplay");
+      const p2El = byId("person2AngleDisplay");
+      if (p1El) p1El.innerText = `${p1Angle}° ${p1Angle === 180 ? '(HOME)' : '(MOVED)'}`;
+      if (p2El) p2El.innerText = `${p2Angle}° ${p2Angle === 0 ? '(HOME)' : '(MOVED)'}`;
+
       const sys = state.system || {};
       const net = state.network || {};
       byId("wifiRssi").innerText = (sys.wifi_rssi ?? net.rssi) ? `${sys.wifi_rssi ?? net.rssi} dBm` : "—";
@@ -1949,16 +1957,18 @@
     async function control(url) {
       try {
         const res = await fetch(url, { method: "POST" });
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
         if (res.ok && data.success) {
-          showMessage(data.message || "Command executed successfully", true);
+          const actionMsg = data.targetAngle !== undefined ? `Moved to ${data.targetAngle}°` : (data.message || "Command executed successfully");
+          showMessage(actionMsg, true);
           if (data.state) updateDashboard(data.state);
           else fetchState();
         } else {
-          showMessage(data.error || "Command failed", false);
+          const errMsg = data.error || (res.status === 500 ? "ESP32 offline or unreachable (Check WiFi/IP)" : "Command failed");
+          showMessage(errMsg, false);
         }
       } catch (err) {
-        showMessage("Network error sending command", false);
+        showMessage("Network error: Backend server unreachable", false);
       }
     }
 
