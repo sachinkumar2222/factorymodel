@@ -65,6 +65,22 @@ db.exec(`
 
   CREATE INDEX IF NOT EXISTS idx_daily_history_date
   ON daily_history(day_date);
+
+  -- Industrial Batch Management (MES Execution)
+  CREATE TABLE IF NOT EXISTS batch_management (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    batch_id TEXT NOT NULL UNIQUE,
+    product_name TEXT DEFAULT 'Standard Unit',
+    target_units INTEGER DEFAULT 100,
+    start_total_count INTEGER NOT NULL,
+    current_output INTEGER DEFAULT 0,
+    status TEXT DEFAULT 'RUNNING', -- RUNNING, PAUSED, COMPLETED
+    start_time TEXT NOT NULL,
+    end_time TEXT
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_batch_status
+  ON batch_management(status);
 `);
 
 console.log(`[SQLITE] Database ready: ${DB_PATH}`);
@@ -74,6 +90,10 @@ try {
   const lastRow = db.prepare("SELECT * FROM telemetry_history ORDER BY id DESC LIMIT 1").get();
   if (lastRow) {
     console.log(`[SQLITE] Preloaded last telemetry: Lifetime=${lastRow.product_count_total}, Power=${lastRow.total_power_w}W`);
+    if (deviceState.sensors) {
+      if (lastRow.product_count_total !== undefined) deviceState.sensors.productCountTotal = lastRow.product_count_total;
+      if (lastRow.product_count !== undefined) deviceState.sensors.productCount = lastRow.product_count;
+    }
   }
 } catch (e) { }
 
@@ -131,6 +151,15 @@ function saveTelemetryHistory(state) {
       productCount: Number.isFinite(productCount) ? productCount : null,
       productCountTotal
     });
+
+    // Update active running batch output dynamically
+    try {
+      const activeBatch = db.prepare("SELECT * FROM batch_management WHERE status = 'RUNNING' ORDER BY id DESC LIMIT 1").get();
+      if (activeBatch && productCountTotal >= activeBatch.start_total_count) {
+        const produced = productCountTotal - activeBatch.start_total_count;
+        db.prepare("UPDATE batch_management SET current_output = ? WHERE id = ?").run(produced, activeBatch.id);
+      }
+    } catch (bErr) { }
 
     return true;
   } catch (error) {
@@ -364,7 +393,7 @@ let deviceState = {
     conveyorPowerW: initialDb.conveyorPowerW ?? null,
     powerW: initialDb.powerW ?? null,
     productCount: initialDb.productCount ?? null,
-    productCountTotal: null
+    productCountTotal: initialDb.productCountTotal ?? null
   },
 
   laserZones: {
@@ -1247,6 +1276,267 @@ app.get("/api/history/production", (req, res) => {
       success: false,
       error: error.message
     });
+  }
+});
+
+
+/* ============================================================
+   BATCH MANAGEMENT (MES) & ANALYTICS APIs
+   ============================================================ */
+
+function getActiveBatch() {
+  let batch = db.prepare("SELECT * FROM batch_management WHERE status IN ('RUNNING', 'PAUSED') ORDER BY id DESC LIMIT 1").get();
+  if (!batch) {
+    const liveLifetime = Number(deviceState.sensors?.productCountTotal) || 0;
+    const startTime = new Date().toISOString();
+    const info = db.prepare(`
+      INSERT INTO batch_management (batch_id, product_name, target_units, start_total_count, current_output, status, start_time)
+      VALUES (?, 'Standard Unit', 100, ?, 0, 'RUNNING', ?)
+    `).run('BATCH-1001', liveLifetime, startTime);
+    batch = db.prepare("SELECT * FROM batch_management WHERE id = ?").get(info.lastInsertRowid);
+  }
+  return batch;
+}
+
+function getBatchAnalytics() {
+  let hourly = [];
+  try {
+    const hourlyRows = db.prepare(`
+      SELECT hour_bucket, production_count_total
+      FROM hourly_history
+      ORDER BY hour_bucket DESC
+      LIMIT 13
+    `).all().reverse();
+
+    if (hourlyRows.length >= 2) {
+      for (let i = 1; i < hourlyRows.length; i++) {
+        const diff = Math.max(0, hourlyRows[i].production_count_total - hourlyRows[i-1].production_count_total);
+        const d = new Date(hourlyRows[i].hour_bucket * 1000);
+        const hourStr = d.getHours().toString().padStart(2, '0') + ':00';
+        hourly.push({
+          label: hourStr,
+          timestamp: hourlyRows[i].hour_bucket,
+          output: diff
+        });
+      }
+    } else {
+      const rawHourly = db.prepare(`
+        SELECT CAST(timestamp / 3600 AS INTEGER) * 3600 AS hour_bucket,
+               MAX(product_count_total) - MIN(product_count_total) AS diff
+        FROM telemetry_history
+        GROUP BY CAST(timestamp / 3600 AS INTEGER)
+        ORDER BY hour_bucket DESC
+        LIMIT 10
+      `).all().reverse();
+      hourly = rawHourly.map(r => {
+        const d = new Date(r.hour_bucket * 1000);
+        return {
+          label: d.getHours().toString().padStart(2, '0') + ':00',
+          timestamp: r.hour_bucket,
+          output: Math.max(0, r.diff || 0)
+        };
+      });
+    }
+  } catch (e) {
+    console.error("[ANALYTICS] Hourly error:", e.message);
+  }
+
+  let daily = [];
+  try {
+    const dailyRows = db.prepare(`
+      SELECT day_date, production_count_total
+      FROM daily_history
+      ORDER BY day_date DESC
+      LIMIT 8
+    `).all().reverse();
+
+    for (let i = 1; i < dailyRows.length; i++) {
+      const diff = Math.max(0, dailyRows[i].production_count_total - dailyRows[i-1].production_count_total);
+      daily.push({
+        date: dailyRows[i].day_date,
+        label: dailyRows[i].day_date.slice(5),
+        output: diff,
+        totalCumulative: dailyRows[i].production_count_total
+      });
+    }
+  } catch (e) {
+    console.error("[ANALYTICS] Daily error:", e.message);
+  }
+
+  let weekly = [];
+  try {
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const weekRows = daily.slice(-7);
+    weekly = weekRows.map(d => {
+      const parsed = new Date(d.date + 'T00:00:00');
+      return {
+        day: dayNames[parsed.getDay()],
+        date: d.date,
+        output: d.output
+      };
+    });
+  } catch (e) {
+    console.error("[ANALYTICS] Weekly error:", e.message);
+  }
+
+  let monthly = [];
+  try {
+    const monthlyRows = db.prepare(`
+      SELECT substr(day_date, 1, 7) AS month_str,
+             MAX(production_count_total) - MIN(production_count_total) AS output,
+             MAX(production_count_total) AS month_end_total,
+             COUNT(DISTINCT day_date) AS active_days
+      FROM daily_history
+      GROUP BY substr(day_date, 1, 7)
+      ORDER BY month_str DESC
+      LIMIT 6
+    `).all().reverse();
+
+    monthly = monthlyRows.map(r => ({
+      month: r.month_str,
+      output: Math.max(0, r.output || 0),
+      endTotal: r.month_end_total,
+      activeDays: r.active_days
+    }));
+  } catch (e) {
+    console.error("[ANALYTICS] Monthly error:", e.message);
+  }
+
+  let batches = [];
+  try {
+    batches = db.prepare(`
+      SELECT id, batch_id, product_name, target_units, start_total_count, current_output, status, start_time, end_time
+      FROM batch_management
+      ORDER BY id DESC
+      LIMIT 6
+    `).all();
+  } catch (e) {
+    console.error("[ANALYTICS] Batches error:", e.message);
+  }
+
+  return { hourly, daily, weekly, monthly, batches };
+}
+
+app.get("/api/batch/active", (req, res) => {
+  try {
+    const batch = getActiveBatch();
+    const liveLifetime = Number(deviceState.sensors?.productCountTotal) || 0;
+    const liveCycle = Number(deviceState.sensors?.productCount) || 0;
+
+    let output = batch.current_output || 0;
+    if (batch.status === "RUNNING" && liveLifetime >= batch.start_total_count) {
+      output = Math.max(output, liveLifetime - batch.start_total_count);
+    }
+
+    const target = Number(batch.target_units) || 100;
+    const progressPct = Math.min(100, Math.round((output / target) * 100));
+    const remainingUnits = Math.max(0, target - output);
+
+    res.json({
+      success: true,
+      batch: {
+        ...batch,
+        current_output: output,
+        progressPct,
+        remainingUnits
+      },
+      sensors: {
+        productCount: liveCycle,
+        productCountTotal: liveLifetime
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post(["/api/batch/new", "/api/batch/next"], (req, res) => {
+  try {
+    const liveLifetime = Number(deviceState.sensors?.productCountTotal) || 0;
+    const nowIso = new Date().toISOString();
+
+    const active = db.prepare("SELECT * FROM batch_management WHERE status IN ('RUNNING', 'PAUSED') ORDER BY id DESC LIMIT 1").get();
+    if (active) {
+      const finalOutput = Math.max(active.current_output || 0, liveLifetime - active.start_total_count);
+      db.prepare("UPDATE batch_management SET status = 'COMPLETED', end_time = ?, current_output = ? WHERE id = ?").run(nowIso, finalOutput, active.id);
+    }
+
+    const countRow = db.prepare("SELECT COUNT(*) AS c FROM batch_management").get();
+    const nextNum = 1000 + (countRow.c + 1);
+    const batchId = (req.body && req.body.batchId) ? req.body.batchId : `BATCH-${nextNum}`;
+    const targetUnits = (req.body && Number(req.body.targetUnits) > 0) ? Number(req.body.targetUnits) : 100;
+    const productName = (req.body && req.body.productName) ? req.body.productName : "Standard Unit";
+
+    const info = db.prepare(`
+      INSERT INTO batch_management (batch_id, product_name, target_units, start_total_count, current_output, status, start_time)
+      VALUES (?, ?, ?, ?, 0, 'RUNNING', ?)
+    `).run(batchId, productName, targetUnits, liveLifetime, nowIso);
+
+    const newBatch = db.prepare("SELECT * FROM batch_management WHERE id = ?").get(info.lastInsertRowid);
+    return res.json({ success: true, message: `New Batch ${batchId} initialized`, batch: newBatch });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post("/api/batch/pause", (req, res) => {
+  try {
+    const active = db.prepare("SELECT * FROM batch_management WHERE status = 'RUNNING' ORDER BY id DESC LIMIT 1").get();
+    if (!active) {
+      return res.status(400).json({ success: false, error: "No active running batch found to pause" });
+    }
+    const liveLifetime = Number(deviceState.sensors?.productCountTotal) || 0;
+    const currentOutput = Math.max(active.current_output || 0, liveLifetime - active.start_total_count);
+    db.prepare("UPDATE batch_management SET status = 'PAUSED', current_output = ? WHERE id = ?").run(currentOutput, active.id);
+    const updated = db.prepare("SELECT * FROM batch_management WHERE id = ?").get(active.id);
+    return res.json({ success: true, message: "Batch paused", batch: updated });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post("/api/batch/resume", (req, res) => {
+  try {
+    const active = db.prepare("SELECT * FROM batch_management WHERE status = 'PAUSED' ORDER BY id DESC LIMIT 1").get();
+    if (!active) {
+      return res.status(400).json({ success: false, error: "No paused batch found to resume" });
+    }
+    const liveLifetime = Number(deviceState.sensors?.productCountTotal) || 0;
+    const adjustedStart = liveLifetime - (active.current_output || 0);
+    db.prepare("UPDATE batch_management SET status = 'RUNNING', start_total_count = ? WHERE id = ?").run(adjustedStart, active.id);
+    const updated = db.prepare("SELECT * FROM batch_management WHERE id = ?").get(active.id);
+    return res.json({ success: true, message: "Batch resumed", batch: updated });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post("/api/batch/complete", (req, res) => {
+  try {
+    const active = db.prepare("SELECT * FROM batch_management WHERE status IN ('RUNNING', 'PAUSED') ORDER BY id DESC LIMIT 1").get();
+    if (!active) {
+      return res.status(400).json({ success: false, error: "No active batch found to complete" });
+    }
+    const liveLifetime = Number(deviceState.sensors?.productCountTotal) || 0;
+    const finalOutput = Math.max(active.current_output || 0, liveLifetime - active.start_total_count);
+    const endTime = new Date().toISOString();
+    db.prepare("UPDATE batch_management SET status = 'COMPLETED', end_time = ?, current_output = ? WHERE id = ?").run(endTime, finalOutput, active.id);
+    const updated = db.prepare("SELECT * FROM batch_management WHERE id = ?").get(active.id);
+    return res.json({ success: true, message: "Batch completed successfully", batch: updated });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get("/api/batch/analytics", (req, res) => {
+  try {
+    const analytics = getBatchAnalytics();
+    res.json({
+      success: true,
+      analytics
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -2741,6 +3031,819 @@ function productionCountsDisplayPage() {
 }
 
 /* ============================================================
+   ADVANCED PRODUCTION MES TERMINAL (Batch Management & Analytics)
+   ============================================================ */
+function productionMesDisplayPage() {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MES Production &amp; Batch Terminal</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: transparent !important;
+      overflow-x: hidden;
+      overflow-y: auto;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      user-select: none;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 10px 0;
+    }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.4); border-radius: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+
+    .card-wrap {
+      padding: 6px;
+      display: inline-flex;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .card {
+      width: 100%;
+      border-radius: 20px;
+      padding: 16px 18px;
+      color: #ffffff;
+      backdrop-filter: blur(22px) saturate(190%);
+      -webkit-backdrop-filter: blur(22px) saturate(190%);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.50) 0%, rgba(10, 16, 30, 0.45) 100%);
+      border: 1.5px solid rgba(251, 191, 36, 0.70);
+      box-shadow: 0 14px 40px -5px rgba(0, 0, 0, 0.70), 0 0 25px rgba(245, 158, 11, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: all 0.3s ease;
+    }
+
+    /* Header */
+    .terminal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(251, 191, 36, 0.25);
+      padding-bottom: 10px;
+    }
+    .terminal-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .terminal-title {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #fef08a;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .terminal-subtitle {
+      font-size: 11px;
+      font-weight: 600;
+      color: #fed7aa;
+      letter-spacing: 0.02em;
+    }
+
+    /* Status Badge */
+    .badge-status {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .badge-running {
+      background: rgba(16, 185, 129, 0.25);
+      border: 1px solid #34d399;
+      color: #a7f3d0;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+      animation: pulse-badge 1.8s infinite;
+    }
+    .badge-paused {
+      background: rgba(245, 158, 11, 0.25);
+      border: 1px solid #fbbf24;
+      color: #fef08a;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+    }
+    .badge-completed {
+      background: rgba(148, 163, 184, 0.25);
+      border: 1px solid #cbd5e1;
+      color: #e2e8f0;
+    }
+    @keyframes pulse-badge {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(0.97); }
+    }
+
+    /* Live 2-Col Metrics */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .metric-box {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 12px;
+      padding: 9px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .metric-label {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+    }
+    .metric-box.orange .metric-label { color: #fed7aa; }
+    .metric-box.emerald .metric-label { color: #a7f3d0; }
+
+    .metric-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      margin-top: 2px;
+    }
+    .metric-value {
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+    }
+    .metric-box.orange .metric-value {
+      color: #ffbe0b;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 12px rgba(255, 190, 11, 0.4);
+    }
+    .metric-box.emerald .metric-value {
+      color: #34d399;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 12px rgba(52, 211, 153, 0.4);
+    }
+    .metric-unit {
+      font-size: 16px;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    /* Active Batch Execution Card */
+    .batch-panel {
+      background: rgba(0, 0, 0, 0.38);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .batch-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .batch-id-tag {
+      color: #ffbe0b;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .batch-target-tag {
+      color: #f1f5f9;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .progress-bar-track {
+      width: 100%;
+      height: 16px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff7700 0%, #ffbe0b 100%);
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(255, 190, 11, 0.6);
+      transition: width 0.4s ease;
+    }
+    .progress-info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+    .progress-highlight {
+      color: #ffbe0b;
+    }
+
+    /* Batch Action Buttons */
+    .batch-controls {
+      display: flex;
+      gap: 8px;
+      margin-top: 2px;
+    }
+    .btn-action {
+      flex: 1;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .btn-action:active {
+      transform: scale(0.96);
+    }
+    .btn-pause {
+      background: rgba(245, 158, 11, 0.22);
+      border-color: #fbbf24;
+      color: #fef08a;
+    }
+    .btn-pause:hover {
+      background: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+    }
+    .btn-complete {
+      background: rgba(16, 185, 129, 0.22);
+      border-color: #34d399;
+      color: #a7f3d0;
+    }
+    .btn-complete:hover {
+      background: rgba(16, 185, 129, 0.4);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+    }
+    .btn-next {
+      background: linear-gradient(135deg, #ffbe0b, #f59e0b);
+      border-color: #fde047;
+      color: #111827;
+      font-weight: 900;
+    }
+    .btn-next:hover {
+      box-shadow: 0 0 16px rgba(255, 190, 11, 0.7);
+    }
+
+    /* Analytics Navigation Tabs */
+    .tabs-header {
+      display: flex;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .tab-btn {
+      flex: 1;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 4px;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .tab-btn.active {
+      background: rgba(251, 191, 36, 0.25);
+      border: 1px solid rgba(251, 191, 36, 0.55);
+      color: #fef08a;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+    }
+
+    /* Tab Content Area */
+    .tab-content {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 10px 12px;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tab-view {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+    }
+    .tab-view.active {
+      display: flex;
+    }
+
+    /* Bar Chart / Item Rows */
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .bar-label {
+      width: 52px;
+      color: #cbd5e1;
+      white-space: nowrap;
+      text-align: right;
+    }
+    .bar-track {
+      flex: 1;
+      height: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+    }
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f59e0b, #ffbe0b);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+    .bar-val {
+      width: 50px;
+      text-align: right;
+      color: #fef08a;
+      font-weight: 800;
+    }
+
+    /* Compact Grid for Weekly / Monthly */
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+      gap: 6px;
+    }
+    .report-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .report-card.today {
+      border-color: rgba(251, 191, 36, 0.6);
+      background: rgba(251, 191, 36, 0.12);
+    }
+    .report-key {
+      font-size: 10px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+    .report-num {
+      font-size: 16px;
+      font-weight: 800;
+      color: #ffbe0b;
+    }
+    .report-unit {
+      font-size: 9px;
+      color: #cbd5e1;
+    }
+
+    /* Modal for New Batch Target */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-box {
+      background: #0f172a;
+      border: 1.5px solid #fbbf24;
+      border-radius: 16px;
+      padding: 18px;
+      width: 290px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(245, 158, 11, 0.3);
+    }
+    .modal-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fef08a;
+      text-transform: uppercase;
+    }
+    .modal-input {
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      color: #ffffff;
+      padding: 8px 12px;
+      font-size: 15px;
+      font-weight: 700;
+      outline: none;
+    }
+    .modal-input:focus {
+      border-color: #fbbf24;
+    }
+    .modal-btns {
+      display: flex;
+      gap: 8px;
+    }
+    .modal-btn {
+      flex: 1;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+    .modal-btn-cancel {
+      background: #334155;
+      color: #e2e8f0;
+    }
+    .modal-btn-confirm {
+      background: #f59e0b;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="card-wrap">
+    <div class="card" id="mes-card">
+      <!-- 1. TERMINAL HEADER -->
+      <div class="terminal-header">
+        <div class="terminal-title-group">
+          <div class="terminal-title">⚙️ MES Production Terminal</div>
+          <div class="terminal-subtitle">Supervisory Batch Execution &amp; History</div>
+        </div>
+        <span class="badge-status badge-running" id="batch-status-badge">● RUNNING</span>
+      </div>
+
+      <!-- 2. LIVE PRODUCTION METRICS (Batch/Cycle Count & Lifetime Total) -->
+      <div class="metric-grid">
+        <div class="metric-box orange">
+          <span class="metric-label">Current Cycle</span>
+          <div class="metric-value-row">
+            <span class="metric-value" id="live-cycle-val">--</span>
+            <span class="metric-unit">pcs</span>
+          </div>
+        </div>
+        <div class="metric-box emerald">
+          <span class="metric-label">Lifetime Output</span>
+          <div class="metric-value-row">
+            <span class="metric-value" id="live-life-val">--</span>
+            <span class="metric-unit">pcs</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. ACTIVE BATCH EXECUTION & MES CONTROLS -->
+      <div class="batch-panel">
+        <div class="batch-meta-row">
+          <div class="batch-id-tag">📦 Batch: <span id="batch-id-val">BATCH-1001</span></div>
+          <div class="batch-target-tag">Target: <strong id="batch-target-val">100 pcs</strong></div>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="batch-progress-fill" style="width: 0%;"></div>
+          </div>
+          <div class="progress-info-row">
+            <span>Produced: <strong class="progress-highlight" id="batch-produced-val">0</strong> pcs (<strong id="batch-pct-val">0%</strong>)</span>
+            <span>Remaining: <strong id="batch-remaining-val">100</strong> pcs</span>
+          </div>
+        </div>
+
+        <div class="batch-controls">
+          <button class="btn-action btn-pause" id="btn-pause-resume" onclick="handlePauseResume()">⏸ Pause</button>
+          <button class="btn-action btn-complete" id="btn-complete" onclick="handleComplete()">✔ Complete</button>
+          <button class="btn-action btn-next" id="btn-next" onclick="openNewBatchModal()">+ Next Batch</button>
+        </div>
+      </div>
+
+      <!-- 4. ANALYTICS & PRODUCTION HISTORY (Hourly, Daily, Weekly, Monthly, Batches) -->
+      <div class="tabs-header">
+        <button class="tab-btn active" onclick="switchTab('hourly')">Hourly</button>
+        <button class="tab-btn" onclick="switchTab('daily')">Daily</button>
+        <button class="tab-btn" onclick="switchTab('weekly')">Weekly</button>
+        <button class="tab-btn" onclick="switchTab('monthly')">Monthly</button>
+        <button class="tab-btn" onclick="switchTab('batches')">Batches</button>
+      </div>
+
+      <div class="tab-content">
+        <!-- View: Hourly -->
+        <div class="tab-view active" id="view-hourly">
+          <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px; font-weight:700;">Hourly Output (Last 12 Hours):</div>
+          <div id="hourly-list" style="display:flex; flex-direction:column; gap:5px;">
+            <div style="color:#94a3b8; font-size:12px;">Loading hourly data...</div>
+          </div>
+        </div>
+
+        <!-- View: Daily -->
+        <div class="tab-view" id="view-daily">
+          <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px; font-weight:700;">Date-wise Production (Last 7 Days):</div>
+          <div id="daily-list" style="display:flex; flex-direction:column; gap:5px;">
+            <div style="color:#94a3b8; font-size:12px;">Loading daily history...</div>
+          </div>
+        </div>
+
+        <!-- View: Weekly (Monday - Sunday) -->
+        <div class="tab-view" id="view-weekly">
+          <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px; font-weight:700;">Weekly Output (Mon – Sun Breakdown):</div>
+          <div class="report-grid" id="weekly-grid">
+            <div style="color:#94a3b8; font-size:12px;">Loading weekly breakdown...</div>
+          </div>
+        </div>
+
+        <!-- View: Monthly -->
+        <div class="tab-view" id="view-monthly">
+          <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px; font-weight:700;">Month-wise Production Reports:</div>
+          <div id="monthly-list" style="display:flex; flex-direction:column; gap:6px;">
+            <div style="color:#94a3b8; font-size:12px;">Loading monthly reports...</div>
+          </div>
+        </div>
+
+        <!-- View: Recent Batches -->
+        <div class="tab-view" id="view-batches">
+          <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px; font-weight:700;">Recent Batches Execution Log:</div>
+          <div id="batches-list" style="display:flex; flex-direction:column; gap:6px;">
+            <div style="color:#94a3b8; font-size:12px;">Loading batches log...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Next Batch -->
+  <div class="modal-overlay" id="modal-new-batch">
+    <div class="modal-box">
+      <div class="modal-title">🚀 Launch Next Batch</div>
+      <div style="font-size:12px; color:#cbd5e1;">Configure target quantity for new production run. Baseline will be saved automatically.</div>
+      <label style="font-size:11px; color:#fde047; font-weight:700;">Target Output Units (pcs):</label>
+      <input type="number" id="input-target-units" class="modal-input" value="100" min="1" max="10000" />
+      <div class="modal-btns">
+        <button class="modal-btn modal-btn-cancel" onclick="closeNewBatchModal()">Cancel</button>
+        <button class="modal-btn modal-btn-confirm" onclick="submitNewBatch()">Confirm &amp; Start</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let activeBatchStatus = 'RUNNING';
+    let currentTab = 'hourly';
+
+    function switchTab(tabName) {
+      currentTab = tabName;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+
+      const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.textContent.toLowerCase().includes(tabName.slice(0, 4)));
+      if (btn) btn.classList.add('active');
+
+      const view = document.getElementById('view-' + tabName);
+      if (view) view.classList.add('active');
+    }
+
+    async function fetchActiveBatch() {
+      try {
+        const res = await fetch('/api/batch/active', { cache: 'no-store' });
+        const data = await res.json();
+        if (!data.success) return;
+
+        const batch = data.batch || {};
+        const sensors = data.sensors || {};
+        activeBatchStatus = batch.status || 'RUNNING';
+
+        // Update live counters
+        const cycleEl = document.getElementById('live-cycle-val');
+        const lifeEl = document.getElementById('live-life-val');
+        if (cycleEl) cycleEl.textContent = Number(sensors.productCount || 0).toFixed(0);
+        if (lifeEl) lifeEl.textContent = Number(sensors.productCountTotal || 0).toFixed(0);
+
+        // Update status badge
+        const badge = document.getElementById('batch-status-badge');
+        if (badge) {
+          badge.className = 'badge-status ' + (activeBatchStatus === 'RUNNING' ? 'badge-running' : activeBatchStatus === 'PAUSED' ? 'badge-paused' : 'badge-completed');
+          badge.textContent = activeBatchStatus === 'RUNNING' ? '● RUNNING' : activeBatchStatus === 'PAUSED' ? '⏸ PAUSED' : '✔ COMPLETED';
+        }
+
+        // Update pause/resume button label
+        const prBtn = document.getElementById('btn-pause-resume');
+        if (prBtn) {
+          if (activeBatchStatus === 'PAUSED') {
+            prBtn.textContent = '▶ Resume';
+            prBtn.className = 'btn-action btn-next';
+          } else {
+            prBtn.textContent = '⏸ Pause';
+            prBtn.className = 'btn-action btn-pause';
+          }
+        }
+
+        // Update batch meta & progress
+        document.getElementById('batch-id-val').textContent = batch.batch_id || 'BATCH-1001';
+        document.getElementById('batch-target-val').textContent = (batch.target_units || 100) + ' pcs';
+        document.getElementById('batch-produced-val').textContent = batch.current_output || 0;
+        document.getElementById('batch-pct-val').textContent = (batch.progressPct || 0) + '%';
+        document.getElementById('batch-remaining-val').textContent = batch.remainingUnits !== undefined ? batch.remainingUnits : 0;
+
+        const fill = document.getElementById('batch-progress-fill');
+        if (fill) fill.style.width = Math.min(100, Math.max(0, batch.progressPct || 0)) + '%';
+
+      } catch (err) {
+        console.error('Fetch batch error:', err);
+      }
+    }
+
+    async function fetchAnalytics() {
+      try {
+        const res = await fetch('/api/batch/analytics', { cache: 'no-store' });
+        const data = await res.json();
+        if (!data.success || !data.analytics) return;
+
+        const a = data.analytics;
+
+        // 1. Hourly render
+        const hourlyEl = document.getElementById('hourly-list');
+        if (hourlyEl && Array.isArray(a.hourly) && a.hourly.length) {
+          const maxOut = Math.max(1, ...a.hourly.map(h => h.output));
+          hourlyEl.innerHTML = a.hourly.slice(-8).map(h => {
+            const pct = Math.round((h.output / maxOut) * 100);
+            return '<div class="bar-row">' +
+              '<span class="bar-label">' + h.label + '</span>' +
+              '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;"></div></div>' +
+              '<span class="bar-val">' + h.output + ' pcs</span>' +
+            '</div>';
+          }).join('');
+        }
+
+        // 2. Daily render
+        const dailyEl = document.getElementById('daily-list');
+        if (dailyEl && Array.isArray(a.daily) && a.daily.length) {
+          const maxDay = Math.max(1, ...a.daily.map(d => d.output));
+          dailyEl.innerHTML = a.daily.map(d => {
+            const pct = Math.round((d.output / maxDay) * 100);
+            return '<div class="bar-row">' +
+              '<span class="bar-label">' + d.date.slice(5) + '</span>' +
+              '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%; background: linear-gradient(90deg, #ff9e00, #34d399);"></div></div>' +
+              '<span class="bar-val">' + d.output + ' pcs</span>' +
+            '</div>';
+          }).join('');
+        }
+
+        // 3. Weekly render (Mon - Sun)
+        const weeklyEl = document.getElementById('weekly-grid');
+        if (weeklyEl && Array.isArray(a.weekly) && a.weekly.length) {
+          const todayStr = new Date().toISOString().slice(0, 10);
+          weeklyEl.innerHTML = a.weekly.map(w => {
+            const isToday = w.date === todayStr;
+            return '<div class="report-card ' + (isToday ? 'today' : '') + '">' +
+              '<span class="report-key">' + w.day + '</span>' +
+              '<span class="report-num">' + w.output + '</span>' +
+              '<span class="report-unit">pcs</span>' +
+            '</div>';
+          }).join('');
+        }
+
+        // 4. Monthly render
+        const monthlyEl = document.getElementById('monthly-list');
+        if (monthlyEl && Array.isArray(a.monthly) && a.monthly.length) {
+          monthlyEl.innerHTML = a.monthly.map(m => {
+            return '<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:6px 10px; border-radius:8px;">' +
+              '<div style="display:flex; flex-direction:column;">' +
+                '<strong style="color:#fef08a; font-size:12px;">' + m.month + '</strong>' +
+                '<span style="font-size:10px; color:#94a3b8;">' + m.activeDays + ' production days</span>' +
+              '</div>' +
+              '<div style="text-align:right;">' +
+                '<strong style="color:#ffbe0b; font-size:14px;">' + m.output + ' pcs</strong>' +
+                '<div style="font-size:10px; color:#cbd5e1;">Cumulative: ' + m.endTotal + '</div>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+        }
+
+        // 5. Batches log render
+        const batchesEl = document.getElementById('batches-list');
+        if (batchesEl && Array.isArray(a.batches) && a.batches.length) {
+          batchesEl.innerHTML = a.batches.map(b => {
+            const isRun = b.status === 'RUNNING';
+            const isPau = b.status === 'PAUSED';
+            const color = isRun ? '#34d399' : isPau ? '#fbbf24' : '#cbd5e1';
+            return '<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:6px 10px; border-radius:8px; font-size:11px;">' +
+              '<div>' +
+                '<strong style="color:#ffbe0b;">' + b.batch_id + '</strong>' +
+                '<div style="color:#94a3b8; font-size:10px;">Target: ' + b.target_units + ' pcs</div>' +
+              '</div>' +
+              '<div style="text-align:right;">' +
+                '<strong style="color:#ffffff;">' + b.current_output + ' pcs</strong>' +
+                '<div style="color:' + color + '; font-weight:800; font-size:10px;">' + b.status + '</div>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+        }
+
+      } catch (err) {
+        console.error('Fetch analytics error:', err);
+      }
+    }
+
+    async function handlePauseResume() {
+      const endpoint = activeBatchStatus === 'PAUSED' ? '/api/batch/resume' : '/api/batch/pause';
+      try {
+        await fetch(endpoint, { method: 'POST' });
+        setTimeout(() => { fetchActiveBatch(); fetchAnalytics(); }, 300);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function handleComplete() {
+      if (!confirm('Mark current batch as completed and save final output?')) return;
+      try {
+        await fetch('/api/batch/complete', { method: 'POST' });
+        setTimeout(() => { fetchActiveBatch(); fetchAnalytics(); }, 300);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function openNewBatchModal() {
+      const m = document.getElementById('modal-new-batch');
+      if (m) m.style.display = 'flex';
+    }
+
+    function closeNewBatchModal() {
+      const m = document.getElementById('modal-new-batch');
+      if (m) m.style.display = 'none';
+    }
+
+    async function submitNewBatch() {
+      const input = document.getElementById('input-target-units');
+      const targetUnits = input ? Number(input.value) : 100;
+      closeNewBatchModal();
+      try {
+        await fetch('/api/batch/new', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ targetUnits: targetUnits || 100 })
+        });
+        setTimeout(() => { fetchActiveBatch(); fetchAnalytics(); }, 400);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    fetchActiveBatch();
+    fetchAnalytics();
+    setInterval(fetchActiveBatch, 2000);
+    setInterval(fetchAnalytics, 5000);
+  </script>
+</body>
+</html>`;
+}
+
+/* ============================================================
    CONVEYOR SYSTEM UNIFIED CARD (Power + ON/OFF Status)
    ============================================================ */
 function conveyorUnifiedDisplayPage() {
@@ -3040,6 +4143,19 @@ app.get(
     } else {
       res.send(productionCountsDisplayPage());
     }
+  }
+);
+
+/* ---------- 11. MES Production & Batch Management Card ---------- */
+app.get(
+  [
+    "/display/production-mes",
+    "/display/batch-mes",
+    "/display/production-advanced",
+    "/display/batch-management"
+  ],
+  (req, res) => {
+    res.send(productionMesDisplayPage());
   }
 );
 
@@ -3433,6 +4549,7 @@ app.get("/display/camera", (req, res) => {
 /* ---------- 23. Display Cards Gallery Overview ---------- */
 app.get("/display", (req, res) => {
   const routes = [
+    { path: "/display/production-mes", title: "MES Production & Batch Terminal", theme: "Amber Gold" },
     { path: "/display/products", title: "Product Counts (Batch + Lifetime)", theme: "Mint Green" },
     { path: "/display/conveyor", title: "Conveyor System (Power + Motor Switch)", theme: "Electric Purple" },
     { path: "/display/lighting", title: "Lighting & Power (Light W + Total W + Switch)", theme: "Golden Yellow" },
