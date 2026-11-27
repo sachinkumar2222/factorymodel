@@ -1482,11 +1482,13 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
         </div>
       </div>`;
   } else if (type === "servo") {
+    const isP2 = title.includes("2");
+    const personNum = isP2 ? 2 : 1;
     bodyHtml = `
       <div class="control-row">
         <div class="btn-group">
-          <span class="state-btn btn-home" id="btn-home">HOME</span>
-          <span class="state-btn btn-move" id="btn-move">MOVED</span>
+          <button class="state-btn btn-home" id="btn-home" onclick="triggerServo(${personNum}, 'home')">HOME</button>
+          <button class="state-btn btn-move" id="btn-move" onclick="triggerServo(${personNum}, 'move')">MOVED</button>
         </div>
       </div>`;
   } else if (type === "camera") {
@@ -1775,16 +1777,17 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
       box-shadow: 0 0 14px rgba(220, 38, 38, 0.6);
     }
     .state-btn.active-home {
-      background: #2563eb;
+      background: linear-gradient(135deg, #ff7700, #ea580c);
       color: #ffffff;
-      border-color: #60a5fa;
-      box-shadow: 0 0 14px rgba(37, 99, 235, 0.6);
+      border-color: #fed7aa;
+      box-shadow: 0 0 16px rgba(255, 119, 0, 0.6);
     }
     .state-btn.active-move {
-      background: #f59e0b;
-      color: #ffffff;
-      border-color: #fbbf24;
-      box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
+      background: linear-gradient(135deg, #ffbe0b, #f59e0b);
+      color: #000000;
+      font-weight: 900;
+      border-color: #fde047;
+      box-shadow: 0 0 16px rgba(255, 190, 11, 0.6);
     }
     .state-btn.active-rec {
       background: #dc2626;
@@ -1906,6 +1909,27 @@ function iframeDisplayPage(arg1, arg2, arg3, arg4) {
         }
       } catch (err) {
         console.error('Update error:', err);
+      }
+    }
+
+    async function triggerServo(personNum, action) {
+      const endpoint = '/api/control/person' + personNum + '/' + action;
+      const btnHome = document.getElementById('btn-home');
+      const btnMove = document.getElementById('btn-move');
+      if (btnHome && btnMove) {
+        if (action === 'home') {
+          btnHome.className = 'state-btn btn-home active-home';
+          btnMove.className = 'state-btn btn-move';
+        } else {
+          btnMove.className = 'state-btn btn-move active-move';
+          btnHome.className = 'state-btn btn-home';
+        }
+      }
+      try {
+        await fetch(endpoint, { method: 'POST' });
+        setTimeout(updateDisplay, 400);
+      } catch (err) {
+        console.error('Trigger servo error:', err);
       }
     }
 
@@ -3370,7 +3394,7 @@ app.get("/display/person1", (req, res) => {
     iframeDisplayPage({
       title: "Person 1 Servo",
       valueExpression: `Number(state.servos?.person1Angle) === 180 ? 'HOME' : 'MOVED'`,
-      theme: req.query.theme || "blue",
+      theme: req.query.theme || "amber",
       icon: "🤖",
       type: "servo",
       rowLabel: "Person 1 Arm"
@@ -3384,7 +3408,7 @@ app.get("/display/person2", (req, res) => {
     iframeDisplayPage({
       title: "Person 2 Servo",
       valueExpression: `Number(state.servos?.person2Angle) === 0 ? 'HOME' : 'MOVED'`,
-      theme: req.query.theme || "fuchsia",
+      theme: req.query.theme || "emerald",
       icon: "👷",
       type: "servo",
       rowLabel: "Person 2 Arm"
