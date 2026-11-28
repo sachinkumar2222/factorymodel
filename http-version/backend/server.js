@@ -3170,13 +3170,13 @@ function productionMesDisplayPage() {
       padding: 6px;
       display: inline-flex;
       width: 100%;
-      max-width: 580px;
+      max-width: 630px;
       justify-content: center;
       box-sizing: border-box;
       transition: max-width 0.35s ease;
     }
     .card-wrap.expanded {
-      max-width: 1080px;
+      max-width: 1300px;
     }
 
     .card {
@@ -3362,11 +3362,11 @@ function productionMesDisplayPage() {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 800;
     }
     .batch-id-tag {
-      font-size: 22px !important;
+      font-size: 24px !important;
       color: #ffbe0b;
       font-weight: 800;
       letter-spacing: 0.02em;
@@ -3376,7 +3376,7 @@ function productionMesDisplayPage() {
       white-space: nowrap;
     }
     .batch-target-tag {
-      font-size: 21px !important;
+      font-size: 23px !important;
       font-weight: 800;
       color: #f1f5f9;
       background: rgba(255, 255, 255, 0.12);
@@ -3389,15 +3389,15 @@ function productionMesDisplayPage() {
     .progress-container {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 7px;
       width: 100%;
       box-sizing: border-box;
     }
     .progress-bar-track {
       width: 100%;
-      height: 18px;
+      height: 20px;
       background: rgba(0, 0, 0, 0.6);
-      border-radius: 9px;
+      border-radius: 10px;
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.15);
       position: relative;
@@ -3407,14 +3407,14 @@ function productionMesDisplayPage() {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #ff7700 0%, #ffbe0b 100%);
-      border-radius: 9px;
+      border-radius: 10px;
       box-shadow: 0 0 10px rgba(255, 190, 11, 0.6);
       transition: width 0.4s ease;
     }
     .progress-info-row {
       display: flex;
       justify-content: space-between;
-      font-size: 20px !important;
+      font-size: 22px !important;
       font-weight: 700;
       color: #cbd5e1;
       white-space: nowrap;
@@ -3422,21 +3422,21 @@ function productionMesDisplayPage() {
     .progress-highlight {
       color: #ffbe0b;
       font-weight: 800;
-      font-size: 20px !important;
+      font-size: 22px !important;
     }
 
-    /* Batch Action Buttons (18px font, perfectly spaced, zero squishing/overlap) */
+    /* Batch Action Buttons (20px font, generously spaced, zero squishing/overlap) */
     .batch-controls {
       display: flex;
       gap: 8px;
-      margin-top: 4px;
+      margin-top: 5px;
       width: 100%;
       box-sizing: border-box;
     }
     .btn-action {
       flex: 1;
-      padding: 8px 10px;
-      font-size: 18px !important;
+      padding: 8px 12px;
+      font-size: 20px !important;
       font-weight: 800;
       border-radius: 8px;
       border: 1px solid transparent;
@@ -3449,7 +3449,7 @@ function productionMesDisplayPage() {
       text-transform: uppercase;
       letter-spacing: 0.02em;
       white-space: nowrap;
-      height: 44px;
+      height: 48px;
       box-sizing: border-box;
       min-width: 0;
     }
@@ -3487,9 +3487,9 @@ function productionMesDisplayPage() {
     /* Analytics Navigation Tabs (Contained, no overflow) */
     .tabs-header {
       display: flex;
-      gap: 4px;
+      gap: 5px;
       background: rgba(0, 0, 0, 0.4);
-      padding: 3px;
+      padding: 4px;
       border-radius: 8px;
       border: 1px solid rgba(255, 255, 255, 0.08);
       width: 100%;
@@ -3497,9 +3497,9 @@ function productionMesDisplayPage() {
     }
     .tab-btn {
       flex: 1;
-      font-size: 14px !important;
+      font-size: 18px !important;
       font-weight: 800;
-      padding: 6px 4px;
+      padding: 9px 6px;
       border-radius: 6px;
       border: none;
       background: transparent;
@@ -3524,29 +3524,29 @@ function productionMesDisplayPage() {
       background: rgba(0, 0, 0, 0.35);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
-      padding: 10px 12px;
+      padding: 12px 14px;
       flex: 1;
-      min-height: 250px;
-      max-height: 295px;
+      min-height: 310px;
+      max-height: 360px;
       overflow-y: auto;
       overflow-x: hidden;
       display: flex;
       flex-direction: column;
-      gap: 7px;
+      gap: 8px;
       width: 100%;
       box-sizing: border-box;
     }
     .tab-title {
-      font-size: 19px !important;
+      font-size: 24px !important;
       font-weight: 800;
       color: #fef08a;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
       white-space: nowrap;
     }
     .tab-view {
       display: none;
       flex-direction: column;
-      gap: 6px;
+      gap: 7px;
       width: 100%;
       box-sizing: border-box;
     }
@@ -3558,16 +3558,16 @@ function productionMesDisplayPage() {
     .bar-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 19px !important;
+      gap: 14px;
+      font-size: 24px !important;
       font-weight: 800;
       width: 100%;
       box-sizing: border-box;
     }
     .bar-label {
-      font-size: 19px !important;
-      width: 78px;
-      min-width: 78px;
+      font-size: 24px !important;
+      width: 100px;
+      min-width: 100px;
       color: #cbd5e1;
       font-weight: 800;
       white-space: nowrap;
@@ -3576,10 +3576,10 @@ function productionMesDisplayPage() {
     }
     .bar-track {
       flex: 1;
-      min-width: 50px;
-      height: 20px;
+      min-width: 70px;
+      height: 28px;
       background: rgba(255, 255, 255, 0.08);
-      border-radius: 6px;
+      border-radius: 8px;
       overflow: hidden;
       display: flex;
       box-sizing: border-box;
@@ -3587,13 +3587,13 @@ function productionMesDisplayPage() {
     .bar-fill {
       height: 100%;
       background: linear-gradient(90deg, #f59e0b, #ffbe0b);
-      border-radius: 6px;
+      border-radius: 8px;
       transition: width 0.3s ease;
     }
     .bar-val {
-      font-size: 19px !important;
-      width: 78px;
-      min-width: 78px;
+      font-size: 24px !important;
+      width: 105px;
+      min-width: 105px;
       text-align: right;
       color: #fef08a;
       font-weight: 800;
@@ -3604,8 +3604,8 @@ function productionMesDisplayPage() {
     /* Grid for Weekly (Ample space, 0 overlap) */
     .report-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
-      gap: 8px;
+      grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+      gap: 12px;
       width: 100%;
       box-sizing: border-box;
     }
@@ -3613,11 +3613,11 @@ function productionMesDisplayPage() {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.10);
       border-radius: 8px;
-      padding: 7px 6px;
+      padding: 10px 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 3px;
+      gap: 4px;
       box-sizing: border-box;
     }
     .report-card.today {
@@ -3625,19 +3625,19 @@ function productionMesDisplayPage() {
       background: rgba(251, 191, 36, 0.14);
     }
     .report-key {
-      font-size: 17px !important;
+      font-size: 21px !important;
       font-weight: 800;
       color: #cbd5e1;
       text-transform: uppercase;
       white-space: nowrap;
     }
     .report-num {
-      font-size: 24px !important;
+      font-size: 30px !important;
       font-weight: 900;
       color: #ffbe0b;
     }
     .report-unit {
-      font-size: 16px !important;
+      font-size: 20px !important;
       font-weight: 700;
       color: #94a3b8;
     }
@@ -3787,7 +3787,7 @@ function productionMesDisplayPage() {
             <div class="tab-view active" id="view-hourly">
               <div class="tab-title">Hourly Output (Last 12 Hours):</div>
               <div id="hourly-list" style="display:flex; flex-direction:column; gap:6px;">
-                <div style="color:#94a3b8; font-size:18px;">Loading hourly data...</div>
+                <div style="color:#94a3b8; font-size:22px;">Loading hourly data...</div>
               </div>
             </div>
 
@@ -3795,7 +3795,7 @@ function productionMesDisplayPage() {
             <div class="tab-view" id="view-daily">
               <div class="tab-title">Date-wise Production (Last 7 Days):</div>
               <div id="daily-list" style="display:flex; flex-direction:column; gap:6px;">
-                <div style="color:#94a3b8; font-size:18px;">Loading daily history...</div>
+                <div style="color:#94a3b8; font-size:22px;">Loading daily history...</div>
               </div>
             </div>
 
@@ -3803,7 +3803,7 @@ function productionMesDisplayPage() {
             <div class="tab-view" id="view-weekly">
               <div class="tab-title">Weekly Output (Date-wise Breakdown):</div>
               <div class="report-grid" id="weekly-grid">
-                <div style="color:#94a3b8; font-size:18px;">Loading weekly breakdown...</div>
+                <div style="color:#94a3b8; font-size:22px;">Loading weekly breakdown...</div>
               </div>
             </div>
 
@@ -3811,7 +3811,7 @@ function productionMesDisplayPage() {
             <div class="tab-view" id="view-monthly">
               <div class="tab-title">Month-wise Production Reports:</div>
               <div id="monthly-list" style="display:flex; flex-direction:column; gap:6px;">
-                <div style="color:#94a3b8; font-size:18px;">Loading monthly reports...</div>
+                <div style="color:#94a3b8; font-size:22px;">Loading monthly reports...</div>
               </div>
             </div>
 
@@ -3819,7 +3819,7 @@ function productionMesDisplayPage() {
             <div class="tab-view" id="view-batches">
               <div class="tab-title">Recent Batches Execution Log:</div>
               <div id="batches-list" style="display:flex; flex-direction:column; gap:6px;">
-                <div style="color:#94a3b8; font-size:18px;">Loading batches log...</div>
+                <div style="color:#94a3b8; font-size:22px;">Loading batches log...</div>
               </div>
             </div>
           </div>
@@ -3953,14 +3953,14 @@ function productionMesDisplayPage() {
         const monthlyEl = document.getElementById('monthly-list');
         if (monthlyEl && Array.isArray(a.monthly) && a.monthly.length) {
           monthlyEl.innerHTML = a.monthly.map(m => {
-            return '<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:8px;">' +
+            return '<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:10px 14px; border-radius:8px;">' +
               '<div style="display:flex; flex-direction:column;">' +
-                '<strong style="color:#fef08a; font-size:22px;">' + m.month + '</strong>' +
-                '<span style="font-size:18px; color:#cbd5e1;">' + m.activeDays + ' production days</span>' +
+                '<strong style="color:#fef08a; font-size:26px;">' + m.month + '</strong>' +
+                '<span style="font-size:22px; color:#cbd5e1;">' + m.activeDays + ' production days</span>' +
               '</div>' +
               '<div style="text-align:right;">' +
-                '<strong style="color:#ffbe0b; font-size:23px;">' + m.output + ' pcs</strong>' +
-                '<div style="font-size:18px; color:#cbd5e1;">Cumulative: ' + m.endTotal + '</div>' +
+                '<strong style="color:#ffbe0b; font-size:28px;">' + m.output + ' pcs</strong>' +
+                '<div style="font-size:22px; color:#cbd5e1;">Cumulative: ' + m.endTotal + '</div>' +
               '</div>' +
             '</div>';
           }).join('');
@@ -3973,14 +3973,14 @@ function productionMesDisplayPage() {
             const isRun = b.status === 'RUNNING';
             const isPau = b.status === 'PAUSED';
             const color = isRun ? '#34d399' : isPau ? '#fbbf24' : '#cbd5e1';
-            return '<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:8px;">' +
+            return '<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:10px 14px; border-radius:8px;">' +
               '<div>' +
-                '<strong style="color:#ffbe0b; font-size:22px;">' + b.batch_id + '</strong>' +
-                '<div style="color:#cbd5e1; font-size:18px; font-weight:700;">Target: ' + b.target_units + ' pcs</div>' +
+                '<strong style="color:#ffbe0b; font-size:26px;">' + b.batch_id + '</strong>' +
+                '<div style="color:#cbd5e1; font-size:22px; font-weight:700;">Target: ' + b.target_units + ' pcs</div>' +
               '</div>' +
               '<div style="text-align:right;">' +
-                '<strong style="color:#ffffff; font-size:22px;">' + b.current_output + ' pcs</strong>' +
-                '<div style="color:' + color + '; font-weight:900; font-size:18px;">' + b.status + '</div>' +
+                '<strong style="color:#ffffff; font-size:26px;">' + b.current_output + ' pcs</strong>' +
+                '<div style="color:' + color + '; font-weight:900; font-size:22px;">' + b.status + '</div>' +
               '</div>' +
             '</div>';
           }).join('');
