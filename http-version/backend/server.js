@@ -3066,13 +3066,14 @@ function productionMesDisplayPage() {
       padding: 6px;
       display: inline-flex;
       width: 100%;
-      max-width: 440px;
+      max-width: 820px;
+      justify-content: center;
     }
 
     .card {
       width: 100%;
       border-radius: 20px;
-      padding: 16px 18px;
+      padding: 16px 20px;
       color: #ffffff;
       backdrop-filter: blur(22px) saturate(190%);
       -webkit-backdrop-filter: blur(22px) saturate(190%);
@@ -3081,27 +3082,23 @@ function productionMesDisplayPage() {
       box-shadow: 0 14px 40px -5px rgba(0, 0, 0, 0.70), 0 0 25px rgba(245, 158, 11, 0.25);
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       transition: all 0.3s ease;
     }
 
-    /* Header */
+    /* Header (Online / Running badge removed) */
     .terminal-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
       border-bottom: 1px solid rgba(251, 191, 36, 0.25);
-      padding-bottom: 10px;
-    }
-    .terminal-title-group {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+      padding-bottom: 8px;
     }
     .terminal-title {
-      font-size: 15px;
+      font-size: 17px;
       font-weight: 800;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
       color: #fef08a;
       text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
@@ -3110,48 +3107,37 @@ function productionMesDisplayPage() {
       gap: 6px;
     }
     .terminal-subtitle {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
       color: #fed7aa;
       letter-spacing: 0.02em;
     }
 
-    /* Status Badge */
-    .badge-status {
-      font-size: 11px;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 999px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
+    /* Landscape 2-Column Grid */
+    .landscape-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 16px;
+      align-items: stretch;
     }
-    .badge-running {
-      background: rgba(16, 185, 129, 0.25);
-      border: 1px solid #34d399;
-      color: #a7f3d0;
-      box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
-      animation: pulse-badge 1.8s infinite;
-    }
-    .badge-paused {
-      background: rgba(245, 158, 11, 0.25);
-      border: 1px solid #fbbf24;
-      color: #fef08a;
-      box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
-    }
-    .badge-completed {
-      background: rgba(148, 163, 184, 0.25);
-      border: 1px solid #cbd5e1;
-      color: #e2e8f0;
-    }
-    @keyframes pulse-badge {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.8; transform: scale(0.97); }
+    @media (max-width: 720px) {
+      .landscape-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
-    /* Live 2-Col Metrics */
+    .col-left {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .col-right {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Live 2-Col Metrics (Text size 20px) */
     .metric-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -3161,17 +3147,18 @@ function productionMesDisplayPage() {
       background: rgba(0, 0, 0, 0.35);
       border: 1px solid rgba(255, 255, 255, 0.10);
       border-radius: 12px;
-      padding: 9px 12px;
+      padding: 10px 14px;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 3px;
     }
     .metric-label {
-      font-size: 13px;
+      font-size: 20px !important; /* 20px requested */
       font-weight: 800;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.03em;
       text-transform: uppercase;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
+      white-space: nowrap;
     }
     .metric-box.orange .metric-label { color: #fed7aa; }
     .metric-box.emerald .metric-label { color: #a7f3d0; }
@@ -3179,11 +3166,11 @@ function productionMesDisplayPage() {
     .metric-value-row {
       display: flex;
       align-items: baseline;
-      gap: 5px;
+      gap: 6px;
       margin-top: 2px;
     }
     .metric-value {
-      font-size: 30px;
+      font-size: 34px !important;
       font-weight: 900;
       letter-spacing: -0.02em;
       line-height: 1.1;
@@ -3192,16 +3179,16 @@ function productionMesDisplayPage() {
     }
     .metric-box.orange .metric-value {
       color: #ffbe0b;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 12px rgba(255, 190, 11, 0.4);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 14px rgba(255, 190, 11, 0.45);
     }
     .metric-box.emerald .metric-value {
       color: #34d399;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 12px rgba(52, 211, 153, 0.4);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 14px rgba(52, 211, 153, 0.45);
     }
     .metric-unit {
-      font-size: 16px;
+      font-size: 20px !important; /* 20px requested */
       font-weight: 800;
-      color: rgba(255, 255, 255, 0.75);
+      color: rgba(255, 255, 255, 0.85);
     }
 
     /* Active Batch Execution Card */
@@ -3359,7 +3346,10 @@ function productionMesDisplayPage() {
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
       padding: 10px 12px;
-      min-height: 140px;
+      flex: 1;
+      min-height: 190px;
+      max-height: 230px;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -3383,7 +3373,7 @@ function productionMesDisplayPage() {
       font-weight: 700;
     }
     .bar-label {
-      width: 52px;
+      width: 48px;
       color: #cbd5e1;
       white-space: nowrap;
       text-align: right;
@@ -3403,7 +3393,7 @@ function productionMesDisplayPage() {
       transition: width 0.3s ease;
     }
     .bar-val {
-      width: 50px;
+      width: 48px;
       text-align: right;
       color: #fef08a;
       font-weight: 800;
@@ -3412,7 +3402,7 @@ function productionMesDisplayPage() {
     /* Compact Grid for Weekly / Monthly */
     .report-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
       gap: 6px;
     }
     .report-card {
@@ -3512,104 +3502,109 @@ function productionMesDisplayPage() {
 <body>
   <div class="card-wrap">
     <div class="card" id="mes-card">
-      <!-- 1. TERMINAL HEADER -->
+      <!-- 1. TERMINAL HEADER (Clean, no online badge) -->
       <div class="terminal-header">
-        <div class="terminal-title-group">
-          <div class="terminal-title">⚙️ MES Production Terminal</div>
-          <div class="terminal-subtitle">Supervisory Batch Execution &amp; History</div>
-        </div>
-        <span class="badge-status badge-running" id="batch-status-badge">● RUNNING</span>
+        <div class="terminal-title">⚙️ MES Production Terminal</div>
+        <div class="terminal-subtitle">Supervisory Batch Execution &amp; History</div>
       </div>
 
-      <!-- 2. LIVE PRODUCTION METRICS (Batch/Cycle Count & Lifetime Total) -->
-      <div class="metric-grid">
-        <div class="metric-box orange">
-          <span class="metric-label">Current Cycle</span>
-          <div class="metric-value-row">
-            <span class="metric-value" id="live-cycle-val">--</span>
-            <span class="metric-unit">pcs</span>
+      <!-- 2. LANDSCAPE 2-COLUMN LAYOUT -->
+      <div class="landscape-grid">
+        <!-- LEFT COLUMN: Live Metrics & Active Batch -->
+        <div class="col-left">
+          <!-- 2-COL LIVE METRICS (20px labels & units) -->
+          <div class="metric-grid">
+            <div class="metric-box orange">
+              <span class="metric-label">Current Cycle</span>
+              <div class="metric-value-row">
+                <span class="metric-value" id="live-cycle-val">--</span>
+                <span class="metric-unit">pcs</span>
+              </div>
+            </div>
+            <div class="metric-box emerald">
+              <span class="metric-label">Lifetime Output</span>
+              <div class="metric-value-row">
+                <span class="metric-value" id="live-life-val">--</span>
+                <span class="metric-unit">pcs</span>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="metric-box emerald">
-          <span class="metric-label">Lifetime Output</span>
-          <div class="metric-value-row">
-            <span class="metric-value" id="live-life-val">--</span>
-            <span class="metric-unit">pcs</span>
-          </div>
-        </div>
-      </div>
 
-      <!-- 3. ACTIVE BATCH EXECUTION & MES CONTROLS -->
-      <div class="batch-panel">
-        <div class="batch-meta-row">
-          <div class="batch-id-tag">📦 Batch: <span id="batch-id-val">BATCH-1001</span></div>
-          <div class="batch-target-tag">Target: <strong id="batch-target-val">100 pcs</strong></div>
-        </div>
+          <!-- ACTIVE BATCH EXECUTION & MES CONTROLS -->
+          <div class="batch-panel">
+            <div class="batch-meta-row">
+              <div class="batch-id-tag">📦 Batch: <span id="batch-id-val">BATCH-1001</span></div>
+              <div class="batch-target-tag">Target: <strong id="batch-target-val">100 pcs</strong></div>
+            </div>
 
-        <div class="progress-container">
-          <div class="progress-bar-track">
-            <div class="progress-bar-fill" id="batch-progress-fill" style="width: 0%;"></div>
-          </div>
-          <div class="progress-info-row">
-            <span>Produced: <strong class="progress-highlight" id="batch-produced-val">0</strong> pcs (<strong id="batch-pct-val">0%</strong>)</span>
-            <span>Remaining: <strong id="batch-remaining-val">100</strong> pcs</span>
-          </div>
-        </div>
+            <div class="progress-container">
+              <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="batch-progress-fill" style="width: 0%;"></div>
+              </div>
+              <div class="progress-info-row">
+                <span>Produced: <strong class="progress-highlight" id="batch-produced-val">0</strong> pcs (<strong id="batch-pct-val">0%</strong>)</span>
+                <span>Remaining: <strong id="batch-remaining-val">100</strong> pcs</span>
+              </div>
+            </div>
 
-        <div class="batch-controls">
-          <button class="btn-action btn-pause" id="btn-pause-resume" onclick="handlePauseResume()">⏸ Pause</button>
-          <button class="btn-action btn-complete" id="btn-complete" onclick="handleComplete()">✔ Complete</button>
-          <button class="btn-action btn-next" id="btn-next" onclick="openNewBatchModal()">+ Next Batch</button>
-        </div>
-      </div>
-
-      <!-- 4. ANALYTICS & PRODUCTION HISTORY (Hourly, Daily, Weekly, Monthly, Batches) -->
-      <div class="tabs-header">
-        <button class="tab-btn active" onclick="switchTab('hourly')">Hourly</button>
-        <button class="tab-btn" onclick="switchTab('daily')">Daily</button>
-        <button class="tab-btn" onclick="switchTab('weekly')">Weekly</button>
-        <button class="tab-btn" onclick="switchTab('monthly')">Monthly</button>
-        <button class="tab-btn" onclick="switchTab('batches')">Batches</button>
-      </div>
-
-      <div class="tab-content">
-        <!-- View: Hourly -->
-        <div class="tab-view active" id="view-hourly">
-          <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px; font-weight:700;">Hourly Output (Last 12 Hours):</div>
-          <div id="hourly-list" style="display:flex; flex-direction:column; gap:5px;">
-            <div style="color:#94a3b8; font-size:12px;">Loading hourly data...</div>
+            <div class="batch-controls">
+              <button class="btn-action btn-pause" id="btn-pause-resume" onclick="handlePauseResume()">⏸ Pause</button>
+              <button class="btn-action btn-complete" id="btn-complete" onclick="handleComplete()">✔ Complete</button>
+              <button class="btn-action btn-next" id="btn-next" onclick="openNewBatchModal()">+ Next Batch</button>
+            </div>
           </div>
         </div>
 
-        <!-- View: Daily -->
-        <div class="tab-view" id="view-daily">
-          <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px; font-weight:700;">Date-wise Production (Last 7 Days):</div>
-          <div id="daily-list" style="display:flex; flex-direction:column; gap:5px;">
-            <div style="color:#94a3b8; font-size:12px;">Loading daily history...</div>
+        <!-- RIGHT COLUMN: Production History & Analytics Tabs -->
+        <div class="col-right">
+          <div class="tabs-header">
+            <button class="tab-btn active" onclick="switchTab('hourly')">Hourly</button>
+            <button class="tab-btn" onclick="switchTab('daily')">Daily</button>
+            <button class="tab-btn" onclick="switchTab('weekly')">Weekly</button>
+            <button class="tab-btn" onclick="switchTab('monthly')">Monthly</button>
+            <button class="tab-btn" onclick="switchTab('batches')">Batches</button>
           </div>
-        </div>
 
-        <!-- View: Weekly (Monday - Sunday) -->
-        <div class="tab-view" id="view-weekly">
-          <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px; font-weight:700;">Weekly Output (Mon – Sun Breakdown):</div>
-          <div class="report-grid" id="weekly-grid">
-            <div style="color:#94a3b8; font-size:12px;">Loading weekly breakdown...</div>
-          </div>
-        </div>
+          <div class="tab-content">
+            <!-- View: Hourly -->
+            <div class="tab-view active" id="view-hourly">
+              <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px; font-weight:700;">Hourly Output (Last 12 Hours):</div>
+              <div id="hourly-list" style="display:flex; flex-direction:column; gap:5px;">
+                <div style="color:#94a3b8; font-size:12px;">Loading hourly data...</div>
+              </div>
+            </div>
 
-        <!-- View: Monthly -->
-        <div class="tab-view" id="view-monthly">
-          <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px; font-weight:700;">Month-wise Production Reports:</div>
-          <div id="monthly-list" style="display:flex; flex-direction:column; gap:6px;">
-            <div style="color:#94a3b8; font-size:12px;">Loading monthly reports...</div>
-          </div>
-        </div>
+            <!-- View: Daily -->
+            <div class="tab-view" id="view-daily">
+              <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px; font-weight:700;">Date-wise Production (Last 7 Days):</div>
+              <div id="daily-list" style="display:flex; flex-direction:column; gap:5px;">
+                <div style="color:#94a3b8; font-size:12px;">Loading daily history...</div>
+              </div>
+            </div>
 
-        <!-- View: Recent Batches -->
-        <div class="tab-view" id="view-batches">
-          <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px; font-weight:700;">Recent Batches Execution Log:</div>
-          <div id="batches-list" style="display:flex; flex-direction:column; gap:6px;">
-            <div style="color:#94a3b8; font-size:12px;">Loading batches log...</div>
+            <!-- View: Weekly (Monday - Sunday) -->
+            <div class="tab-view" id="view-weekly">
+              <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px; font-weight:700;">Weekly Output (Mon – Sun Breakdown):</div>
+              <div class="report-grid" id="weekly-grid">
+                <div style="color:#94a3b8; font-size:12px;">Loading weekly breakdown...</div>
+              </div>
+            </div>
+
+            <!-- View: Monthly -->
+            <div class="tab-view" id="view-monthly">
+              <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px; font-weight:700;">Month-wise Production Reports:</div>
+              <div id="monthly-list" style="display:flex; flex-direction:column; gap:6px;">
+                <div style="color:#94a3b8; font-size:12px;">Loading monthly reports...</div>
+              </div>
+            </div>
+
+            <!-- View: Recent Batches -->
+            <div class="tab-view" id="view-batches">
+              <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px; font-weight:700;">Recent Batches Execution Log:</div>
+              <div id="batches-list" style="display:flex; flex-direction:column; gap:6px;">
+                <div style="color:#94a3b8; font-size:12px;">Loading batches log...</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -3661,13 +3656,6 @@ function productionMesDisplayPage() {
         const lifeEl = document.getElementById('live-life-val');
         if (cycleEl) cycleEl.textContent = Number(sensors.productCount || 0).toFixed(0);
         if (lifeEl) lifeEl.textContent = Number(sensors.productCountTotal || 0).toFixed(0);
-
-        // Update status badge
-        const badge = document.getElementById('batch-status-badge');
-        if (badge) {
-          badge.className = 'badge-status ' + (activeBatchStatus === 'RUNNING' ? 'badge-running' : activeBatchStatus === 'PAUSED' ? 'badge-paused' : 'badge-completed');
-          badge.textContent = activeBatchStatus === 'RUNNING' ? '● RUNNING' : activeBatchStatus === 'PAUSED' ? '⏸ PAUSED' : '✔ COMPLETED';
-        }
 
         // Update pause/resume button label
         const prBtn = document.getElementById('btn-pause-resume');
