@@ -1381,11 +1381,17 @@ function getBatchAnalytics() {
       LIMIT 8
     `).all().reverse();
 
+    const monthsList = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     for (let i = 1; i < dailyRows.length; i++) {
       const diff = Math.max(0, dailyRows[i].production_count_total - dailyRows[i-1].production_count_total);
+      const parts = (dailyRows[i].day_date || '').split('-');
+      const formattedDate = (parts.length === 3)
+        ? (parts[2] + ' ' + (monthsList[parseInt(parts[1], 10) - 1] || parts[1]))
+        : dailyRows[i].day_date.slice(5);
+
       daily.push({
         date: dailyRows[i].day_date,
-        label: dailyRows[i].day_date.slice(5),
+        label: formattedDate,
         output: diff,
         totalCumulative: dailyRows[i].production_count_total
       });
@@ -1396,12 +1402,16 @@ function getBatchAnalytics() {
 
   let weekly = [];
   try {
-    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const monthsList = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const weekRows = daily.slice(-7);
     weekly = weekRows.map(d => {
-      const parsed = new Date(d.date + 'T00:00:00');
+      const parts = (d.date || '').split('-');
+      const formattedDate = (parts.length === 3)
+        ? (parts[2] + ' ' + (monthsList[parseInt(parts[1], 10) - 1] || parts[1]))
+        : d.date;
+
       return {
-        day: dayNames[parsed.getDay()],
+        day: formattedDate,
         date: d.date,
         output: d.output
       };
@@ -3160,9 +3170,13 @@ function productionMesDisplayPage() {
       padding: 6px;
       display: inline-flex;
       width: 100%;
-      max-width: 820px;
+      max-width: 485px;
       justify-content: center;
       box-sizing: border-box;
+      transition: max-width 0.35s ease;
+    }
+    .card-wrap.expanded {
+      max-width: 860px;
     }
 
     .card {
@@ -3183,20 +3197,21 @@ function productionMesDisplayPage() {
       transition: all 0.3s ease;
     }
 
-    /* Header (Clean, no online badge) */
+    /* Header (Clean, with Expand Data Button) */
     .terminal-header {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between;
       gap: 10px;
       border-bottom: 1px solid rgba(251, 191, 36, 0.25);
-      padding-bottom: 6px;
+      padding-bottom: 8px;
       box-sizing: border-box;
+      width: 100%;
     }
     .terminal-title {
-      font-size: 16px;
+      font-size: 20px !important;
       font-weight: 800;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.02em;
       text-transform: uppercase;
       color: #fef08a;
       text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
@@ -3204,37 +3219,70 @@ function productionMesDisplayPage() {
       align-items: center;
       gap: 6px;
       white-space: nowrap;
-    }
-    .terminal-subtitle {
-      font-size: 12px;
-      font-weight: 600;
-      color: #fed7aa;
-      letter-spacing: 0.02em;
-      white-space: nowrap;
+      min-width: 0;
     }
 
-    /* Landscape 2-Column Grid (Contained, no overflow) */
+    .btn-expand-arrow {
+      background: rgba(251, 191, 36, 0.18);
+      border: 1px solid rgba(251, 191, 36, 0.55);
+      color: #fef08a;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 12px !important;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+    .btn-expand-arrow:hover {
+      background: rgba(251, 191, 36, 0.35);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+    }
+    .card-wrap.expanded .btn-expand-arrow {
+      background: rgba(148, 163, 184, 0.2);
+      border-color: rgba(148, 163, 184, 0.4);
+      color: #cbd5e1;
+    }
+
+    /* Grid Layout: Collapsed (1 col) by default, 2 cols when expanded */
     .landscape-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 12px;
       align-items: stretch;
       width: 100%;
       box-sizing: border-box;
     }
-    @media (max-width: 720px) {
-      .landscape-grid {
-        grid-template-columns: 1fr;
-      }
+    .card-wrap.expanded .landscape-grid {
+      grid-template-columns: 1fr 1fr;
     }
 
-    .col-left, .col-right {
+    .col-left {
       display: flex;
       flex-direction: column;
       gap: 8px;
       min-width: 0;
       width: 100%;
       box-sizing: border-box;
+    }
+    .col-right {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .card-wrap.expanded .col-right {
+      display: flex;
     }
 
     /* Live 2-Col Metrics (20px labels as requested) */
@@ -3314,11 +3362,11 @@ function productionMesDisplayPage() {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 15px;
+      font-size: 17px;
       font-weight: 800;
     }
     .batch-id-tag {
-      font-size: 15px;
+      font-size: 17px !important;
       color: #ffbe0b;
       font-weight: 800;
       letter-spacing: 0.02em;
@@ -3328,7 +3376,7 @@ function productionMesDisplayPage() {
       white-space: nowrap;
     }
     .batch-target-tag {
-      font-size: 14px;
+      font-size: 16px !important;
       font-weight: 800;
       color: #f1f5f9;
       background: rgba(255, 255, 255, 0.12);
@@ -3366,7 +3414,7 @@ function productionMesDisplayPage() {
     .progress-info-row {
       display: flex;
       justify-content: space-between;
-      font-size: 13px;
+      font-size: 15px !important;
       font-weight: 700;
       color: #cbd5e1;
       white-space: nowrap;
@@ -3374,33 +3422,34 @@ function productionMesDisplayPage() {
     .progress-highlight {
       color: #ffbe0b;
       font-weight: 800;
+      font-size: 15px !important;
     }
 
     /* Batch Action Buttons (Reduced & sleek) */
     .batch-controls {
       display: flex;
-      gap: 5px;
+      gap: 6px;
       margin-top: 2px;
       width: 100%;
       box-sizing: border-box;
     }
     .btn-action {
       flex: 1;
-      padding: 6px 4px;
-      font-size: 12px !important;
+      padding: 7px 6px;
+      font-size: 13px !important;
       font-weight: 800;
-      border-radius: 7px;
+      border-radius: 8px;
       border: 1px solid transparent;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 3px;
+      gap: 4px;
       transition: all 0.2s ease;
       text-transform: uppercase;
-      letter-spacing: 0.01em;
+      letter-spacing: 0.02em;
       white-space: nowrap;
-      height: 34px;
+      height: 36px;
       box-sizing: border-box;
       min-width: 0;
     }
@@ -3424,15 +3473,6 @@ function productionMesDisplayPage() {
     .btn-extend:hover {
       background: rgba(59, 130, 246, 0.4);
       box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
-    }
-    .btn-complete {
-      background: rgba(16, 185, 129, 0.22);
-      border-color: #34d399;
-      color: #a7f3d0;
-    }
-    .btn-complete:hover {
-      background: rgba(16, 185, 129, 0.4);
-      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
     }
     .btn-next {
       background: linear-gradient(135deg, #ffbe0b, #f59e0b);
@@ -3459,7 +3499,7 @@ function productionMesDisplayPage() {
       flex: 1;
       font-size: 13px !important;
       font-weight: 800;
-      padding: 5px 3px;
+      padding: 6px 2px;
       border-radius: 6px;
       border: none;
       background: transparent;
@@ -3484,29 +3524,29 @@ function productionMesDisplayPage() {
       background: rgba(0, 0, 0, 0.35);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
-      padding: 8px 10px;
+      padding: 10px 12px;
       flex: 1;
-      min-height: 180px;
-      max-height: 200px;
+      min-height: 235px;
+      max-height: 265px;
       overflow-y: auto;
       overflow-x: hidden;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 7px;
       width: 100%;
       box-sizing: border-box;
     }
     .tab-title {
-      font-size: 13px !important;
+      font-size: 17px !important;
       font-weight: 800;
-      color: #cbd5e1;
-      margin-bottom: 2px;
+      color: #fef08a;
+      margin-bottom: 3px;
       white-space: nowrap;
     }
     .tab-view {
       display: none;
       flex-direction: column;
-      gap: 5px;
+      gap: 6px;
       width: 100%;
       box-sizing: border-box;
     }
@@ -3519,15 +3559,16 @@ function productionMesDisplayPage() {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 13px !important;
-      font-weight: 700;
+      font-size: 17px !important;
+      font-weight: 800;
       width: 100%;
       box-sizing: border-box;
     }
     .bar-label {
-      font-size: 13px !important;
-      width: 44px;
+      font-size: 17px !important;
+      width: 68px;
       color: #cbd5e1;
+      font-weight: 800;
       white-space: nowrap;
       text-align: right;
       flex-shrink: 0;
@@ -3535,9 +3576,9 @@ function productionMesDisplayPage() {
     .bar-track {
       flex: 1;
       min-width: 40px;
-      height: 13px;
-      background: rgba(255, 255, 255, 0.06);
-      border-radius: 4px;
+      height: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 5px;
       overflow: hidden;
       display: flex;
       box-sizing: border-box;
@@ -3545,12 +3586,12 @@ function productionMesDisplayPage() {
     .bar-fill {
       height: 100%;
       background: linear-gradient(90deg, #f59e0b, #ffbe0b);
-      border-radius: 4px;
+      border-radius: 5px;
       transition: width 0.3s ease;
     }
     .bar-val {
-      font-size: 13px !important;
-      width: 52px;
+      font-size: 17px !important;
+      width: 66px;
       text-align: right;
       color: #fef08a;
       font-weight: 800;
@@ -3558,116 +3599,115 @@ function productionMesDisplayPage() {
       flex-shrink: 0;
     }
 
-    /* Compact Grid for Weekly / Monthly */
+    /* Grid for Weekly */
     .report-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-      gap: 5px;
+      grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
+      gap: 6px;
       width: 100%;
       box-sizing: border-box;
     }
     .report-card {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 7px;
-      padding: 5px 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 8px;
+      padding: 6px 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1px;
+      gap: 2px;
       box-sizing: border-box;
     }
     .report-card.today {
       border-color: rgba(251, 191, 36, 0.6);
-      background: rgba(251, 191, 36, 0.12);
+      background: rgba(251, 191, 36, 0.14);
     }
     .report-key {
-      font-size: 11px !important;
+      font-size: 15px !important;
       font-weight: 800;
-      color: #94a3b8;
+      color: #cbd5e1;
       text-transform: uppercase;
     }
     .report-num {
-      font-size: 16px !important;
-      font-weight: 800;
+      font-size: 22px !important;
+      font-weight: 900;
       color: #ffbe0b;
     }
     .report-unit {
-      font-size: 10px !important;
-      color: #cbd5e1;
+      font-size: 14px !important;
+      font-weight: 700;
+      color: #94a3b8;
     }
 
-    /* Modal for New Batch Target */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(8px);
+    /* Inline Action Drawer (Inside Card, no modal popup) */
+    .inline-action-panel {
       display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-    .modal-box {
-      background: #0f172a;
-      border: 1.5px solid #fbbf24;
-      border-radius: 16px;
-      padding: 18px;
-      width: 290px;
-      display: flex;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid #fbbf24;
+      border-radius: 9px;
+      padding: 7px 10px;
+      margin-top: 4px;
       flex-direction: column;
-      gap: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(245, 158, 11, 0.3);
+      gap: 5px;
+      box-sizing: border-box;
+      width: 100%;
     }
-    .modal-title {
-      font-size: 14px;
+    .inline-action-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .inline-action-title {
+      font-size: 12px !important;
       font-weight: 800;
       color: #fef08a;
-      text-transform: uppercase;
     }
-    .modal-input {
+    .inline-close-btn {
+      cursor: pointer;
+      color: #94a3b8;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 0 4px;
+      transition: color 0.2s ease;
+    }
+    .inline-close-btn:hover {
+      color: #f87171;
+    }
+    .inline-action-controls {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .inline-number-input {
+      flex: 1;
+      height: 32px;
       background: #1e293b;
       border: 1px solid #475569;
-      border-radius: 8px;
+      border-radius: 6px;
       color: #ffffff;
-      padding: 8px 12px;
       font-size: 15px;
-      font-weight: 700;
-      outline: none;
-    }
-    .modal-input:focus {
-      border-color: #fbbf24;
-    }
-    .modal-btns {
-      display: flex;
-      gap: 8px;
-    }
-    .modal-btn {
-      flex: 1;
-      padding: 8px;
-      font-size: 12px;
       font-weight: 800;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
+      padding: 0 8px;
+      outline: none;
+      box-sizing: border-box;
     }
-    .modal-btn-cancel {
-      background: #334155;
-      color: #e2e8f0;
-    }
-    .modal-btn-confirm {
-      background: #f59e0b;
-      color: #000;
+    .inline-number-input:focus {
+      border-color: #fbbf24;
     }
   </style>
 </head>
 <body>
-  <div class="card-wrap">
+  <div class="card-wrap" id="card-wrap-box">
     <div class="card" id="mes-card">
-      <!-- 1. TERMINAL HEADER (Clean, no online badge) -->
+      <!-- 1. TERMINAL HEADER (With Data Expand Arrow) -->
       <div class="terminal-header">
-        <div class="terminal-title">⚙️ MES Production Terminal</div>
-        <div class="terminal-subtitle">Supervisory Batch Execution &amp; History</div>
+        <div class="terminal-title">⚙️ BATCH PRODUCTION CONTROL</div>
+        <button id="btn-expand-data" class="btn-expand-arrow" onclick="toggleDataExpand()" title="Expand / Collapse Production History">
+          <span id="expand-btn-text">DATA</span>
+          <span id="expand-arrow-icon">❯</span>
+        </button>
       </div>
 
       <!-- 2. LANDSCAPE 2-COLUMN LAYOUT -->
@@ -3710,10 +3750,21 @@ function productionMesDisplayPage() {
             </div>
 
             <div class="batch-controls">
-              <button class="btn-action btn-pause" id="btn-pause-resume" onclick="handlePauseResume()">⏸ Pause</button>
-              <button class="btn-action btn-extend" id="btn-extend" onclick="openExtendModal()">+50 Pcs</button>
-              <button class="btn-action btn-complete" id="btn-complete" onclick="handleComplete()">✔ Complete</button>
-              <button class="btn-action btn-next" id="btn-next" onclick="openNewBatchModal()">+ Next Batch</button>
+              <button class="btn-action btn-pause" id="btn-pause-resume" onclick="handlePauseResume()">⏹ STOP</button>
+              <button class="btn-action btn-extend" id="btn-extend" onclick="openInlineAction('EXTEND')">➕ ADD PCS</button>
+              <button class="btn-action btn-next" id="btn-next" onclick="openInlineAction('NEW_BATCH')">🚀 NEXT BATCH</button>
+            </div>
+
+            <!-- Inline Action Drawer (Inside Card, no modal popup) -->
+            <div id="inline-action-panel" class="inline-action-panel">
+              <div class="inline-action-title-row">
+                <span id="inline-action-title" class="inline-action-title">Configure Target Pieces:</span>
+                <span class="inline-close-btn" onclick="closeInlineAction()">✕</span>
+              </div>
+              <div class="inline-action-controls">
+                <input type="number" id="inline-action-input" class="inline-number-input" value="100" min="1" max="10000" />
+                <button id="inline-action-btn" class="btn-action btn-next" style="flex: 1; height: 32px; font-size: 12px; font-weight: 800;" onclick="submitInlineAction()">Start &amp; Run</button>
+              </div>
             </div>
           </div>
         </div>
@@ -3745,9 +3796,9 @@ function productionMesDisplayPage() {
               </div>
             </div>
 
-            <!-- View: Weekly (Monday - Sunday) -->
+            <!-- View: Weekly (Date-wise breakdown) -->
             <div class="tab-view" id="view-weekly">
-              <div class="tab-title">Weekly Output (Mon – Sun Breakdown):</div>
+              <div class="tab-title">Weekly Output (Date-wise Breakdown):</div>
               <div class="report-grid" id="weekly-grid">
                 <div style="color:#94a3b8; font-size:16px;">Loading weekly breakdown...</div>
               </div>
@@ -3770,39 +3821,6 @@ function productionMesDisplayPage() {
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal for Next Batch -->
-  <div class="modal-overlay" id="modal-new-batch">
-    <div class="modal-box">
-      <div class="modal-title">🚀 Launch Next Batch</div>
-      <div style="font-size:13px; color:#cbd5e1;">Configure target quantity for new production run. Conveyor will auto-start and auto-stop when target is reached.</div>
-      <label style="font-size:13px; color:#fde047; font-weight:700;">Target Output Units (pcs):</label>
-      <input type="number" id="input-target-units" class="modal-input" value="100" min="1" max="10000" />
-      <div class="modal-btns">
-        <button class="modal-btn modal-btn-cancel" onclick="closeNewBatchModal()">Cancel</button>
-        <button class="modal-btn modal-btn-confirm" onclick="submitNewBatch()">Confirm &amp; Start</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal for Extend Current Batch -->
-  <div class="modal-overlay" id="modal-extend-batch">
-    <div class="modal-box">
-      <div class="modal-title">➕ Extend Batch Target</div>
-      <div style="font-size:13px; color:#cbd5e1;">Add more pieces to current batch. Conveyor will restart and run until new target is reached.</div>
-      <label style="font-size:13px; color:#fde047; font-weight:700;">Add More Pieces (+ pcs):</label>
-      <div style="display:flex; gap:6px; margin-bottom:2px;">
-        <button type="button" class="tab-btn active" style="padding:4px 8px;" onclick="setExtendVal(25)">+25</button>
-        <button type="button" class="tab-btn active" style="padding:4px 8px;" onclick="setExtendVal(50)">+50</button>
-        <button type="button" class="tab-btn active" style="padding:4px 8px;" onclick="setExtendVal(100)">+100</button>
-      </div>
-      <input type="number" id="input-extend-units" class="modal-input" value="50" min="1" max="10000" />
-      <div class="modal-btns">
-        <button class="modal-btn modal-btn-cancel" onclick="closeExtendModal()">Cancel</button>
-        <button class="modal-btn modal-btn-confirm" onclick="submitExtendBatch()">Extend &amp; Run</button>
       </div>
     </div>
   </div>
@@ -3839,14 +3857,14 @@ function productionMesDisplayPage() {
         if (cycleEl) cycleEl.textContent = Number(sensors.productCount || 0).toFixed(0);
         if (lifeEl) lifeEl.textContent = Number(sensors.productCountTotal || 0).toFixed(0);
 
-        // Update pause/resume button label
+        // Update pause/resume (Start / Stop) button label
         const prBtn = document.getElementById('btn-pause-resume');
         if (prBtn) {
-          if (activeBatchStatus === 'PAUSED') {
-            prBtn.textContent = '▶ Resume';
+          if (activeBatchStatus === 'PAUSED' || activeBatchStatus === 'COMPLETED') {
+            prBtn.textContent = '▶ START';
             prBtn.className = 'btn-action btn-next';
           } else {
-            prBtn.textContent = '⏸ Pause';
+            prBtn.textContent = '⏹ STOP';
             prBtn.className = 'btn-action btn-pause';
           }
         }
@@ -3907,21 +3925,21 @@ function productionMesDisplayPage() {
           dailyEl.innerHTML = a.daily.map(d => {
             const pct = Math.round((d.output / maxDay) * 100);
             return '<div class="bar-row">' +
-              '<span class="bar-label">' + d.date.slice(5) + '</span>' +
+              '<span class="bar-label">' + (d.label || d.date) + '</span>' +
               '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%; background: linear-gradient(90deg, #ff9e00, #34d399);"></div></div>' +
               '<span class="bar-val">' + d.output + ' pcs</span>' +
             '</div>';
           }).join('');
         }
 
-        // 3. Weekly render (Mon - Sun)
+        // 3. Weekly render (Date-wise breakdown)
         const weeklyEl = document.getElementById('weekly-grid');
         if (weeklyEl && Array.isArray(a.weekly) && a.weekly.length) {
           const todayStr = new Date().toISOString().slice(0, 10);
           weeklyEl.innerHTML = a.weekly.map(w => {
             const isToday = w.date === todayStr;
             return '<div class="report-card ' + (isToday ? 'today' : '') + '">' +
-              '<span class="report-key">' + w.day + '</span>' +
+              '<span class="report-key">' + (w.day || w.date) + '</span>' +
               '<span class="report-num">' + w.output + '</span>' +
               '<span class="report-unit">pcs</span>' +
             '</div>';
@@ -3934,12 +3952,12 @@ function productionMesDisplayPage() {
           monthlyEl.innerHTML = a.monthly.map(m => {
             return '<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:8px;">' +
               '<div style="display:flex; flex-direction:column;">' +
-                '<strong style="color:#fef08a; font-size:18px;">' + m.month + '</strong>' +
-                '<span style="font-size:13px; color:#94a3b8;">' + m.activeDays + ' production days</span>' +
+                '<strong style="color:#fef08a; font-size:20px;">' + m.month + '</strong>' +
+                '<span style="font-size:16px; color:#cbd5e1;">' + m.activeDays + ' production days</span>' +
               '</div>' +
               '<div style="text-align:right;">' +
-                '<strong style="color:#ffbe0b; font-size:18px;">' + m.output + ' pcs</strong>' +
-                '<div style="font-size:13px; color:#cbd5e1;">Cumulative: ' + m.endTotal + '</div>' +
+                '<strong style="color:#ffbe0b; font-size:21px;">' + m.output + ' pcs</strong>' +
+                '<div style="font-size:16px; color:#cbd5e1;">Cumulative: ' + m.endTotal + '</div>' +
               '</div>' +
             '</div>';
           }).join('');
@@ -3952,14 +3970,14 @@ function productionMesDisplayPage() {
             const isRun = b.status === 'RUNNING';
             const isPau = b.status === 'PAUSED';
             const color = isRun ? '#34d399' : isPau ? '#fbbf24' : '#cbd5e1';
-            return '<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:8px; font-size:16px;">' +
+            return '<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:8px;">' +
               '<div>' +
-                '<strong style="color:#ffbe0b; font-size:18px;">' + b.batch_id + '</strong>' +
-                '<div style="color:#94a3b8; font-size:13px;">Target: ' + b.target_units + ' pcs</div>' +
+                '<strong style="color:#ffbe0b; font-size:20px;">' + b.batch_id + '</strong>' +
+                '<div style="color:#cbd5e1; font-size:16px; font-weight:700;">Target: ' + b.target_units + ' pcs</div>' +
               '</div>' +
               '<div style="text-align:right;">' +
-                '<strong style="color:#ffffff; font-size:18px;">' + b.current_output + ' pcs</strong>' +
-                '<div style="color:' + color + '; font-weight:800; font-size:13px;">' + b.status + '</div>' +
+                '<strong style="color:#ffffff; font-size:20px;">' + b.current_output + ' pcs</strong>' +
+                '<div style="color:' + color + '; font-weight:900; font-size:16px;">' + b.status + '</div>' +
               '</div>' +
             '</div>';
           }).join('');
@@ -3990,58 +4008,95 @@ function productionMesDisplayPage() {
       }
     }
 
-    function openExtendModal() {
-      const m = document.getElementById('modal-extend-batch');
-      if (m) m.style.display = 'flex';
-    }
+    function toggleDataExpand() {
+      const wrap = document.getElementById('card-wrap-box');
+      const btnText = document.getElementById('expand-btn-text');
+      const btnIcon = document.getElementById('expand-arrow-icon');
+      if (!wrap) return;
 
-    function closeExtendModal() {
-      const m = document.getElementById('modal-extend-batch');
-      if (m) m.style.display = 'none';
-    }
-
-    function setExtendVal(n) {
-      const inp = document.getElementById('input-extend-units');
-      if (inp) inp.value = n;
-    }
-
-    async function submitExtendBatch() {
-      const inp = document.getElementById('input-extend-units');
-      const addUnits = inp ? Number(inp.value) : 50;
-      closeExtendModal();
-      try {
-        await fetch('/api/batch/extend', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ addUnits: addUnits || 50 })
-        });
-        setTimeout(() => { fetchActiveBatch(); fetchAnalytics(); }, 400);
-      } catch (e) {
-        console.error(e);
+      const isExp = wrap.classList.toggle('expanded');
+      if (btnText && btnIcon) {
+        if (isExp) {
+          btnText.textContent = 'CLOSE';
+          btnIcon.textContent = '❮';
+        } else {
+          btnText.textContent = 'DATA';
+          btnIcon.textContent = '❯';
+        }
       }
     }
 
-    function openNewBatchModal() {
-      const m = document.getElementById('modal-new-batch');
-      if (m) m.style.display = 'flex';
+    let currentInlineMode = null;
+
+    function openInlineAction(mode) {
+      if (currentInlineMode === mode) {
+        closeInlineAction();
+        return;
+      }
+
+      currentInlineMode = mode;
+      const panel = document.getElementById('inline-action-panel');
+      const title = document.getElementById('inline-action-title');
+      const input = document.getElementById('inline-action-input');
+      const btn = document.getElementById('inline-action-btn');
+
+      if (!panel || !title || !input || !btn) return;
+
+      if (mode === 'EXTEND') {
+        panel.style.borderColor = '#60a5fa';
+        title.style.color = '#bfdbfe';
+        title.textContent = '➕ Add Units to Current Batch (+pcs):';
+        input.value = '50';
+        btn.textContent = 'Extend & Run';
+        btn.className = 'btn-action btn-extend';
+      } else {
+        panel.style.borderColor = '#fbbf24';
+        title.style.color = '#fef08a';
+        title.textContent = '🚀 Next Batch Target (pcs):';
+        input.value = '100';
+        btn.textContent = 'Start & Run';
+        btn.className = 'btn-action btn-next';
+      }
+
+      panel.style.display = 'flex';
+      setTimeout(() => {
+        input.focus();
+        input.select();
+      }, 50);
     }
 
-    function closeNewBatchModal() {
-      const m = document.getElementById('modal-new-batch');
-      if (m) m.style.display = 'none';
+    function closeInlineAction() {
+      const panel = document.getElementById('inline-action-panel');
+      if (panel) panel.style.display = 'none';
+      currentInlineMode = null;
     }
 
-    async function submitNewBatch() {
-      const input = document.getElementById('input-target-units');
-      const targetUnits = input ? Number(input.value) : 100;
-      closeNewBatchModal();
+    async function submitInlineAction() {
+      const input = document.getElementById('inline-action-input');
+      const val = input ? Number(input.value) : 0;
+      if (!val || val <= 0) {
+        alert('Please enter a quantity greater than 0');
+        return;
+      }
+
+      const mode = currentInlineMode;
+      closeInlineAction();
+
       try {
-        await fetch('/api/batch/new', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ targetUnits: targetUnits || 100 })
-        });
-        setTimeout(() => { fetchActiveBatch(); fetchAnalytics(); }, 400);
+        if (mode === 'EXTEND') {
+          await fetch('/api/batch/extend', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ addUnits: val })
+          });
+        } else {
+          await fetch('/api/batch/new', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ targetUnits: val })
+          });
+        }
+        setTimeout(() => { fetchActiveBatch(); fetchAnalytics(); }, 350);
       } catch (e) {
         console.error(e);
       }
