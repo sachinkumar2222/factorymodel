@@ -152,12 +152,20 @@ function saveTelemetryHistory(state) {
       productCountTotal
     });
 
-    // Update active running batch output dynamically
+    // Update active running batch output dynamically & auto-stop conveyor when target is reached
     try {
       const activeBatch = db.prepare("SELECT * FROM batch_management WHERE status = 'RUNNING' ORDER BY id DESC LIMIT 1").get();
       if (activeBatch && productCountTotal >= activeBatch.start_total_count) {
         const produced = productCountTotal - activeBatch.start_total_count;
         db.prepare("UPDATE batch_management SET current_output = ? WHERE id = ?").run(produced, activeBatch.id);
+
+        if (activeBatch.target_units > 0 && produced >= activeBatch.target_units) {
+          console.log(`[MES BATCH] Target reached: ${produced}/${activeBatch.target_units} pcs. Auto-stopping conveyor.`);
+          db.prepare("UPDATE batch_management SET status = 'COMPLETED', end_time = ? WHERE id = ?").run(new Date().toISOString(), activeBatch.id);
+          if (typeof setConveyorState === "function") {
+            setConveyorState(false);
+          }
+        }
       }
     } catch (bErr) { }
 
@@ -596,6 +604,29 @@ async function esp32Post(endpoint, body = null, timeoutMs = 4000) {
   }
 }
 
+
+async function setConveyorState(enable) {
+  try {
+    const endpoint = enable ? "/api/control/conveyor/on" : "/api/control/conveyor/off";
+    console.log(`[MES AUTOMATION] Conveyor state -> ${enable ? 'ON' : 'OFF'} (${endpoint})`);
+    const result = await esp32Post(endpoint);
+    if (result && result.state) {
+      const incomingState = normalizeCoolingTowerSensorMapping(result.state);
+      deviceState = {
+        ...deviceState,
+        ...incomingState,
+        deviceId: incomingState.deviceId || DEVICE_ID,
+        online: true,
+        lastSeen: new Date().toISOString()
+      };
+      broadcastState();
+    }
+    return true;
+  } catch (err) {
+    console.error(`[MES AUTOMATION CONVEYOR ERROR]:`, err.message);
+    return false;
+  }
+}
 
 async function forwardControl(req, res, endpoint) {
   try {
@@ -1417,7 +1448,7 @@ function getBatchAnalytics() {
   return { hourly, daily, weekly, monthly, batches };
 }
 
-app.get("/api/batch/active", (req, res) => {
+app.get("/api/batch/active", async (req, res) => {
   try {
     const batch = getActiveBatch();
     const liveLifetime = Number(deviceState.sensors?.productCountTotal) || 0;
@@ -1429,6 +1460,16 @@ app.get("/api/batch/active", (req, res) => {
     }
 
     const target = Number(batch.target_units) || 100;
+
+    // Check if target reached while running -> auto stop conveyor
+    if (batch.status === "RUNNING" && target > 0 && output >= target) {
+      batch.status = "COMPLETED";
+      db.prepare("UPDATE batch_management SET status = 'COMPLETED', current_output = ?, end_time = ? WHERE id = ?").run(output, new Date().toISOString(), batch.id);
+      if (typeof setConveyorState === "function") {
+        setConveyorState(false);
+      }
+    }
+
     const progressPct = Math.min(100, Math.round((output / target) * 100));
     const remainingUnits = Math.max(0, target - output);
 
@@ -1450,7 +1491,7 @@ app.get("/api/batch/active", (req, res) => {
   }
 });
 
-app.post(["/api/batch/new", "/api/batch/next"], (req, res) => {
+app.post(["/api/batch/new", "/api/batch/next"], async (req, res) => {
   try {
     const liveLifetime = Number(deviceState.sensors?.productCountTotal) || 0;
     const nowIso = new Date().toISOString();
@@ -1472,14 +1513,19 @@ app.post(["/api/batch/new", "/api/batch/next"], (req, res) => {
       VALUES (?, ?, ?, ?, 0, 'RUNNING', ?)
     `).run(batchId, productName, targetUnits, liveLifetime, nowIso);
 
+    // Auto-start conveyor for new batch
+    if (typeof setConveyorState === "function") {
+      await setConveyorState(true);
+    }
+
     const newBatch = db.prepare("SELECT * FROM batch_management WHERE id = ?").get(info.lastInsertRowid);
-    return res.json({ success: true, message: `New Batch ${batchId} initialized`, batch: newBatch });
+    return res.json({ success: true, message: `New Batch ${batchId} initialized with target ${targetUnits} pcs. Conveyor started.`, batch: newBatch });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
   }
 });
 
-app.post("/api/batch/pause", (req, res) => {
+app.post("/api/batch/pause", async (req, res) => {
   try {
     const active = db.prepare("SELECT * FROM batch_management WHERE status = 'RUNNING' ORDER BY id DESC LIMIT 1").get();
     if (!active) {
@@ -1488,14 +1534,20 @@ app.post("/api/batch/pause", (req, res) => {
     const liveLifetime = Number(deviceState.sensors?.productCountTotal) || 0;
     const currentOutput = Math.max(active.current_output || 0, liveLifetime - active.start_total_count);
     db.prepare("UPDATE batch_management SET status = 'PAUSED', current_output = ? WHERE id = ?").run(currentOutput, active.id);
+
+    // Auto-stop conveyor when paused
+    if (typeof setConveyorState === "function") {
+      await setConveyorState(false);
+    }
+
     const updated = db.prepare("SELECT * FROM batch_management WHERE id = ?").get(active.id);
-    return res.json({ success: true, message: "Batch paused", batch: updated });
+    return res.json({ success: true, message: "Batch paused, conveyor stopped", batch: updated });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
   }
 });
 
-app.post("/api/batch/resume", (req, res) => {
+app.post("/api/batch/resume", async (req, res) => {
   try {
     const active = db.prepare("SELECT * FROM batch_management WHERE status = 'PAUSED' ORDER BY id DESC LIMIT 1").get();
     if (!active) {
@@ -1504,14 +1556,20 @@ app.post("/api/batch/resume", (req, res) => {
     const liveLifetime = Number(deviceState.sensors?.productCountTotal) || 0;
     const adjustedStart = liveLifetime - (active.current_output || 0);
     db.prepare("UPDATE batch_management SET status = 'RUNNING', start_total_count = ? WHERE id = ?").run(adjustedStart, active.id);
+
+    // Auto-resume conveyor
+    if (typeof setConveyorState === "function") {
+      await setConveyorState(true);
+    }
+
     const updated = db.prepare("SELECT * FROM batch_management WHERE id = ?").get(active.id);
-    return res.json({ success: true, message: "Batch resumed", batch: updated });
+    return res.json({ success: true, message: "Batch resumed, conveyor started", batch: updated });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
   }
 });
 
-app.post("/api/batch/complete", (req, res) => {
+app.post("/api/batch/complete", async (req, res) => {
   try {
     const active = db.prepare("SELECT * FROM batch_management WHERE status IN ('RUNNING', 'PAUSED') ORDER BY id DESC LIMIT 1").get();
     if (!active) {
@@ -1521,8 +1579,44 @@ app.post("/api/batch/complete", (req, res) => {
     const finalOutput = Math.max(active.current_output || 0, liveLifetime - active.start_total_count);
     const endTime = new Date().toISOString();
     db.prepare("UPDATE batch_management SET status = 'COMPLETED', end_time = ?, current_output = ? WHERE id = ?").run(endTime, finalOutput, active.id);
+
+    // Auto-stop conveyor
+    if (typeof setConveyorState === "function") {
+      await setConveyorState(false);
+    }
+
     const updated = db.prepare("SELECT * FROM batch_management WHERE id = ?").get(active.id);
-    return res.json({ success: true, message: "Batch completed successfully", batch: updated });
+    return res.json({ success: true, message: "Batch completed successfully, conveyor stopped", batch: updated });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post("/api/batch/extend", async (req, res) => {
+  try {
+    let active = db.prepare("SELECT * FROM batch_management ORDER BY id DESC LIMIT 1").get();
+    if (!active) {
+      return res.status(400).json({ success: false, error: "No batch found" });
+    }
+    const addUnits = Number(req.body && req.body.addUnits) || 0;
+    let newTarget = Number(req.body && req.body.targetUnits) || 0;
+    if (newTarget <= 0 && addUnits > 0) {
+      newTarget = (Number(active.target_units) || 0) + addUnits;
+    }
+    if (newTarget <= 0) {
+      newTarget = (Number(active.target_units) || 100) + 50;
+    }
+
+    // Update target and resume running
+    db.prepare("UPDATE batch_management SET target_units = ?, status = 'RUNNING', end_time = NULL WHERE id = ?").run(newTarget, active.id);
+
+    // Auto-start conveyor for additional pcs
+    if (typeof setConveyorState === "function") {
+      await setConveyorState(true);
+    }
+
+    const updated = db.prepare("SELECT * FROM batch_management WHERE id = ?").get(active.id);
+    return res.json({ success: true, message: `Batch target extended to ${newTarget} pcs. Conveyor running.`, batch: updated });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
   }
@@ -3285,15 +3379,15 @@ function productionMesDisplayPage() {
     /* Batch Action Buttons (Reduced & sleek) */
     .batch-controls {
       display: flex;
-      gap: 6px;
+      gap: 5px;
       margin-top: 2px;
       width: 100%;
       box-sizing: border-box;
     }
     .btn-action {
       flex: 1;
-      padding: 6px 8px;
-      font-size: 13px !important;
+      padding: 6px 4px;
+      font-size: 12px !important;
       font-weight: 800;
       border-radius: 7px;
       border: 1px solid transparent;
@@ -3301,13 +3395,14 @@ function productionMesDisplayPage() {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
       transition: all 0.2s ease;
       text-transform: uppercase;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.01em;
       white-space: nowrap;
       height: 34px;
       box-sizing: border-box;
+      min-width: 0;
     }
     .btn-action:active {
       transform: scale(0.96);
@@ -3320,6 +3415,15 @@ function productionMesDisplayPage() {
     .btn-pause:hover {
       background: rgba(245, 158, 11, 0.4);
       box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    }
+    .btn-extend {
+      background: rgba(59, 130, 246, 0.22);
+      border-color: #60a5fa;
+      color: #bfdbfe;
+    }
+    .btn-extend:hover {
+      background: rgba(59, 130, 246, 0.4);
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
     }
     .btn-complete {
       background: rgba(16, 185, 129, 0.22);
@@ -3492,34 +3596,6 @@ function productionMesDisplayPage() {
       font-size: 10px !important;
       color: #cbd5e1;
     }
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      padding: 6px 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-    }
-    .report-card.today {
-      border-color: rgba(251, 191, 36, 0.6);
-      background: rgba(251, 191, 36, 0.12);
-    }
-    .report-key {
-      font-size: 16px !important;
-      font-weight: 800;
-      color: #94a3b8;
-      text-transform: uppercase;
-    }
-    .report-num {
-      font-size: 20px !important;
-      font-weight: 800;
-      color: #ffbe0b;
-    }
-    .report-unit {
-      font-size: 14px !important;
-      color: #cbd5e1;
-    }
 
     /* Modal for New Batch Target */
     .modal-overlay {
@@ -3601,14 +3677,14 @@ function productionMesDisplayPage() {
           <!-- 2-COL LIVE METRICS (20px labels & units) -->
           <div class="metric-grid">
             <div class="metric-box orange">
-              <span class="metric-label">Current Cycle</span>
+              <span class="metric-label">Current Pcs</span>
               <div class="metric-value-row">
                 <span class="metric-value" id="live-cycle-val">--</span>
                 <span class="metric-unit">pcs</span>
               </div>
             </div>
             <div class="metric-box emerald">
-              <span class="metric-label">Lifetime Output</span>
+              <span class="metric-label">Total Output</span>
               <div class="metric-value-row">
                 <span class="metric-value" id="live-life-val">--</span>
                 <span class="metric-unit">pcs</span>
@@ -3620,7 +3696,7 @@ function productionMesDisplayPage() {
           <div class="batch-panel">
             <div class="batch-meta-row">
               <div class="batch-id-tag">📦 Batch: <span id="batch-id-val">BATCH-1001</span></div>
-              <div class="batch-target-tag">Target: <strong id="batch-target-val">100 pcs</strong></div>
+              <div class="batch-target-tag" id="batch-target-tag">Target: <strong id="batch-target-val">100 pcs</strong></div>
             </div>
 
             <div class="progress-container">
@@ -3635,6 +3711,7 @@ function productionMesDisplayPage() {
 
             <div class="batch-controls">
               <button class="btn-action btn-pause" id="btn-pause-resume" onclick="handlePauseResume()">⏸ Pause</button>
+              <button class="btn-action btn-extend" id="btn-extend" onclick="openExtendModal()">+50 Pcs</button>
               <button class="btn-action btn-complete" id="btn-complete" onclick="handleComplete()">✔ Complete</button>
               <button class="btn-action btn-next" id="btn-next" onclick="openNewBatchModal()">+ Next Batch</button>
             </div>
@@ -3701,12 +3778,31 @@ function productionMesDisplayPage() {
   <div class="modal-overlay" id="modal-new-batch">
     <div class="modal-box">
       <div class="modal-title">🚀 Launch Next Batch</div>
-      <div style="font-size:14px; color:#cbd5e1;">Configure target quantity for new production run. Baseline will be saved automatically.</div>
-      <label style="font-size:14px; color:#fde047; font-weight:700;">Target Output Units (pcs):</label>
+      <div style="font-size:13px; color:#cbd5e1;">Configure target quantity for new production run. Conveyor will auto-start and auto-stop when target is reached.</div>
+      <label style="font-size:13px; color:#fde047; font-weight:700;">Target Output Units (pcs):</label>
       <input type="number" id="input-target-units" class="modal-input" value="100" min="1" max="10000" />
       <div class="modal-btns">
         <button class="modal-btn modal-btn-cancel" onclick="closeNewBatchModal()">Cancel</button>
         <button class="modal-btn modal-btn-confirm" onclick="submitNewBatch()">Confirm &amp; Start</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Extend Current Batch -->
+  <div class="modal-overlay" id="modal-extend-batch">
+    <div class="modal-box">
+      <div class="modal-title">➕ Extend Batch Target</div>
+      <div style="font-size:13px; color:#cbd5e1;">Add more pieces to current batch. Conveyor will restart and run until new target is reached.</div>
+      <label style="font-size:13px; color:#fde047; font-weight:700;">Add More Pieces (+ pcs):</label>
+      <div style="display:flex; gap:6px; margin-bottom:2px;">
+        <button type="button" class="tab-btn active" style="padding:4px 8px;" onclick="setExtendVal(25)">+25</button>
+        <button type="button" class="tab-btn active" style="padding:4px 8px;" onclick="setExtendVal(50)">+50</button>
+        <button type="button" class="tab-btn active" style="padding:4px 8px;" onclick="setExtendVal(100)">+100</button>
+      </div>
+      <input type="number" id="input-extend-units" class="modal-input" value="50" min="1" max="10000" />
+      <div class="modal-btns">
+        <button class="modal-btn modal-btn-cancel" onclick="closeExtendModal()">Cancel</button>
+        <button class="modal-btn modal-btn-confirm" onclick="submitExtendBatch()">Extend &amp; Run</button>
       </div>
     </div>
   </div>
@@ -3756,10 +3852,22 @@ function productionMesDisplayPage() {
         }
 
         // Update batch meta & progress
+        const isReached = (batch.target_units > 0 && (batch.current_output || 0) >= batch.target_units);
+        const isCompleted = activeBatchStatus === 'COMPLETED' || isReached;
+
         document.getElementById('batch-id-val').textContent = batch.batch_id || 'BATCH-1001';
-        document.getElementById('batch-target-val').textContent = (batch.target_units || 100) + ' pcs';
+
+        const targetTag = document.getElementById('batch-target-val');
+        if (targetTag) {
+          if (isReached || activeBatchStatus === 'COMPLETED') {
+            targetTag.innerHTML = (batch.target_units || 100) + ' pcs <span style="color:#f87171; font-size:11px; margin-left:3px;">● STOPPED</span>';
+          } else {
+            targetTag.textContent = (batch.target_units || 100) + ' pcs';
+          }
+        }
+
         document.getElementById('batch-produced-val').textContent = batch.current_output || 0;
-        document.getElementById('batch-pct-val').textContent = (batch.progressPct || 0) + '%';
+        document.getElementById('batch-pct-val').textContent = isReached ? '100% (REACHED)' : ((batch.progressPct || 0) + '%');
         document.getElementById('batch-remaining-val').textContent = batch.remainingUnits !== undefined ? batch.remainingUnits : 0;
 
         const fill = document.getElementById('batch-progress-fill');
@@ -3877,6 +3985,37 @@ function productionMesDisplayPage() {
       try {
         await fetch('/api/batch/complete', { method: 'POST' });
         setTimeout(() => { fetchActiveBatch(); fetchAnalytics(); }, 300);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function openExtendModal() {
+      const m = document.getElementById('modal-extend-batch');
+      if (m) m.style.display = 'flex';
+    }
+
+    function closeExtendModal() {
+      const m = document.getElementById('modal-extend-batch');
+      if (m) m.style.display = 'none';
+    }
+
+    function setExtendVal(n) {
+      const inp = document.getElementById('input-extend-units');
+      if (inp) inp.value = n;
+    }
+
+    async function submitExtendBatch() {
+      const inp = document.getElementById('input-extend-units');
+      const addUnits = inp ? Number(inp.value) : 50;
+      closeExtendModal();
+      try {
+        await fetch('/api/batch/extend', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ addUnits: addUnits || 50 })
+        });
+        setTimeout(() => { fetchActiveBatch(); fetchAnalytics(); }, 400);
       } catch (e) {
         console.error(e);
       }
