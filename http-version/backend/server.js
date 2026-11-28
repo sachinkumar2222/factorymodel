@@ -3170,13 +3170,13 @@ function productionMesDisplayPage() {
       padding: 6px;
       display: inline-flex;
       width: 100%;
-      max-width: 530px;
+      max-width: 580px;
       justify-content: center;
       box-sizing: border-box;
       transition: max-width 0.35s ease;
     }
     .card-wrap.expanded {
-      max-width: 980px;
+      max-width: 1080px;
     }
 
     .card {
@@ -3362,11 +3362,11 @@ function productionMesDisplayPage() {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 800;
     }
     .batch-id-tag {
-      font-size: 20px !important;
+      font-size: 22px !important;
       color: #ffbe0b;
       font-weight: 800;
       letter-spacing: 0.02em;
@@ -3376,11 +3376,11 @@ function productionMesDisplayPage() {
       white-space: nowrap;
     }
     .batch-target-tag {
-      font-size: 19px !important;
+      font-size: 21px !important;
       font-weight: 800;
       color: #f1f5f9;
       background: rgba(255, 255, 255, 0.12);
-      padding: 3px 9px;
+      padding: 3px 10px;
       border-radius: 6px;
       white-space: nowrap;
     }
@@ -3389,15 +3389,15 @@ function productionMesDisplayPage() {
     .progress-container {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 6px;
       width: 100%;
       box-sizing: border-box;
     }
     .progress-bar-track {
       width: 100%;
-      height: 16px;
+      height: 18px;
       background: rgba(0, 0, 0, 0.6);
-      border-radius: 8px;
+      border-radius: 9px;
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.15);
       position: relative;
@@ -3407,14 +3407,14 @@ function productionMesDisplayPage() {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #ff7700 0%, #ffbe0b 100%);
-      border-radius: 8px;
+      border-radius: 9px;
       box-shadow: 0 0 10px rgba(255, 190, 11, 0.6);
       transition: width 0.4s ease;
     }
     .progress-info-row {
       display: flex;
       justify-content: space-between;
-      font-size: 18px !important;
+      font-size: 20px !important;
       font-weight: 700;
       color: #cbd5e1;
       white-space: nowrap;
@@ -3422,21 +3422,21 @@ function productionMesDisplayPage() {
     .progress-highlight {
       color: #ffbe0b;
       font-weight: 800;
-      font-size: 18px !important;
+      font-size: 20px !important;
     }
 
-    /* Batch Action Buttons (Increased by 1px to 16px) */
+    /* Batch Action Buttons (18px font, perfectly spaced, zero squishing/overlap) */
     .batch-controls {
       display: flex;
-      gap: 6px;
-      margin-top: 3px;
+      gap: 8px;
+      margin-top: 4px;
       width: 100%;
       box-sizing: border-box;
     }
     .btn-action {
       flex: 1;
-      padding: 8px 6px;
-      font-size: 16px !important;
+      padding: 8px 10px;
+      font-size: 18px !important;
       font-weight: 800;
       border-radius: 8px;
       border: 1px solid transparent;
@@ -3444,12 +3444,12 @@ function productionMesDisplayPage() {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
+      gap: 6px;
       transition: all 0.2s ease;
       text-transform: uppercase;
       letter-spacing: 0.02em;
       white-space: nowrap;
-      height: 40px;
+      height: 44px;
       box-sizing: border-box;
       min-width: 0;
     }
